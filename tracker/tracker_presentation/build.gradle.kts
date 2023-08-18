@@ -3,8 +3,8 @@ apply {
 }
 
 dependencies {
-    "implementation"(project(Modules.core))
+    "implementation"(project(Modules.common))
+    "implementation"(project(Modules.commonUi))
     "implementation"(project(Modules.trackerDomain))
-
     "implementation"(Koil.coilCompose)
 }

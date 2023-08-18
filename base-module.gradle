@@ -31,6 +31,14 @@ android {
 //    kotlinOptions {
 //        jvmTarget = '17'
 //    }
+    packaging {
+        resources.excludes.add("META-INF/AL2.0")
+        resources.excludes.add("META-INF/LGPL2.1")
+        resources.excludes.add("**/attach_hotspot_windows.dll")
+        resources.excludes.add("META-INF/licenses/ASM")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
+        resources.excludes.add("META-INF/LICENSE.md")
+    }
 }
 
 dependencies {
@@ -55,4 +63,5 @@ dependencies {
     androidTestImplementation Testing.mockk
     androidTestImplementation Testing.mockWebServer
     androidTestImplementation Testing.hiltTesting
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 }

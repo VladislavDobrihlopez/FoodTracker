@@ -1,19 +1,16 @@
+package com.voitov.foodtracker.ui.theme
+
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
-import com.voitov.foodtracker.ui.theme.BrightGreen
-import com.voitov.foodtracker.ui.theme.DarkGray
-import com.voitov.foodtracker.ui.theme.DarkGreen
-import com.voitov.foodtracker.ui.theme.LightGray
-import com.voitov.foodtracker.ui.theme.MediumGray
-import com.voitov.foodtracker.ui.theme.Orange
-import com.voitov.foodtracker.ui.theme.Shapes
-import com.voitov.foodtracker.ui.theme.TextWhite
+import com.voitov.common_ui.LocalSpacing
+import com.voitov.common_ui.ProjectDimensions
 
-private val DarkColorPalette = darkColors(
+private val darkColorPalette = darkColors(
     primary = BrightGreen,
     primaryVariant = DarkGreen,
     secondary = Orange,
@@ -25,7 +22,7 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.White,
 )
 
-private val LightColorPalette = lightColors(
+private val lightColorPalette = lightColors(
     primary = BrightGreen,
     primaryVariant = DarkGreen,
     secondary = Orange,
@@ -38,16 +35,19 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun FoodTrackerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun FoodTrackerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        darkColorPalette
     } else {
-        LightColorPalette
+        lightColorPalette
     }
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+
+    CompositionLocalProvider(LocalSpacing provides ProjectDimensions()) {
+        MaterialTheme(
+            colors = colors,
+            typography = Typography,
+            shapes = Shapes,
+            content = content
+        )
+    }
 }

@@ -1,0 +1,8 @@
+//rootProject.name = "com.voitov.common"
+
+apply from: "$rootDir/base-module.gradle"
+
+android {
+    namespace 'com.voitov.common'
+}
+

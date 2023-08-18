@@ -1,7 +1,8 @@
 object Modules {
     const val app = ":app"
 
-    const val core = ":common"
+    const val common = ":common"
+    const val commonUi = ":common_ui"
 
     const val onboardingDomain = ":onboarding:onboarding_domain"
     const val onboardingPresentation = ":onboarding:onboarding_presentation"
