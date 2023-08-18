@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+import com.android.build.api.dsl.Packaging
 
 plugins {
     id("com.android.application")
@@ -42,11 +42,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Compose.composeCompilerVersion
     }
-    packagingOptions {
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
-        exclude("**/attach_hotspot_windows.dll")
-        exclude("META-INF/licenses/ASM")
+    packaging {
+        resources.excludes.add("META-INF/AL2.0")
+        resources.excludes.add("META-INF/LGPL2.1")
+        resources.excludes.add("**/attach_hotspot_windows.dll")
+        resources.excludes.add("META-INF/licenses/ASM")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
+        resources.excludes.add("META-INF/LICENSE.md")
     }
 }
 
@@ -64,7 +66,8 @@ dependencies {
     implementation(Dagger2Hilt.hiltAndroid)
     "kapt"(Dagger2Hilt.hiltCompiler)
 
-    implementation(project(Modules.core))
+    implementation(project(Modules.common))
+    implementation(project(Modules.commonUi))
     implementation(project(Modules.onboardingPresentation))
     implementation(project(Modules.onboardingDomain))
     implementation(project(Modules.trackerPresentation))
