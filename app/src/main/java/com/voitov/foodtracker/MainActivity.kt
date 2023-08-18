@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.voitov.foodtracker.navigation.AppNavGraph
+import com.voitov.foodtracker.navigation.AppNavState
 import com.voitov.onboarding_presentation.welcome.HelloScreen
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FoodTrackerTheme {
-                HelloScreen()
+                AppNavGraph(startDestination = AppNavState.WELCOME_ROUTE)
             }
         }
     }
@@ -23,6 +25,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     FoodTrackerTheme {
-        HelloScreen()
+        HelloScreen {
+
+        }
     }
 }

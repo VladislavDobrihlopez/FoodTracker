@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.Packaging
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -110,4 +108,5 @@ dependencies {
     androidTestImplementation(Testing.hiltTesting)
     "kaptAndroidTest"(Dagger2Hilt.hiltCompiler)
     androidTestImplementation(Testing.testRunner)
+    debugImplementation("androidx.compose.ui:ui-tooling:1.4.0")
 }

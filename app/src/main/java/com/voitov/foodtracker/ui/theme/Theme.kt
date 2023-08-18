@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.common_ui.ProjectDimensions
 
-private val DarkColorPalette = darkColors(
+private val darkColorPalette = darkColors(
     primary = BrightGreen,
     primaryVariant = DarkGreen,
     secondary = Orange,
@@ -22,7 +22,7 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.White,
 )
 
-private val LightColorPalette = lightColors(
+private val lightColorPalette = lightColors(
     primary = BrightGreen,
     primaryVariant = DarkGreen,
     secondary = Orange,
@@ -35,12 +35,13 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun FoodTrackerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun FoodTrackerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        darkColorPalette
     } else {
-        LightColorPalette
+        lightColorPalette
     }
+
     CompositionLocalProvider(LocalSpacing provides ProjectDimensions()) {
         MaterialTheme(
             colors = colors,

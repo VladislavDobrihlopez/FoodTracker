@@ -16,9 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.onboarding_presentation.welcome.components.ActionButton
+import navigation.UiEvents
 
 @Composable
-fun HelloScreen() {
+fun HelloScreen(onNavigate: () -> Unit) {
     val spacing = LocalSpacing.current
     Column(
         modifier = Modifier.fillMaxSize().padding(spacing.spaceMedium),
@@ -32,7 +33,7 @@ fun HelloScreen() {
         )
         Spacer(Modifier.height(spacing.spaceLarge))
         ActionButton(text = stringResource(id = R.string.next)) {
-
+            onNavigate()
         }
     }
 }

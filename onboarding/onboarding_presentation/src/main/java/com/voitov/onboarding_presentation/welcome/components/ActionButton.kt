@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.voitov.common_ui.LocalSpacing
@@ -17,11 +18,10 @@ fun ActionButton(
     text: String,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.button,
-    isEnabled: Boolean = false,
+    isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
         modifier = modifier,
         onClick = onClick,
         enabled = isEnabled,
