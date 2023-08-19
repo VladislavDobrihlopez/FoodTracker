@@ -1,4 +1,4 @@
-package com.voitov.onboarding_presentation.welcome.weight_screen
+package com.voitov.onboarding_presentation.age_screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,30 +17,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeightViewModel @Inject constructor(
+class AgeViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var weightState by mutableStateOf<String>("70.0")
+    var ageState by mutableStateOf<String>("25")
         private set
 
     private val _uiChannel = Channel<UiEvents>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onChange(value: String) {
-        if (value.length <= 4) {
-            weightState = value //filterOutDigitsUseCase.invoke(value)
+        if (value.length <= 3) {
+            ageState = filterOutDigitsUseCase.invoke(value)
         }
     }
 
     fun onNavigate() {
         viewModelScope.launch {
-            val userWeight = weightState.toFloatOrNull() ?: kotlin.run {
-                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_height_cant_be_empty)))
+            val userAge = ageState.toIntOrNull() ?: kotlin.run {
+                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_age_cant_be_empty)))
                 return@launch
             }
 
-            keyValueStorage.saveWeight(userWeight)
+            keyValueStorage.saveAge(userAge)
             _uiChannel.send(UiEvents.DispatchNavigationRequest)
         }
     }

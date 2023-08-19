@@ -1,4 +1,4 @@
-package com.voitov.onboarding_presentation.welcome.components
+package com.voitov.onboarding_presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -4,8 +4,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
-import com.voitov.onboarding_presentation.welcome.components.SelectionButton
-import com.voitov.onboarding_presentation.welcome.components.UnitEditText
+import com.voitov.onboarding_presentation.components.SelectionButton
+import com.voitov.onboarding_presentation.components.UnitEditText
 
 @Preview(showBackground = true)
 @Composable

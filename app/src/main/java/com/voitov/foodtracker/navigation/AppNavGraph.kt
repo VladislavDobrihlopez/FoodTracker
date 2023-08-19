@@ -8,11 +8,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
+import com.voitov.onboarding_presentation.age_screen.AgeScreen
+import com.voitov.onboarding_presentation.gender_screen.GenderScreen
+import com.voitov.onboarding_presentation.goal_screen.GoalScreen
+import com.voitov.onboarding_presentation.height_screen.HeightScreen
+import com.voitov.onboarding_presentation.weight_screen.WeightScreen
 import com.voitov.onboarding_presentation.welcome.HelloScreen
-import com.voitov.onboarding_presentation.welcome.age_screen.AgeScreen
-import com.voitov.onboarding_presentation.welcome.gender_screen.GenderScreen
-import com.voitov.onboarding_presentation.welcome.height_screen.HeightScreen
-import com.voitov.onboarding_presentation.welcome.weight_screen.WeightScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -30,7 +32,7 @@ fun AppNavGraph(
             }
             composable(route = AppNavState.Gender.route) {
                 GenderScreen(onNavigate = {
-                    navHostController.navigateTo(AppNavState.Age)
+                    navHostController.navigateTo(AppNavState.AGE_ROUTE)
                 })
             }
             composable(route = AppNavState.Age.route) {
@@ -57,18 +59,24 @@ fun AppNavGraph(
                     }
                 )
             }
-            composable(route = AppNavState.NutrientGoal.route) {
-
+            composable(route = AppNavState.Activity.route) {
+                ActivityLevelScreen(onNavigate = {
+                    navHostController.navigateTo(AppNavState.GOAL_ROUTE)
+                })
             }
+
             composable(route = AppNavState.Goal.route) {
+                GoalScreen(onNavigate = {
+                    navHostController.navigateTo(AppNavState.NutrientGoal)
+                })
+            }
+            composable(route = AppNavState.NutrientGoal.route) {
 
             }
             composable(route = AppNavState.TrackerOverview.route) {
 
             }
-            composable(route = AppNavState.Activity.route) {
 
-            }
             composable(route = AppNavState.Search.route) {
 
             }

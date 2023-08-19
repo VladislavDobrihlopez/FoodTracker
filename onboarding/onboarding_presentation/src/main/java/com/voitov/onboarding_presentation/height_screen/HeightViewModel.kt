@@ -1,4 +1,4 @@
-package com.voitov.onboarding_presentation.welcome.height_screen
+package com.voitov.onboarding_presentation.height_screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
