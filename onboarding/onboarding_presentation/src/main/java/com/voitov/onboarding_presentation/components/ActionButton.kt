@@ -1,4 +1,4 @@
-package com.voitov.onboarding_presentation.welcome.components
+package com.voitov.onboarding_presentation.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape

@@ -1,5 +1,6 @@
-package com.voitov.onboarding_presentation.welcome.gender_screen
+package com.voitov.onboarding_presentation.gender_screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,35 +14,48 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.domain.entities.Gender
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.common_ui.navigation.UiEvents
-import com.voitov.onboarding_presentation.welcome.components.ActionButton
-import com.voitov.onboarding_presentation.welcome.components.SelectionButton
+import com.voitov.common.domain.UiEvents
+import com.voitov.onboarding_presentation.components.ActionButton
+import com.voitov.onboarding_presentation.components.SelectionButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun GenderScreen(
-    viewModel: GenderViewModel = hiltViewModel<GenderViewModel>(),
     onNavigate: () -> Unit,
+    viewModel: GenderViewModel = hiltViewModel<GenderViewModel>(),
 ) {
     val spacing = LocalSpacing.current
+    val scope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvent.collect { event ->
-            when (event) {
-                UiEvents.DispatchNavigationRequest -> onNavigate()
-                else -> throw IllegalStateException()
+        viewModel.uiEvent
+            .onEach { event ->
+                Log.d("TEST_CHANNEL", "delivered")
+                when (event) {
+                    UiEvents.DispatchNavigationRequest -> onNavigate()
+                    else -> throw IllegalStateException()
+                }
             }
-        }
+            .launchIn(scope)
     }
 
-    Box(modifier = Modifier.padding(spacing.spaceMedium).fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .padding(spacing.spaceMedium)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +73,7 @@ fun GenderScreen(
 
                 SelectionButton(
                     value = stringResource(id = R.string.male),
-                    onButtonClick = { viewModel.onGenderClick(Gender.Male) },
+                    onButtonClick = { viewModel.onSelect(Gender.Male) },
                     isSelected = currentGender is Gender.Male,
                     selectedTextColor = MaterialTheme.colors.onPrimary
                 )
@@ -68,7 +82,7 @@ fun GenderScreen(
 
                 SelectionButton(
                     value = stringResource(id = R.string.female),
-                    onButtonClick = { viewModel.onGenderClick(Gender.Female) },
+                    onButtonClick = { viewModel.onSelect(Gender.Female) },
                     isSelected = currentGender is Gender.Female,
                     selectedTextColor = MaterialTheme.colors.onPrimary
                 )
@@ -82,12 +96,5 @@ fun GenderScreen(
         ) {
             viewModel.onNavigate()
         }
-    }
-}
-
-@Preview
-@Composable
-internal fun PreviewGenderScreen() {
-    GenderScreen {
     }
 }
