@@ -11,7 +11,7 @@ import com.voitov.onboarding_presentation.welcome.components.UnitEditText
 @Composable
 internal fun PreviewUnitEditText() {
     FoodTrackerTheme {
-        UnitEditText(value = 17, unit = "cm", onValueChange = {})
+        UnitEditText(value = "17", unit = "cm", onValueChange = {})
     }
 }
 
