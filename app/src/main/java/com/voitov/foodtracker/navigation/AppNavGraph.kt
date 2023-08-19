@@ -13,6 +13,7 @@ import com.voitov.onboarding_presentation.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.gender_screen.GenderScreen
 import com.voitov.onboarding_presentation.goal_screen.GoalScreen
 import com.voitov.onboarding_presentation.height_screen.HeightScreen
+import com.voitov.onboarding_presentation.nutrient_plan_screen.NutrientPlanScreen
 import com.voitov.onboarding_presentation.weight_screen.WeightScreen
 import com.voitov.onboarding_presentation.welcome.HelloScreen
 
@@ -71,7 +72,9 @@ fun AppNavGraph(
                 })
             }
             composable(route = AppNavState.NutrientGoal.route) {
-
+                NutrientPlanScreen(snackBarState = scaffoldState.snackbarHostState, onNavigate = {
+                    navHostController.navigateTo(AppNavState.TrackerOverview)
+                })
             }
             composable(route = AppNavState.TrackerOverview.route) {
 

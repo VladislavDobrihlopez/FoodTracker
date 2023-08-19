@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.common_ui.UiEvents
+import com.voitov.common.domain.UiEvents
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.UnitEditText
 import kotlinx.coroutines.CoroutineScope
