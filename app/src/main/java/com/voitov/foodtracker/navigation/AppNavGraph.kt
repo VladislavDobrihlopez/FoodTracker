@@ -11,6 +11,8 @@ import androidx.navigation.compose.rememberNavController
 import com.voitov.onboarding_presentation.welcome.HelloScreen
 import com.voitov.onboarding_presentation.welcome.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.welcome.gender_screen.GenderScreen
+import com.voitov.onboarding_presentation.welcome.height_screen.HeightScreen
+import com.voitov.onboarding_presentation.welcome.weight_screen.WeightScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -40,10 +42,20 @@ fun AppNavGraph(
                 )
             }
             composable(route = AppNavState.Height.route) {
-
+                HeightScreen(
+                    snackBarState = scaffoldState.snackbarHostState,
+                    onNavigate = {
+                        navHostController.navigateTo(AppNavState.WEIGHT_ROUTE)
+                    }
+                )
             }
             composable(route = AppNavState.Weight.route) {
-
+                WeightScreen(
+                    snackBarState = scaffoldState.snackbarHostState,
+                    onNavigate = {
+                        navHostController.navigateTo(AppNavState.ACTIVITY_ROUTE)
+                    }
+                )
             }
             composable(route = AppNavState.NutrientGoal.route) {
 

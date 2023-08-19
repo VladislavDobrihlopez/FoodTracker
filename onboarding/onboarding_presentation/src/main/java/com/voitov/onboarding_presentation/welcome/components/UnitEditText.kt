@@ -33,7 +33,7 @@ fun UnitEditText(
                 .padding(spacing.spaceSmall)
                 .width(IntrinsicSize.Min),
             textStyle = textStyle,
-            value = value.toString(),
+            value = value,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = onValueChange
@@ -42,7 +42,7 @@ fun UnitEditText(
         Text(
             text = unit,
             modifier = Modifier.alignBy(FirstBaseline),
-            style = textStyle.copy(fontSize = 24.sp)
+            style = textStyle.copy(fontSize = 24.sp, color = MaterialTheme.colors.onBackground)
         )
     }
 }
