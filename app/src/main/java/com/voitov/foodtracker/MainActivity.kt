@@ -9,7 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.voitov.foodtracker.navigation.AppNavGraph
 import com.voitov.foodtracker.navigation.AppNavState
 import com.voitov.onboarding_presentation.welcome.HelloScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

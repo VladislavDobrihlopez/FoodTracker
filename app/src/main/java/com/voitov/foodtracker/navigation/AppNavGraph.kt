@@ -6,19 +6,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.voitov.onboarding_presentation.welcome.HelloScreen
+import com.voitov.onboarding_presentation.welcome.gender_screen.GenderScreen
 
 @Composable
 fun AppNavGraph(navHostController: NavHostController = rememberNavController(), startDestination: String) {
     NavHost(startDestination = startDestination, navController = navHostController) {
         composable(route = AppNavState.Welcome.route) {
             HelloScreen {
+                navHostController.navigateTo(AppNavState.Gender)
+            }
+        }
+        composable(route = AppNavState.Gender.route) {
+            GenderScreen {
                 navHostController.navigateTo(AppNavState.Age)
             }
         }
         composable(route = AppNavState.Age.route) {
-
-        }
-        composable(route = AppNavState.Gender.route) {
 
         }
         composable(route = AppNavState.Height.route) {
