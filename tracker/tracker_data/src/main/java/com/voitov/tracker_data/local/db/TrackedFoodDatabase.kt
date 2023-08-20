@@ -26,4 +26,5 @@ abstract class TrackedFoodDatabase : RoomDatabase() {
             }
         }
     }
+    abstract fun trackedFoodDao(): TrackedFoodDao
 }
