@@ -1,4 +1,4 @@
-package com.voitov.tracker_domain.models
+package com.voitov.tracker_domain.model
 
 data class TrackableFood(
     val name: String,

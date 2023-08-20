@@ -1,7 +1,7 @@
 package com.voitov.tracker_domain.repository
 
-import com.voitov.tracker_domain.models.TrackableFood
-import com.voitov.tracker_domain.models.TrackedFood
+import com.voitov.tracker_domain.model.TrackableFood
+import com.voitov.tracker_domain.model.TrackedFood
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 

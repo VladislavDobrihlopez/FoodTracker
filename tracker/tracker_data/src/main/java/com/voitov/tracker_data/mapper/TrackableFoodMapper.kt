@@ -1,7 +1,7 @@
 package com.voitov.tracker_data.mapper
 
 import com.voitov.tracker_data.remote.dto.ProductDto
-import com.voitov.tracker_domain.models.TrackableFood
+import com.voitov.tracker_domain.model.TrackableFood
 import kotlin.math.roundToInt
 
 fun ProductDto.toTrackableFood() =

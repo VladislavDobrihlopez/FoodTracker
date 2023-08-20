@@ -1,8 +1,8 @@
 package com.voitov.tracker_data.mapper
 
 import com.voitov.tracker_data.local.entity.TrackedFoodEntity
-import com.voitov.tracker_domain.models.MealType
-import com.voitov.tracker_domain.models.TrackedFood
+import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.TrackedFood
 import java.time.LocalDateTime
 
 fun TrackedFood.toTrackedFoodEntity(): TrackedFoodEntity {

@@ -5,13 +5,12 @@ import com.voitov.tracker_data.mapper.toTrackableFood
 import com.voitov.tracker_data.mapper.toTrackedFood
 import com.voitov.tracker_data.mapper.toTrackedFoodEntity
 import com.voitov.tracker_data.remote.OpenFoodApiService
-import com.voitov.tracker_domain.models.TrackableFood
-import com.voitov.tracker_domain.models.TrackedFood
+import com.voitov.tracker_domain.model.TrackableFood
+import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 class FoodTrackerRepositoryImpl(
     private val apiService: OpenFoodApiService,
