@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.voitov.tracker_data.local.entity.TrackedFoodEntity
 
-@Database(entities = [TrackedFoodEntity::class], version = 1, exportSchema = true)
+@Database(entities = [TrackedFoodEntity::class], version = 1, exportSchema = false)
 abstract class TrackedFoodDatabase : RoomDatabase() {
     companion object {
         private val MONITOR = Any()
