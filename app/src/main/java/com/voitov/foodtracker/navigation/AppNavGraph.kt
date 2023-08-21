@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.voitov.common.navigation.AppNavState
 import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
 import com.voitov.onboarding_presentation.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.gender_screen.GenderScreen

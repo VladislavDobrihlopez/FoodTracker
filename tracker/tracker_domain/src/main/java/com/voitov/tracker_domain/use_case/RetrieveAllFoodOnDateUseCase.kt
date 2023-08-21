@@ -9,7 +9,7 @@ import javax.inject.Inject
 class RetrieveAllFoodOnDateUseCase(
     private val repository: FoodTrackerRepository
 ) {
-    suspend operator fun invoke(date: LocalDateTime): Flow<List<TrackedFood>> {
+    operator fun invoke(date: LocalDateTime): Flow<List<TrackedFood>> {
         return repository.getFoodForDate(date)
     }
 }

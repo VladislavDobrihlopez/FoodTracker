@@ -8,24 +8,19 @@ import com.voitov.common.domain.entities.UserProfile
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import javax.inject.Inject
 
-class UserInfoPreferencesKeyValueStorage @Inject constructor(private val sharedPreferences: SharedPreferences) :
-    UserInfoKeyValueStorage {
+class UserInfoPreferencesKeyValueStorage @Inject constructor(
+    private val sharedPreferences: SharedPreferences
+) : UserInfoKeyValueStorage {
     private fun putInt(key: String, value: Int) {
-        sharedPreferences.edit()
-            .putInt(key, value)
-            .apply()
+        sharedPreferences.edit().putInt(key, value).apply()
     }
 
     private fun putString(key: String, value: String) {
-        sharedPreferences.edit()
-            .putString(key, value)
-            .apply()
+        sharedPreferences.edit().putString(key, value).apply()
     }
 
     private fun putFloat(key: String, value: Float) {
-        sharedPreferences.edit()
-            .putFloat(key, value)
-            .apply()
+        sharedPreferences.edit().putFloat(key, value).apply()
     }
 
     override fun saveGender(gender: Gender) {
@@ -38,8 +33,7 @@ class UserInfoPreferencesKeyValueStorage @Inject constructor(private val sharedP
 
     override fun savePhysicalActivity(physicalActivityLevel: PhysicalActivityLevel) {
         putString(
-            UserInfoKeyValueStorage.PHYSICAL_ACTIVITY_LEVEL_EXTRA_KEY,
-            physicalActivityLevel.name
+            UserInfoKeyValueStorage.PHYSICAL_ACTIVITY_LEVEL_EXTRA_KEY, physicalActivityLevel.name
         )
     }
 
@@ -67,23 +61,29 @@ class UserInfoPreferencesKeyValueStorage @Inject constructor(private val sharedP
         putFloat(UserInfoKeyValueStorage.FAT_RATION_EXTRA_KEY, value)
     }
 
+    override fun saveWhetherOnboardingIsRequired(isRequired: Boolean) {
+        sharedPreferences.edit()
+            .putBoolean(UserInfoKeyValueStorage.ONBOARDING_EXTRA_KEY, isRequired).apply()
+    }
+
+    override fun loadWhetherOnboardingIsRequired(): Boolean {
+        return sharedPreferences.getBoolean(UserInfoKeyValueStorage.ONBOARDING_EXTRA_KEY, false)
+    }
+
     override fun readAllUserInfo(): UserProfile {
         val gender = Gender.parse(
             sharedPreferences.getString(
-                UserInfoKeyValueStorage.GENDER_EXTRA_KEY,
-                ""
+                UserInfoKeyValueStorage.GENDER_EXTRA_KEY, ""
             )!!
         )
         val goalType = GoalType.parse(
             sharedPreferences.getString(
-                UserInfoKeyValueStorage.GOAL_TYPE_EXTRA_KEY,
-                ""
+                UserInfoKeyValueStorage.GOAL_TYPE_EXTRA_KEY, ""
             )!!
         )
         val activityLevel = PhysicalActivityLevel.parse(
             sharedPreferences.getString(
-                UserInfoKeyValueStorage.PHYSICAL_ACTIVITY_LEVEL_EXTRA_KEY,
-                ""
+                UserInfoKeyValueStorage.PHYSICAL_ACTIVITY_LEVEL_EXTRA_KEY, ""
             )!!
         )
         val age = sharedPreferences.getInt(UserInfoKeyValueStorage.AGE_EXTRA_KEY, -1)

@@ -30,7 +30,9 @@
     <string name="collapse">Collapse</string>
     <string name="breakfast">Breakfast</string>
     <string name="lunch">Lunch</string>
+    <string name="brunch">Brunch</string>
     <string name="dinner">Dinner</string>
+    <string name="supper">Supper</string>
     <string name="snacks">Snacks</string>
     <string name="add_meal">Add %s</string>
     <string name="add">Add</string>

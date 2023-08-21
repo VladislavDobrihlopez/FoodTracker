@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.voitov.foodtracker.navigation.AppNavGraph
-import com.voitov.foodtracker.navigation.AppNavState
+import com.voitov.common.navigation.AppNavState
 import com.voitov.onboarding_presentation.welcome.HelloScreen
 import dagger.hilt.android.AndroidEntryPoint
 
