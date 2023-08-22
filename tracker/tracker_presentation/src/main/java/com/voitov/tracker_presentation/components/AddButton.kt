@@ -1,6 +1,5 @@
 package com.voitov.tracker_presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +25,7 @@ fun AddButton(
     modifier: Modifier = Modifier,
     borderThin: Dp = 2.dp,
     borderColor: Color = MaterialTheme.colors.primary,
+    textColor: Color = MaterialTheme.colors.onBackground,
     textStyle: TextStyle = MaterialTheme.typography.button,
     onClick: () -> Unit
 ) {
@@ -33,12 +33,12 @@ fun AddButton(
     Row(modifier = modifier
         .fillMaxWidth()
         .clip(RoundedCornerShape(100f))
+        .clickable { onClick() }
         .border(borderThin, borderColor, RoundedCornerShape(100f))
-        .padding(spacing.spaceSmall)
-        .clickable { onClick() },
+        .padding(spacing.spaceSmall),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = text, style = textStyle, color = MaterialTheme.colors.onBackground)
+        Text(text = text, style = textStyle, color = textColor)
     }
 }

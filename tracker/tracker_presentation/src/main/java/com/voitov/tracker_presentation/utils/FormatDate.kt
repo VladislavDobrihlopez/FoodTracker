@@ -15,3 +15,7 @@ fun formatDate(date: LocalDateTime, context: Context): String {
         else -> DateTimeFormatter.ofPattern("dd LLLL yy").format(date)
     }
 }
+
+fun formatMealDate(date: LocalDateTime): String {
+    return DateTimeFormatter.ofPattern("hh:mm").format(date)
+}

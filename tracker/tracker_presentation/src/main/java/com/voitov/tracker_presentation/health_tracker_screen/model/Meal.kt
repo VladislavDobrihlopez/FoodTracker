@@ -13,7 +13,7 @@ data class Meal(
     val carbohydrates: Int = 0,
     val fat: Int = 0,
     val protein: Int = 0,
-    val isWatched: Boolean = false
+    val isExpanded: Boolean = false
 )
 
 val allDayMealsByDefault = listOf<Meal>(

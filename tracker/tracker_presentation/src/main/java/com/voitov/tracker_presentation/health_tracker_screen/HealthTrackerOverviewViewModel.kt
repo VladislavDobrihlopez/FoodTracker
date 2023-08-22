@@ -96,7 +96,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                         mealsDuringCurrentDay = screenState.mealsDuringCurrentDay.toMutableList()
                             .apply {
                                 removeAt(index)
-                                add(index, oldMeal.copy(isWatched = !oldMeal.isWatched))
+                                add(index, oldMeal.copy(isExpanded = !oldMeal.isExpanded))
                             })
                 }
             }
