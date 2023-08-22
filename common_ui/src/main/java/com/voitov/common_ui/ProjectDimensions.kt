@@ -1,6 +1,6 @@
 package com.voitov.common_ui
 
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -13,6 +13,6 @@ data class ProjectDimensions(
     val spaceExtraLarge: Dp = 64.dp
 )
 
-val LocalSpacing = compositionLocalOf {
+val LocalSpacing = staticCompositionLocalOf {
     ProjectDimensions()
 }

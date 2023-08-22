@@ -16,6 +16,8 @@ interface UserInfoKeyValueStorage {
     fun saveProteinRatio(value: Float)
     fun saveFatRatio(value: Float)
     fun readAllUserInfo(): UserProfile
+    fun saveWhetherOnboardingIsRequired(isRequired: Boolean)
+    fun loadWhetherOnboardingIsRequired(): Boolean
 
     companion object {
         const val STORAGE_LOCATION = "user_info_shared_pref"
@@ -28,5 +30,6 @@ interface UserInfoKeyValueStorage {
         const val FAT_RATION_EXTRA_KEY = "FAT_RATION_EXTRA_KEY"
         const val PROTEIN_RATION_EXTRA_KEY = "PROTEIN_RATION_EXTRA_KEY"
         const val CARB_RATION_EXTRA_KEY = "CARB_RATION_EXTRA_KEY"
+        const val ONBOARDING_EXTRA_KEY = "ONBOARDING_EXTRA_KEY"
     }
 }

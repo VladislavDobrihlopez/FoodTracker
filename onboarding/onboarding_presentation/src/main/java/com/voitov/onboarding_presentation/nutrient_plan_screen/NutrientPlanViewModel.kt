@@ -28,16 +28,22 @@ class NutrientPlanViewModel @Inject constructor(
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onEvent(event: NutrientScreenEvent) {
+        if (event is NutrientScreenEvent.OnValueEnter) {
+            if (event.value.length > 3) {
+                return
+            }
+        }
+
         when (event) { // reducer
-            is NutrientScreenEvent.OnCarbRatioEnter -> {
+            is NutrientScreenEvent.OnValueEnter.OnCarbRatioEnter -> {
                 screenState = screenState.copy(carbRatio = filterOutDigitsUseCase(event.value))
             }
 
-            is NutrientScreenEvent.OnFatRatioEnter -> {
+            is NutrientScreenEvent.OnValueEnter.OnFatRatioEnter -> {
                 screenState = screenState.copy(fatRatio = filterOutDigitsUseCase(event.value))
             }
 
-            is NutrientScreenEvent.OnProteinsRatioEnter -> {
+            is NutrientScreenEvent.OnValueEnter.OnProteinsRatioEnter -> {
                 screenState = screenState.copy(proteinRation = filterOutDigitsUseCase(event.value))
             }
 

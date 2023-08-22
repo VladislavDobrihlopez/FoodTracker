@@ -79,21 +79,21 @@ fun NutrientPlanScreen(
                 value = screenState.carbRatio,
                 unit = stringResource(id = R.string.percent_carbs),
                 onValueChange = {
-                    viewModel.onEvent(NutrientScreenEvent.OnCarbRatioEnter(it))
+                    viewModel.onEvent(NutrientScreenEvent.OnValueEnter.OnCarbRatioEnter(it))
                 })
 
             UnitEditText(
                 value = screenState.fatRatio,
                 unit = stringResource(id = R.string.percent_fats),
                 onValueChange = {
-                    viewModel.onEvent(NutrientScreenEvent.OnFatRatioEnter(it))
+                    viewModel.onEvent(NutrientScreenEvent.OnValueEnter.OnFatRatioEnter(it))
                 })
 
             UnitEditText(
                 value = screenState.proteinRation,
                 unit = stringResource(id = R.string.percent_proteins),
                 onValueChange = {
-                    viewModel.onEvent(NutrientScreenEvent.OnProteinsRatioEnter(it))
+                    viewModel.onEvent(NutrientScreenEvent.OnValueEnter.OnProteinsRatioEnter(it))
                 })
         }
 
