@@ -6,6 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
 import com.voitov.onboarding_presentation.components.SelectionButton
 import com.voitov.onboarding_presentation.components.UnitEditText
+import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 
@@ -56,5 +57,15 @@ internal fun PreviewUiNumberFollowedByUnit() {
 internal fun PreviewEatenFoodOverview() {
     FoodTrackerTheme {
         EatenFoodOverviewHorizontalBar(calories = 100, caloriesGoal = 250, fat = 10, carbs = 20, proteins = 11)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+internal fun PreviewAddButton() {
+    FoodTrackerTheme {
+        AddButton(text = "Add item") {
+            
+        }
     }
 }
