@@ -20,16 +20,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 @HiltViewModel
 class HealthTrackerOverviewViewModel @Inject constructor(
     private val useCase: NutrientStuffUseCasesWrapper,
     private val keyValueStorage: UserInfoKeyValueStorage
 ) : ViewModel() {
-    init {
-        keyValueStorage.saveWhetherOnboardingIsRequired(false)
-    }
-
     var screenState by mutableStateOf(HealthTrackerScreenState())
         private set
 
@@ -37,6 +34,11 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     val uiEvent = _uiChannel.receiveAsFlow()
 
     private var ongoingRefreshingJob: Job? = null
+
+    init {
+        keyValueStorage.saveWhetherOnboardingIsRequired(false)
+        refreshScreenDataForCurrentDay()
+    }
 
     fun onEvent(event: HealthTrackerScreenEvent) {
         when (event) {
@@ -106,7 +108,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     }
 
     private fun refreshScreenDataForCurrentDay() {
-        if (ongoingRefreshingJob != null) return
+        ongoingRefreshingJob?.cancel()
         ongoingRefreshingJob = useCase.retrieveAllFoodOnDateUseCase(screenState.dateTime)
             .onEach { trackedFoods ->
                 val nutrientCalculationsResult = useCase.doNutrientMathUseCase(trackedFoods)
@@ -148,11 +150,16 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     private fun updateWithDateDifferenceOfDays(days: Long) {
         screenState = screenState.copy(
             dateTime = if (days < 0) {
-                screenState.dateTime.minusDays(days)
+                screenState.dateTime.minusDays(abs(days))
             } else {
-                screenState.dateTime.plusDays(days)
+                screenState.dateTime.plusDays(abs(days))
             }
         )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        ongoingRefreshingJob?.cancel()
     }
 
     companion object {

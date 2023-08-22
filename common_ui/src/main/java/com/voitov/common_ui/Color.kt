@@ -1,4 +1,4 @@
-package com.voitov.foodtracker.ui.theme
+package com.voitov.common_ui
 
 import androidx.compose.ui.graphics.Color
 

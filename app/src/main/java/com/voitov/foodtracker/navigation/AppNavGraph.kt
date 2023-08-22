@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +18,9 @@ import com.voitov.onboarding_presentation.height_screen.HeightScreen
 import com.voitov.onboarding_presentation.nutrient_plan_screen.NutrientPlanScreen
 import com.voitov.onboarding_presentation.weight_screen.WeightScreen
 import com.voitov.onboarding_presentation.welcome.HelloScreen
+import com.voitov.tracker_presentation.health_tracker_screen.NutrientOverviewHeader
+import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerOverviewViewModel
+import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -78,10 +82,21 @@ fun AppNavGraph(
                 })
             }
             composable(route = AppNavState.TrackerOverview.route) {
-
+//                val viewModel: HealthTrackerOverviewViewModel = hiltViewModel()
+//                val state = viewModel.screenState.copy(
+//                    caloriesPerDayGoal = 3000,
+//                    caloriesPerDayInFact = 1000,
+//                    carbsPerDayGoal = 100,
+//                    carbsPerDayInFact = 50,
+//                    fatPerDayGoal = 50,
+//                    fatPerDayInFact = 30,
+//                    proteinsPerDayGoal = 20,
+//                    proteinsPerDayInFact = 19,
+//                )
+                HealthTrackerScreen()
             }
 
-            composable(route = AppNavState.Search.route) {
+            composable(route = AppNavState.SEARCH_ROUTE) {
 
             }
         }
