@@ -51,8 +51,8 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                                 screenState.dateTime.year,
                                 screenState.dateTime.monthValue,
                                 screenState.dateTime.dayOfMonth,
-                                screenState.dateTime.hour,
-                                screenState.dateTime.minute
+//                                screenState.dateTime.hour,
+//                                screenState.dateTime.minute
                             )
                         )
                     )

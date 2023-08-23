@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.voitov.common.navigation.AppNavState
 import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
 import com.voitov.onboarding_presentation.age_screen.AgeScreen
@@ -18,9 +19,9 @@ import com.voitov.onboarding_presentation.height_screen.HeightScreen
 import com.voitov.onboarding_presentation.nutrient_plan_screen.NutrientPlanScreen
 import com.voitov.onboarding_presentation.weight_screen.WeightScreen
 import com.voitov.onboarding_presentation.welcome.HelloScreen
-import com.voitov.tracker_presentation.health_tracker_screen.NutrientOverviewHeader
-import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerOverviewViewModel
+import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
+import com.voitov.tracker_presentation.searching_for_food_screen.SearchScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -93,11 +94,32 @@ fun AppNavGraph(
 //                    proteinsPerDayGoal = 20,
 //                    proteinsPerDayInFact = 19,
 //                )
-                HealthTrackerScreen()
+                HealthTrackerScreen(onNavigateTo = {
+                    navHostController.navigateTo(it)
+                })
             }
 
-            composable(route = AppNavState.SEARCH_ROUTE) {
-
+            composable(
+                route = AppNavState.SEARCH_ROUTE,
+                arguments = listOf(
+                    navArgument(AppNavState.Search.MEAL_TYPE_KEY) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppNavState.Search.YEAR_KEY) {
+                        type = NavType.IntType
+                    },
+                    navArgument(AppNavState.Search.MONTH_KEY) {
+                        type = NavType.IntType
+                    },
+                    navArgument(AppNavState.Search.DAY_OF_WEEK_KEY) {
+                        type = NavType.IntType
+                    })
+            ) { backStackEntry ->
+                val mealType = backStackEntry.arguments?.getString(AppNavState.Search.MEAL_TYPE_KEY)!!
+                val year = backStackEntry.arguments?.getInt(AppNavState.Search.YEAR_KEY)!!
+                val month = backStackEntry.arguments?.getInt(AppNavState.Search.MONTH_KEY)!!
+                val day = backStackEntry.arguments?.getInt(AppNavState.Search.DAY_OF_WEEK_KEY)!!
+                SearchScreen(MealType.valueOf(mealType), day, month, year, onNavigateUp = {})
             }
         }
     })

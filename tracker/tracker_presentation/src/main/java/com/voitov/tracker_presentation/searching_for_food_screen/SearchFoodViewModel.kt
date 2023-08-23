@@ -9,8 +9,7 @@ import com.voitov.common.domain.UiEvents
 import com.voitov.common.domain.UiText
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.R
-import com.voitov.tracker_domain.use_case.InsertFoodUseCase
-import com.voitov.tracker_domain.use_case.SearchFoodUseCase
+import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,8 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFoodViewModel
 @Inject constructor(
-    private val trackerUseCase: SearchFoodUseCase,
-    private val insertFoodUseCase: InsertFoodUseCase,
+    private val trackerUseCases: NutrientStuffUseCasesWrapper,
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
 
@@ -31,7 +29,7 @@ class SearchFoodViewModel
         private set
 
     private val _uiChannel = Channel<UiEvents>()
-    val uiEvents = _uiChannel.receiveAsFlow()
+    val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onEvent(event: SearchFoodScreenEvent) {
         when (event) {
@@ -59,9 +57,8 @@ class SearchFoodViewModel
             }
 
             is SearchFoodScreenEvent.OnSearchTextChange -> {
-                val filteredSearchFieldText = filterOutDigitsUseCase(event.foodName)
                 screenState =
-                    screenState.copy(searchBarText = UiText.DynamicResource(filteredSearchFieldText))
+                    screenState.copy(searchBarText = UiText.DynamicResource(event.foodName))
             }
 
             is SearchFoodScreenEvent.ToggleTrackableFoodItem -> {
@@ -78,7 +75,7 @@ class SearchFoodViewModel
 
     private fun trackFood(event: SearchFoodScreenEvent.OnAddTrackableFood) {
         viewModelScope.launch {
-            insertFoodUseCase(
+            trackerUseCases.insertFoodUseCase(
                 food = event.food.food,
                 amount = event.food.amount.toIntOrNull() ?: return@launch,
                 dateTime = LocalDateTime.now(),
@@ -95,7 +92,7 @@ class SearchFoodViewModel
                 food = emptyList()
             )
 
-            trackerUseCase(filterOutDigitsUseCase(event.searchText))
+            trackerUseCases.searchFoodUseCase(event.searchText)
                 .onSuccess { trackableFoodList ->
                     screenState =
                         screenState.copy(

@@ -11,24 +11,48 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
+import com.voitov.common.domain.UiEvents
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.MealItem
 import com.voitov.tracker_presentation.components.TrackedFoodItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun HealthTrackerScreen(viewModel: HealthTrackerOverviewViewModel = hiltViewModel()) {
+fun HealthTrackerScreen(
+    viewModel: HealthTrackerOverviewViewModel = hiltViewModel(),
+    onNavigateTo: (String) -> Unit
+) {
     val spacing = LocalSpacing.current
     val screenState = viewModel.screenState
     val context = LocalContext.current
     Log.d("TEST_STATE", screenState.toString())
+
+    val scope = remember { CoroutineScope(Dispatchers.Main.immediate) }
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent
+            .onEach { event ->
+                Log.d("TEST_CHANNEL", "delivered")
+                when (event) {
+                    is UiEvents.NavigateTo -> onNavigateTo(event.route)
+                    else -> throw IllegalStateException()
+                }
+            }
+            .launchIn(scope)
+    }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             NutrientOverviewHeader(screenState)
