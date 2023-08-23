@@ -115,11 +115,21 @@ fun AppNavGraph(
                         type = NavType.IntType
                     })
             ) { backStackEntry ->
-                val mealType = backStackEntry.arguments?.getString(AppNavState.Search.MEAL_TYPE_KEY)!!
+                val mealType =
+                    backStackEntry.arguments?.getString(AppNavState.Search.MEAL_TYPE_KEY)!!
                 val year = backStackEntry.arguments?.getInt(AppNavState.Search.YEAR_KEY)!!
                 val month = backStackEntry.arguments?.getInt(AppNavState.Search.MONTH_KEY)!!
                 val day = backStackEntry.arguments?.getInt(AppNavState.Search.DAY_OF_WEEK_KEY)!!
-                SearchScreen(MealType.valueOf(mealType), day, month, year, onNavigateUp = {})
+                SearchScreen(
+                    scaffoldState = scaffoldState,
+                    mealType = MealType.valueOf(mealType),
+                    day = day,
+                    month = month,
+                    year = year,
+                    onNavigateUp = {
+
+                    }
+                )
             }
         }
     })

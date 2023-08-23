@@ -63,7 +63,7 @@ fun MealItem(
             )
             Spacer(Modifier.width(spacing.spaceSmall))
             NutrientValueInfo(
-                nutrientName = stringResource(id = R.string.carbs),
+                nutrientName = stringResource(id = R.string.fat),
                 amount = meal.fat.toString(),
                 unit = stringResource(
                     id = R.string.grams
@@ -71,7 +71,7 @@ fun MealItem(
             )
             Spacer(Modifier.width(spacing.spaceSmall))
             NutrientValueInfo(
-                nutrientName = stringResource(id = R.string.carbs),
+                nutrientName = stringResource(id = R.string.protein),
                 amount = meal.protein.toString(),
                 unit = stringResource(
                     id = R.string.grams

@@ -8,8 +8,10 @@ import com.voitov.tracker_data.remote.OpenFoodApiService
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class FoodTrackerRepositoryImpl(
@@ -30,11 +32,15 @@ class FoodTrackerRepositoryImpl(
     }
 
     override suspend fun insertTrackedFood(item: TrackedFood) {
-        dao.insertTrackableFood(item.toTrackedFoodEntity())
+        withContext(Dispatchers.IO) {
+            dao.insertTrackableFood(item.toTrackedFoodEntity())
+        }
     }
 
     override suspend fun deleteTrackedFood(item: TrackedFood) {
-        dao.deleteTrackedFood(item.toTrackedFoodEntity())
+        withContext(Dispatchers.IO) {
+            dao.deleteTrackedFood(item.toTrackedFoodEntity())
+        }
     }
 
     override fun getFoodForDate(date: LocalDateTime): Flow<List<TrackedFood>> {

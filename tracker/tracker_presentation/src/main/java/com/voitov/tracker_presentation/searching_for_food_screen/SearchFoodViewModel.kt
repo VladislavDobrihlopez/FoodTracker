@@ -37,7 +37,7 @@ class SearchFoodViewModel
                 trackFood(event)
             }
 
-            is SearchFoodScreenEvent.OnAmountForFoodChangeEnter -> {
+            is SearchFoodScreenEvent.OnAmountForFoodChange -> {
                 screenState = screenState.copy(food = screenState.food.map { uiModel ->
                     if (uiModel.food == event.food) {
                         uiModel.copy(amount = filterOutDigitsUseCase(event.amount))

@@ -78,10 +78,11 @@ fun HealthTrackerScreen(
                 )
             }, meal = meal)
             AnimatedVisibility(visible = meal.isExpanded) {
-                LazyColumn(modifier = Modifier.height(100.dp * (screenState.trackedFoods.size + 1))) {
-                    items(screenState.trackedFoods) { foodItem ->
+                val filteredItems = screenState.trackedFoods.filter { meal.mealType == it.mealType }
+                LazyColumn(modifier = Modifier.height(100.dp * (filteredItems.size + 1))) {
+                    items(filteredItems) { foodItem ->
                         TrackedFoodItem(
-                            foodItem,
+                            item = foodItem,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = spacing.spaceSmall)

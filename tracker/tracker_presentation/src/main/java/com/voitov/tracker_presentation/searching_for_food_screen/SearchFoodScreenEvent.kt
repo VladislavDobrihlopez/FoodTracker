@@ -10,7 +10,7 @@ sealed class SearchFoodScreenEvent {
     data class OnSearchTextChange(val foodName: String) : SearchFoodScreenEvent()
     data class OnSearch(val searchText: String) : SearchFoodScreenEvent()
     data class ToggleTrackableFoodItem(val food: TrackableFood) : SearchFoodScreenEvent()
-    data class OnAmountForFoodChangeEnter(val amount: String, val food: TrackableFood) :
+    data class OnAmountForFoodChange(val amount: String, val food: TrackableFood) :
         SearchFoodScreenEvent()
 
     data class OnAddTrackableFood(

@@ -80,12 +80,15 @@ fun TrackedFoodItem(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .padding(spacing.spaceExtraSmall)
+                .shadow(
+                    elevation = 1.dp,
+                    shape = RoundedCornerShape(5.dp)
+                )
                 .background(MaterialTheme.colors.surface)
-                .clip(RoundedCornerShape(16.dp))
-                .padding(2.dp)
-                .shadow(elevation = 2.dp, shape = RoundedCornerShape(2.dp))
-                .padding(top = spacing.spaceSmall, end = spacing.spaceSmall),
+                .padding(end = spacing.spaceSmall)
+                .height(100.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -103,7 +106,7 @@ fun TrackedFoodItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                    .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp))
             )
             Spacer(Modifier.width(spacing.spaceExtraSmall))
             Row(verticalAlignment = Alignment.CenterVertically) {
