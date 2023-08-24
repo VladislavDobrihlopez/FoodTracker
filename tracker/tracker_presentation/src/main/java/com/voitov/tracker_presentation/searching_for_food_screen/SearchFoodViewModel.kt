@@ -78,7 +78,7 @@ class SearchFoodViewModel
             trackerUseCases.insertFoodUseCase(
                 food = event.food.food,
                 amount = event.food.amount.toIntOrNull() ?: return@launch,
-                dateTime = LocalDateTime.now(),
+                dateTime = event.date,
                 mealType = event.mealType
             )
             _uiChannel.send(UiEvents.NavigateUp)

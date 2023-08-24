@@ -28,7 +28,7 @@ import com.voitov.tracker_presentation.health_tracker_screen.model.Meal
 fun MealItem(
     meal: Meal,
     modifier: Modifier = Modifier,
-    picSize: Dp = 96.dp
+    picSize: Dp = 72.dp
 ) {
     val spacing = LocalSpacing.current
     val context = LocalContext.current

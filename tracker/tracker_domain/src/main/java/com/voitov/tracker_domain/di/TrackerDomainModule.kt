@@ -6,6 +6,7 @@ import com.voitov.tracker_domain.use_case.DeleteFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
 import com.voitov.tracker_domain.use_case.InsertFoodUseCase
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
 import com.voitov.tracker_domain.use_case.RetrieveAllFoodOnDateUseCase
 import com.voitov.tracker_domain.use_case.SearchFoodUseCase
 import dagger.Module
@@ -27,6 +28,7 @@ object TrackerDomainModule {
             DeleteFoodUseCase(repository),
             DoNutrientMathUseCase(keyValueStorage),
             InsertFoodUseCase(repository),
+            RestoreFoodUseCase(repository),
             RetrieveAllFoodOnDateUseCase(repository),
             SearchFoodUseCase(repository)
         )

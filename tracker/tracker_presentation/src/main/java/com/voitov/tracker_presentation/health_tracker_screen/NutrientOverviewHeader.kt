@@ -29,6 +29,7 @@ import com.voitov.common_ui.FatColor
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.common_ui.ProteinColor
 import com.voitov.tracker_presentation.components.EatenFoodCircularBar
+import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 
 @Composable
@@ -108,16 +109,16 @@ fun NutrientOverviewHeader(
                 }
             }
             Spacer(Modifier.height(spacing.spaceSmall))
-//        EatenFoodOverviewHorizontalBar(
-//            calories = state.caloriesPerDayInFact,
-//            caloriesGoal = state.caloriesPerDayGoal,
-//            fat = state.fatPerDayInFact,
-//            carbs = state.carbsPerDayInFact,
-//            proteins = state.proteinsPerDayInFact,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(30.dp)
-//        )
+        EatenFoodOverviewHorizontalBar(
+            calories = state.caloriesPerDayInFact,
+            caloriesGoal = state.caloriesPerDayGoal,
+            fat = state.fatPerDayInFact,
+            carbs = state.carbsPerDayInFact,
+            proteins = state.proteinsPerDayInFact,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp)
+        )
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
             Row(
                 modifier = Modifier.fillMaxWidth(),

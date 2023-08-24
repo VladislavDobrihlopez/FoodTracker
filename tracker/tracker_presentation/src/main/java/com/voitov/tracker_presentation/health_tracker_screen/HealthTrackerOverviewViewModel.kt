@@ -10,6 +10,7 @@ import com.voitov.common.domain.UiEvents
 import com.voitov.common.domain.UiText
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.navigation.AppNavState
+import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -40,6 +41,8 @@ class HealthTrackerOverviewViewModel @Inject constructor(
         refreshScreenDataForCurrentDay()
     }
 
+    private lateinit var lastDeletedItem: TrackedFood
+
     fun onEvent(event: HealthTrackerScreenEvent) {
         when (event) {
             is HealthTrackerScreenEvent.AddTrackableFoodToBeingTracked -> {
@@ -56,13 +59,6 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                             )
                         )
                     )
-                }
-            }
-
-            is HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked -> {
-                viewModelScope.launch {
-                    useCase.deleteFoodUseCase(event.foodItem)
-                    refreshScreenDataForCurrentDay()
                 }
             }
 
@@ -89,7 +85,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
             is HealthTrackerScreenEvent.ToggleMeal -> {
                 val oldMeal =
                     screenState.mealsDuringCurrentDay.find { it.mealType == event.mealType }
-                //TODO add error throwing
+                //todo add error throwing
                 oldMeal?.let {
                     val index = screenState.mealsDuringCurrentDay.indexOf(oldMeal)
                     screenState = screenState.copy(
@@ -103,6 +99,21 @@ class HealthTrackerOverviewViewModel @Inject constructor(
 
             HealthTrackerScreenEvent.DoReonbording -> {
                 keyValueStorage.saveWhetherOnboardingIsRequired(true)
+            }
+
+            is HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked -> {
+                viewModelScope.launch {
+                    useCase.deleteFoodUseCase(event.foodItem)
+                    lastDeletedItem = event.foodItem
+                    refreshScreenDataForCurrentDay()
+                }
+            }
+
+            HealthTrackerScreenEvent.RestoreFoodItem -> {
+                viewModelScope.launch {
+                    useCase.restoreFoodUseCase(lastDeletedItem)
+                    refreshScreenDataForCurrentDay()
+                }
             }
         }
     }

@@ -10,3 +10,7 @@ fun NavController.navigateTo(destinationRouteState: AppNavState) {
 fun NavController.navigateTo(destinationRoute: String) {
     this.navigate(destinationRoute)
 }
+
+fun NavController.navigateUp() {
+    this.popBackStack()
+}

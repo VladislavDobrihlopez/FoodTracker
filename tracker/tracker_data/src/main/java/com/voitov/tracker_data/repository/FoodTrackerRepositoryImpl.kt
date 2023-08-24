@@ -43,6 +43,10 @@ class FoodTrackerRepositoryImpl(
         }
     }
 
+    override suspend fun restoreTrackedFood(item: TrackedFood) {
+        insertTrackedFood(item)
+    }
+
     override fun getFoodForDate(date: LocalDateTime): Flow<List<TrackedFood>> {
         return dao.selectByDate(
             year = date.year,

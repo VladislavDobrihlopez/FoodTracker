@@ -9,5 +9,6 @@ interface FoodTrackerRepository {
     suspend fun searchForTrackableFood(query: String, page: Int, pageSize: Int): Result<List<TrackableFood>>
     suspend fun insertTrackedFood(item: TrackedFood)
     suspend fun deleteTrackedFood(item: TrackedFood)
+    suspend fun restoreTrackedFood(item: TrackedFood)
     fun getFoodForDate(date: LocalDateTime): Flow<List<TrackedFood>>
 }

@@ -94,9 +94,12 @@ fun AppNavGraph(
 //                    proteinsPerDayGoal = 20,
 //                    proteinsPerDayInFact = 19,
 //                )
-                HealthTrackerScreen(onNavigateTo = {
-                    navHostController.navigateTo(it)
-                })
+                HealthTrackerScreen(
+                    scaffoldState = scaffoldState,
+                    onNavigateTo = {
+                        navHostController.navigateTo(it)
+                    }
+                )
             }
 
             composable(
@@ -127,7 +130,7 @@ fun AppNavGraph(
                     month = month,
                     year = year,
                     onNavigateUp = {
-
+                        navHostController.navigateUp()
                     }
                 )
             }

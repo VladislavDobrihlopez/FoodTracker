@@ -45,7 +45,7 @@ fun EatenFoodOverviewHorizontalBar(
             drawRoundRect(
                 color = onExceededGoalPlanColor,
                 cornerRadius = CornerRadius(100f),
-                size = Size(carbsWidth + fatWidth + proteinWidth, size.height)
+                size = Size(size.width, size.height)
             )
         } else if (calories == caloriesGoal) {
             drawRoundRect(

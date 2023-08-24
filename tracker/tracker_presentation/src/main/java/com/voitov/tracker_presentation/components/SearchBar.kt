@@ -50,8 +50,8 @@ fun SearchBar(
             modifier = Modifier
                 .clip(RoundedCornerShape(5.dp))
                 .padding(2.dp)
-                .background(MaterialTheme.colors.surface)
                 .shadow(2.dp, RoundedCornerShape(5.dp))
+                .background(MaterialTheme.colors.surface)
                 .fillMaxWidth()
                 .padding(spacing.spaceMedium)
                 .padding(end = spacing.spaceSmall)

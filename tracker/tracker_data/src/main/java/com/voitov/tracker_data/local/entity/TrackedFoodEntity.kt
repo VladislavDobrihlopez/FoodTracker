@@ -19,5 +19,5 @@ data class TrackedFoodEntity(
     val hours: Int,
     val dayOfMonth: Int,
     val month: Int,
-    val year: Int
+    val year: Int,
 )

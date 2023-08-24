@@ -86,6 +86,24 @@ fun SearchScreen(
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
+            Text(
+                modifier = Modifier.padding(spacing.spaceSmall),
+                text = stringResource(
+                    id = R.string.add_meal, stringResource(
+                        id = when (mealType) {
+                            MealType.BREAKFAST -> R.string.breakfast
+                            MealType.BRUNCH -> R.string.brunch
+                            MealType.LUNCH -> R.string.lunch
+                            MealType.SUPPER -> R.string.supper
+                            MealType.DINNER -> R.string.dinner
+                            MealType.SNACK -> R.string.snacks
+                        }
+                    ).lowercase()
+                ),
+                style = MaterialTheme.typography.h1,
+                maxLines = 1
+            )
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
             SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,6 +116,7 @@ fun SearchScreen(
                     viewModel.onEvent(SearchFoodScreenEvent.OnSearchBarFocusChange(it.hasFocus))
                 },
                 onSearch = {
+                    keyboardController?.hide()
                     viewModel.onEvent(SearchFoodScreenEvent.OnSearch(it))
                 },
                 shouldShowHint = viewModel.screenState.isHintVisible,
@@ -112,6 +131,7 @@ fun SearchScreen(
             }, onAmountChange = {
                 viewModel.onEvent(SearchFoodScreenEvent.OnAmountForFoodChange(it, foodUi.food))
             }, onCache = {
+                keyboardController?.hide()
                 val localTime = LocalTime.now()
                 viewModel.onEvent(
                     SearchFoodScreenEvent.OnAddTrackableFood(
