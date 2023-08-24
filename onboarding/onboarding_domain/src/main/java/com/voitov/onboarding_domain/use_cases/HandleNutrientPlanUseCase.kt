@@ -1,7 +1,7 @@
 package com.voitov.onboarding_domain.use_cases
 
 import com.voitov.common.R
-import com.voitov.common.domain.UiText
+import com.voitov.common.utils.UiText
 import javax.inject.Inject
 
 class HandleNutrientPlanUseCase @Inject constructor() {

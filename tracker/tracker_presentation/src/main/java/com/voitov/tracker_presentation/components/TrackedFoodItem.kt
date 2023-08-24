@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeToDismiss
@@ -23,6 +24,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,113 +47,132 @@ import com.voitov.tracker_presentation.utils.formatMealDate
 @Composable
 fun TrackedFoodItem(
     item: TrackedFood,
+    keepAlive: State<Boolean>,
     modifier: Modifier = Modifier,
     onDeleteItem: () -> Unit
 ) {
     val spacing = LocalSpacing.current
-    val dismissState = rememberDismissState()
+
     val time = remember(item.date) {
         formatMealDate(item.date)
     }
 
-    LaunchedEffect(key1 = dismissState) {
-        if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+    val dismissState = rememberDismissState(confirmStateChange = {
+        if (it == DismissValue.DismissedToStart) {
             onDeleteItem()
+            true
+        } else {
+            false
+        }
+    })
+
+    LaunchedEffect(key1 = keepAlive.value) {
+        if (keepAlive.value) {
+            dismissState.reset()
         }
     }
 
-    SwipeToDismiss(
-        modifier = modifier,
-        state = dismissState,
-        directions = setOf(DismissDirection.EndToStart),
-        background = {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = spacing.spaceMedium,
-                        top = spacing.spaceSmall,
-                        bottom = spacing.spaceSmall,
-                        end = spacing.spaceSmall
-                    )
-                    .background(Color.Red)
-            )
-        }) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.surface)
-                .clip(RoundedCornerShape(16.dp))
-                .shadow(elevation = 4.dp, shape = RoundedCornerShape(2.dp))
-                .padding(top = spacing.spaceSmall, end = spacing.spaceSmall)
-                .height(100.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = rememberImagePainter(
-                    data = item.imageUrl,
-                    builder = {
-                        crossfade(true)
-                        error(R.drawable.food_error)
-                        fallback(R.drawable.food_error)
-                    }
-                ),
-                contentDescription = item.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
-            )
-            Spacer(Modifier.width(spacing.spaceExtraSmall))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-                    Text(text = time, style = MaterialTheme.typography.body1)
-                    Text(
-                        text = item.name,
-                        maxLines = 2,
-                        style = MaterialTheme.typography.body1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Row {
-                        Text(
-                            text = stringResource(
-                                R.string.nutrient_info,
-                                item.amount,
-                                item.calories
-                            )
+    if (!dismissState.isDismissed(DismissDirection.EndToStart) || keepAlive.value) {
+        SwipeToDismiss(
+            modifier = modifier,
+            state = dismissState,
+            directions = setOf(DismissDirection.EndToStart),
+            background = {
+                Box(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = spacing.spaceMedium,
+                            top = spacing.spaceSmall,
+                            bottom = spacing.spaceSmall,
+                            end = spacing.spaceSmall
                         )
-                    }
-                }
+                        .background(Color.Red)
+                )
+            }) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(5.dp))
+                    .padding(spacing.spaceExtraSmall)
+                    .shadow(
+                        elevation = 1.dp,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .background(MaterialTheme.colors.surface)
+                    .padding(end = spacing.spaceSmall)
+                    .height(100.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = rememberImagePainter(
+                        data = item.imageUrl,
+                        builder = {
+                            crossfade(true)
+                            error(R.drawable.food_error)
+                            fallback(R.drawable.food_error)
+                        }
+                    ),
+                    contentDescription = item.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp))
+                )
                 Spacer(Modifier.width(spacing.spaceExtraSmall))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    NutrientValueInfo(
-                        nutrientName = stringResource(id = R.string.carbs),
-                        amount = item.carbs.toString(),
-                        unit = stringResource(id = R.string.grams),
-                        amountTextSize = 16.sp,
-                        unitTextSize = 12.sp,
-                        nutrientTextStyle = MaterialTheme.typography.body2
-                    )
-                    Spacer(Modifier.width(spacing.spaceSmall))
-                    NutrientValueInfo(
-                        nutrientName = stringResource(id = R.string.fat),
-                        amount = item.fat.toString(),
-                        unit = stringResource(id = R.string.grams),
-                        amountTextSize = 16.sp,
-                        unitTextSize = 12.sp,
-                        nutrientTextStyle = MaterialTheme.typography.body2
-                    )
-                    Spacer(Modifier.width(spacing.spaceSmall))
-                    NutrientValueInfo(
-                        nutrientName = stringResource(id = R.string.protein),
-                        amount = item.protein.toString(),
-                        unit = stringResource(id = R.string.grams),
-                        amountTextSize = 16.sp,
-                        unitTextSize = 12.sp,
-                        nutrientTextStyle = MaterialTheme.typography.body2
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = time, style = MaterialTheme.typography.body1)
+                        Text(
+                            text = item.name,
+                            maxLines = 2,
+                            style = MaterialTheme.typography.body1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row {
+                            Text(
+                                text = stringResource(
+                                    R.string.nutrient_info,
+                                    item.amount,
+                                    item.calories
+                                )
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(spacing.spaceExtraSmall))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        NutrientValueInfo(
+                            nutrientName = stringResource(id = R.string.carbs),
+                            amount = item.carbs.toString(),
+                            unit = stringResource(id = R.string.grams),
+                            amountTextSize = 16.sp,
+                            unitTextSize = 12.sp,
+                            nutrientTextStyle = MaterialTheme.typography.body2
+                        )
+                        Spacer(Modifier.width(spacing.spaceSmall))
+                        NutrientValueInfo(
+                            nutrientName = stringResource(id = R.string.fat),
+                            amount = item.fat.toString(),
+                            unit = stringResource(id = R.string.grams),
+                            amountTextSize = 16.sp,
+                            unitTextSize = 12.sp,
+                            nutrientTextStyle = MaterialTheme.typography.body2
+                        )
+                        Spacer(Modifier.width(spacing.spaceSmall))
+                        NutrientValueInfo(
+                            nutrientName = stringResource(id = R.string.protein),
+                            amount = item.protein.toString(),
+                            unit = stringResource(id = R.string.grams),
+                            amountTextSize = 16.sp,
+                            unitTextSize = 12.sp,
+                            nutrientTextStyle = MaterialTheme.typography.body2
+                        )
+                    }
                 }
             }
         }

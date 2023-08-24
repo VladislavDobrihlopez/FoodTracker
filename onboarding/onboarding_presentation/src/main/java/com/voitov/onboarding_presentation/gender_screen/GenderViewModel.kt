@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.domain.entities.Gender
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.common.domain.UiEvents
+import com.voitov.common.utils.UiEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

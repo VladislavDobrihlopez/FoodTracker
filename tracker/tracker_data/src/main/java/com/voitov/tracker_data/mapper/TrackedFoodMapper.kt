@@ -20,7 +20,7 @@ fun TrackedFood.toTrackedFoodEntity(): TrackedFoodEntity {
         hours = this.date.hour,
         dayOfMonth = this.date.dayOfMonth,
         month = this.date.monthValue,
-        year = this.date.year
+        year = this.date.year,
     )
 }
 

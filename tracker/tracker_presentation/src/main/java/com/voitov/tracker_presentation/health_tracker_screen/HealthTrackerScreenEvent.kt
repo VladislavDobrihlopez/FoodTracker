@@ -10,8 +10,7 @@ sealed class HealthTrackerScreenEvent {
     object NavigateToWeekBehind : HealthTrackerScreenEvent()
     object NavigateToWeekAhead : HealthTrackerScreenEvent()
     object DoReonbording : HealthTrackerScreenEvent()
-    data class AddTrackableFoodToBeingTracked(val meal: Meal) :
-        HealthTrackerScreenEvent()
+    object RestoreFoodItem: HealthTrackerScreenEvent()
 
     data class DeleteTrackableFoodFromBeingTracked(val foodItem: TrackedFood) :
         HealthTrackerScreenEvent()

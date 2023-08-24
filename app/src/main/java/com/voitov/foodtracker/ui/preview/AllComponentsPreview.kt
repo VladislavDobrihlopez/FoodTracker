@@ -8,6 +8,7 @@ import com.voitov.onboarding_presentation.components.SelectionButton
 import com.voitov.onboarding_presentation.components.UnitEditText
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
+import com.voitov.tracker_presentation.components.SearchBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 
 @Preview(showBackground = true)
@@ -67,5 +68,20 @@ internal fun PreviewAddButton() {
         AddButton(text = "Add item") {
             
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+internal fun PreviewSearchButton() {
+    FoodTrackerTheme {
+        SearchBar(
+            text = "",
+            onValueChange = {},
+            onFocusChange = {},
+            onSearch = {},
+            shouldShowHint = true,
+            maxLines = 2
+        )
     }
 }

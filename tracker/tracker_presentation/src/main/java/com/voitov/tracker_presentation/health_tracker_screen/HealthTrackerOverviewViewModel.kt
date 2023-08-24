@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
-import com.voitov.common.domain.UiEvents
-import com.voitov.common.domain.UiText
+import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiText
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.common.navigation.AppNavState
+import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.Stack
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -40,31 +41,10 @@ class HealthTrackerOverviewViewModel @Inject constructor(
         refreshScreenDataForCurrentDay()
     }
 
+    private val lastDeletedItems = Stack<TrackedFood>()
+
     fun onEvent(event: HealthTrackerScreenEvent) {
         when (event) {
-            is HealthTrackerScreenEvent.AddTrackableFoodToBeingTracked -> {
-                viewModelScope.launch {
-                    _uiChannel.send(
-                        UiEvents.NavigateTo(
-                            AppNavState.Search.createRoute(
-                                event.meal.mealType.name,
-                                screenState.dateTime.year,
-                                screenState.dateTime.monthValue,
-                                screenState.dateTime.dayOfMonth,
-                                screenState.dateTime.hour,
-                                screenState.dateTime.minute
-                            )
-                        )
-                    )
-                }
-            }
-
-            is HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked -> {
-                viewModelScope.launch {
-                    useCase.deleteFoodUseCase(event.foodItem)
-                    refreshScreenDataForCurrentDay()
-                }
-            }
 
             HealthTrackerScreenEvent.NavigateToWeekAhead -> {
                 updateWithDateDifferenceOfDays(NEXT_WEEK_DAY)
@@ -89,7 +69,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
             is HealthTrackerScreenEvent.ToggleMeal -> {
                 val oldMeal =
                     screenState.mealsDuringCurrentDay.find { it.mealType == event.mealType }
-                //TODO add error throwing
+                //todo add error throwing
                 oldMeal?.let {
                     val index = screenState.mealsDuringCurrentDay.indexOf(oldMeal)
                     screenState = screenState.copy(
@@ -103,6 +83,21 @@ class HealthTrackerOverviewViewModel @Inject constructor(
 
             HealthTrackerScreenEvent.DoReonbording -> {
                 keyValueStorage.saveWhetherOnboardingIsRequired(true)
+            }
+
+            is HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked -> {
+                viewModelScope.launch {
+                    useCase.deleteFoodUseCase(event.foodItem)
+                    lastDeletedItems.push(event.foodItem)
+                    refreshScreenDataForCurrentDay()
+                }
+            }
+
+            HealthTrackerScreenEvent.RestoreFoodItem -> {
+                viewModelScope.launch {
+                    useCase.restoreFoodUseCase(lastDeletedItems.pop())
+                    refreshScreenDataForCurrentDay()
+                }
             }
         }
     }

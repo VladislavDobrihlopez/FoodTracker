@@ -28,7 +28,7 @@ import com.voitov.tracker_presentation.health_tracker_screen.model.Meal
 fun MealItem(
     meal: Meal,
     modifier: Modifier = Modifier,
-    picSize: Dp = 96.dp
+    picSize: Dp = 72.dp
 ) {
     val spacing = LocalSpacing.current
     val context = LocalContext.current
@@ -63,7 +63,7 @@ fun MealItem(
             )
             Spacer(Modifier.width(spacing.spaceSmall))
             NutrientValueInfo(
-                nutrientName = stringResource(id = R.string.carbs),
+                nutrientName = stringResource(id = R.string.fat),
                 amount = meal.fat.toString(),
                 unit = stringResource(
                     id = R.string.grams
@@ -71,7 +71,7 @@ fun MealItem(
             )
             Spacer(Modifier.width(spacing.spaceSmall))
             NutrientValueInfo(
-                nutrientName = stringResource(id = R.string.carbs),
+                nutrientName = stringResource(id = R.string.protein),
                 amount = meal.protein.toString(),
                 unit = stringResource(
                     id = R.string.grams

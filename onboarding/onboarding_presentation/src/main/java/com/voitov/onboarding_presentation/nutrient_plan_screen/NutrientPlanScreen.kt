@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
-import com.voitov.common.domain.UiEvents
+import com.voitov.common.utils.UiEvents
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.UnitEditText

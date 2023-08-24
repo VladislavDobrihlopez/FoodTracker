@@ -1,4 +1,4 @@
-package com.voitov.common.navigation
+package com.voitov.foodtracker.navigation
 
 sealed class AppNavState(val route: String) {
     object Welcome : AppNavState(WELCOME_ROUTE)
@@ -17,24 +17,24 @@ sealed class AppNavState(val route: String) {
                 year: Int,
                 month: Int,
                 dayOfWeek: Int,
-                hours: Int,
-                minutes: Int
+//                hours: Int,
+//                minutes: Int
             ): String {
                 return SEARCH_ROUTE
-                    .replace(MEAL_TYPE_KEY, mealType)
-                    .replace(YEAR_KEY, year.toString())
-                    .replace(MONTH_KEY, month.toString())
-                    .replace(DAY_OF_WEEK_KEY, dayOfWeek.toString())
-                    .replace(HOURS_KEY, hours.toString())
-                    .replace(MINUTES_KEY, minutes.toString())
+                    .replace("{$MEAL_TYPE_KEY}", mealType)
+                    .replace("{$YEAR_KEY}", year.toString())
+                    .replace("{$MONTH_KEY}", month.toString())
+                    .replace("{$DAY_OF_WEEK_KEY}", dayOfWeek.toString())
+//                    .replace(HOURS_KEY, hours.toString())
+//                    .replace(MINUTES_KEY, minutes.toString())
             }
 
             const val MEAL_TYPE_KEY = "meal_type"
             const val YEAR_KEY = "year"
             const val MONTH_KEY = "month"
             const val DAY_OF_WEEK_KEY = "day_of_week"
-            const val HOURS_KEY = "hours"
-            const val MINUTES_KEY = "minutes"
+//            const val HOURS_KEY = "hours"
+//            const val MINUTES_KEY = "minutes"
         }
     }
 
@@ -49,6 +49,6 @@ sealed class AppNavState(val route: String) {
         const val GOAL_ROUTE = "goal"
         const val TRACKER_OVERVIEW_ROUTE = "tracker_overview"
         const val SEARCH_ROUTE =
-            "search/{${Search.MEAL_TYPE_KEY}}/{${Search.YEAR_KEY}}/{${Search.MONTH_KEY}}/{${Search.DAY_OF_WEEK_KEY}}/{${Search.HOURS_KEY}}/{${Search.MINUTES_KEY}}"
+            "search/{${Search.MEAL_TYPE_KEY}}/{${Search.YEAR_KEY}}/{${Search.MONTH_KEY}}/{${Search.DAY_OF_WEEK_KEY}}" ///{${Search.HOURS_KEY}}/{${Search.MINUTES_KEY}}
     }
 }
