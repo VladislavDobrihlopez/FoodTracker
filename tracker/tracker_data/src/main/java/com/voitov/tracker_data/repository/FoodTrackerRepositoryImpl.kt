@@ -10,9 +10,12 @@ import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
@@ -68,6 +71,8 @@ class FoodTrackerRepositoryImpl(
             dayOfMonth = date.dayOfMonth
         ).map { dbEntities ->
             dbEntities.map { it.toTrackedFood() }
+        }.onStart {
+            delay(500)
         }
     }
 }

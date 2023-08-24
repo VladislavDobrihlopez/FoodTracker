@@ -45,7 +45,6 @@ class HealthTrackerOverviewViewModel @Inject constructor(
 
     fun onEvent(event: HealthTrackerScreenEvent) {
         when (event) {
-
             HealthTrackerScreenEvent.NavigateToWeekAhead -> {
                 updateWithDateDifferenceOfDays(NEXT_WEEK_DAY)
                 refreshScreenDataForCurrentDay()
