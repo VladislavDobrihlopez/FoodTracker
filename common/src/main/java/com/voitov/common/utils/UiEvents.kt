@@ -1,4 +1,4 @@
-package com.voitov.common.domain
+package com.voitov.common.utils
 
 abstract class UiEvents {
     data class NavigateTo(val route: String) : UiEvents()

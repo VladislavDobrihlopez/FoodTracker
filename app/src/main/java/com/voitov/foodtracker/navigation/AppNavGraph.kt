@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.voitov.common.navigation.AppNavState
 import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
 import com.voitov.onboarding_presentation.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.gender_screen.GenderScreen
@@ -96,8 +95,15 @@ fun AppNavGraph(
 //                )
                 HealthTrackerScreen(
                     scaffoldState = scaffoldState,
-                    onNavigateTo = {
-                        navHostController.navigateTo(it)
+                    onNavigate = { mealType, year, month, day ->
+                        navHostController.navigateTo(
+                            AppNavState.Search.createRoute(
+                                mealType = mealType.name,
+                                year = year,
+                                month = month,
+                                dayOfWeek = day
+                            )
+                        )
                     }
                 )
             }

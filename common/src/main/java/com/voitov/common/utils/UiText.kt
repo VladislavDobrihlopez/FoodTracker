@@ -1,4 +1,4 @@
-package com.voitov.common.domain
+package com.voitov.common.utils
 
 import android.content.Context
 

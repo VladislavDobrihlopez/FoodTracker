@@ -2,7 +2,7 @@ package com.voitov.tracker_presentation.health_tracker_screen.model
 
 import androidx.annotation.DrawableRes
 import com.voitov.common.R
-import com.voitov.common.domain.UiText
+import com.voitov.common.utils.UiText
 import com.voitov.tracker_domain.model.MealType
 
 data class Meal(

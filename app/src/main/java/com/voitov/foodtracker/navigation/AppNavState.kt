@@ -1,4 +1,4 @@
-package com.voitov.common.navigation
+package com.voitov.foodtracker.navigation
 
 sealed class AppNavState(val route: String) {
     object Welcome : AppNavState(WELCOME_ROUTE)
@@ -21,7 +21,7 @@ sealed class AppNavState(val route: String) {
 //                minutes: Int
             ): String {
                 return SEARCH_ROUTE
-                    .replace("{${MEAL_TYPE_KEY}}", mealType)
+                    .replace("{$MEAL_TYPE_KEY}", mealType)
                     .replace("{$YEAR_KEY}", year.toString())
                     .replace("{$MONTH_KEY}", month.toString())
                     .replace("{$DAY_OF_WEEK_KEY}", dayOfWeek.toString())

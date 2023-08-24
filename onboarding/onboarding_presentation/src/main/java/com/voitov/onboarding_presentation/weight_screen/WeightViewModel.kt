@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.domain.UiEvents
-import com.voitov.common.domain.UiText
+import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

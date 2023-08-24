@@ -1,5 +1,6 @@
 package com.voitov.tracker_data.repository
 
+import com.voitov.common.utils.areNutrientComponentsCorrect
 import com.voitov.tracker_data.local.db.TrackedFoodDao
 import com.voitov.tracker_data.mapper.toTrackableFood
 import com.voitov.tracker_data.mapper.toTrackedFood
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
+import kotlin.math.roundToInt
 
 class FoodTrackerRepositoryImpl(
     private val apiService: OpenFoodApiService,
@@ -21,11 +23,23 @@ class FoodTrackerRepositoryImpl(
     override suspend fun searchForTrackableFood(
         query: String,
         page: Int,
-        pageSize: Int
+        pageSize: Int,
+        lowerBoundCoefficient: Float,
+        upperBoundCoefficient: Float
     ): Result<List<TrackableFood>> {
         return try {
             val dto = apiService.searchForProducts(query = query, page = page, pageSize = pageSize)
-            Result.success(dto.products.mapNotNull { it.toTrackableFood() })
+            Result.success(dto.products.filter { serverDtoModel ->
+                val nutriments = serverDtoModel.nutriments
+                areNutrientComponentsCorrect(
+                    calories = nutriments.energyKcal100g.roundToInt(),
+                    carbohydrates = nutriments.carbohydrates100g.roundToInt(),
+                    fat = nutriments.fat100g.roundToInt(),
+                    protein = nutriments.proteins100g.roundToInt(),
+                    lowerBoundCoefficient = lowerBoundCoefficient,
+                    upperBoundCoefficient = upperBoundCoefficient
+                )
+            }.mapNotNull { it.toTrackableFood() })
         } catch (ex: Exception) {
             Result.failure(ex)
         }

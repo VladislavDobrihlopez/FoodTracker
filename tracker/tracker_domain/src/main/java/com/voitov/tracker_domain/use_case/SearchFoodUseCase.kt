@@ -9,10 +9,12 @@ class SearchFoodUseCase(
     suspend operator fun invoke(
         query: String,
         page: Int = 1,
-        pageSize: Int = 25
+        pageSize: Int = 100,
+        lowerBoundCoefficient: Float = 0.8f,
+        upperBoundCoefficient: Float = 1.2f
     ): Result<List<TrackableFood>> {
         return if (query.isNotBlank()) {
-            repository.searchForTrackableFood(query.trim(), page, pageSize)
+            repository.searchForTrackableFood(query.trim(), page, pageSize, lowerBoundCoefficient, upperBoundCoefficient)
         } else {
             Result.success(emptyList())
         }

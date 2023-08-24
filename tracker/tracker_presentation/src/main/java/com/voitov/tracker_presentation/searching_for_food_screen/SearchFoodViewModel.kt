@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.voitov.common.domain.UiEvents
-import com.voitov.common.domain.UiText
+import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiText
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.R
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
