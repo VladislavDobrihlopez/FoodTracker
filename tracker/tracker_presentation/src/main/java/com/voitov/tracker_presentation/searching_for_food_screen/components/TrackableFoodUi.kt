@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -178,6 +179,7 @@ fun TrackableFoodUi(
                             )
                             .alignBy(LastBaseline)
                             .padding(spacing.spaceMedium)
+                            .testTag("trackablefood_textfield")
                     )
                     Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
                     Text(

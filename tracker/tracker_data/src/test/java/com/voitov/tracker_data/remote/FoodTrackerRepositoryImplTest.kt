@@ -1,6 +1,7 @@
 package com.voitov.tracker_data.remote
 
 import com.google.common.truth.Truth.assertThat
+import com.voitov.common.Configuration
 import com.voitov.tracker_data.local.db.TrackedFoodDao
 import com.voitov.tracker_data.repository.FoodTrackerRepositoryImpl
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
@@ -49,8 +50,8 @@ class FoodTrackerRepositoryImplTest {
             query = "integer",
             page = 1000,
             pageSize = 10,
-            lowerBoundCoefficient = 0.95f,
-            upperBoundCoefficient = 1.05f
+            lowerBoundCoefficient = Configuration.LOWER_BOUND,
+            upperBoundCoefficient = Configuration.UPPER_BOUND
         )
 
         assertThat(result.isSuccess).isTrue()
@@ -67,8 +68,8 @@ class FoodTrackerRepositoryImplTest {
             query = "integer",
             page = 1000,
             pageSize = 10,
-            lowerBoundCoefficient = 0.95f,
-            upperBoundCoefficient = 1.05f
+            lowerBoundCoefficient = Configuration.LOWER_BOUND,
+            upperBoundCoefficient = Configuration.UPPER_BOUND
         )
 
         assertThat(result.isFailure).isTrue()

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
 import com.voitov.onboarding_presentation.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.gender_screen.GenderScreen
@@ -21,6 +22,7 @@ import com.voitov.onboarding_presentation.welcome.HelloScreen
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchScreen
+import javax.inject.Inject
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -48,14 +49,15 @@ fun SearchBar(
     Box(modifier = modifier) {
         BasicTextField(
             modifier = Modifier
-                .clip(RoundedCornerShape(5.dp))
                 .padding(2.dp)
                 .shadow(2.dp, RoundedCornerShape(5.dp))
                 .background(MaterialTheme.colors.surface)
+                .clip(RoundedCornerShape(5.dp))
                 .fillMaxWidth()
                 .padding(spacing.spaceMedium)
                 .padding(end = spacing.spaceSmall)
-                .onFocusChanged { onFocusChange(it) },
+                .onFocusChanged { onFocusChange(it) }
+                .testTag("searchbar_textfield"),
             // to let text not overlap the search icon
             value = text,
             onValueChange = onValueChange,
