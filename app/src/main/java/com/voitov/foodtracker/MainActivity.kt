@@ -1,32 +1,34 @@
 package com.voitov.foodtracker
 
-import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.foodtracker.navigation.AppNavGraph
 import com.voitov.foodtracker.navigation.AppNavState
-import com.voitov.onboarding_presentation.welcome.HelloScreen
+import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var keyValueStorage: UserInfoKeyValueStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FoodTrackerTheme {
-                AppNavGraph(startDestination = AppNavState.WELCOME_ROUTE)
+                AppNavGraph(startDestination = getStartDestination())
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FoodTrackerTheme {
-        HelloScreen {
-
+    private fun getStartDestination() =
+        when (keyValueStorage.loadWhetherOnboardingIsRequired()) {
+            true -> AppNavState.Welcome.route
+            false -> AppNavState.TrackerOverview.route
         }
-    }
 }
+

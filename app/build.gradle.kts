@@ -16,7 +16,7 @@ android {
         versionCode = ProjectConfig.versionCode
         versionName = ProjectConfig.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.voitov.foodtracker.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -82,7 +82,8 @@ dependencies {
     implementation(Retrofit.okHttp)
     implementation(Retrofit.retrofit)
     implementation(Retrofit.okHttpLoggingInterceptor)
-    implementation(Retrofit.moshiConverter)
+    implementation(Gson.gson)
+    implementation(Retrofit.gsonConverter)
 
     "kapt"(Room.roomCompiler)
     implementation(Room.roomKtx)
