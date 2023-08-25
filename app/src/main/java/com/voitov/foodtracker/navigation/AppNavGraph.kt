@@ -5,13 +5,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.onboarding_presentation.activity_level_screen.ActivityLevelScreen
 import com.voitov.onboarding_presentation.age_screen.AgeScreen
 import com.voitov.onboarding_presentation.gender_screen.GenderScreen
@@ -23,7 +21,6 @@ import com.voitov.onboarding_presentation.welcome.HelloScreen
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchScreen
-import javax.inject.Inject
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -36,19 +33,25 @@ fun AppNavGraph(
         NavHost(startDestination = startDestination, navController = navHostController) {
             composable(route = AppNavState.Welcome.route) {
                 HelloScreen {
-                    navHostController.navigateTo(AppNavState.Gender)
+                    navHostController.navigateTo(AppNavState.Gender) {
+                        launchSingleTop = true
+                    }
                 }
             }
             composable(route = AppNavState.Gender.route) {
                 GenderScreen(onNavigate = {
-                    navHostController.navigateTo(AppNavState.AGE_ROUTE)
+                    navHostController.navigateTo(AppNavState.Age) {
+                        launchSingleTop = true
+                    }
                 })
             }
             composable(route = AppNavState.Age.route) {
                 AgeScreen(
                     snackBarState = scaffoldState.snackbarHostState,
                     onNavigate = {
-                        navHostController.navigateTo(AppNavState.HEIGHT_ROUTE)
+                        navHostController.navigateTo(AppNavState.Height) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -56,7 +59,9 @@ fun AppNavGraph(
                 HeightScreen(
                     snackBarState = scaffoldState.snackbarHostState,
                     onNavigate = {
-                        navHostController.navigateTo(AppNavState.WEIGHT_ROUTE)
+                        navHostController.navigateTo(AppNavState.Weight) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -64,19 +69,25 @@ fun AppNavGraph(
                 WeightScreen(
                     snackBarState = scaffoldState.snackbarHostState,
                     onNavigate = {
-                        navHostController.navigateTo(AppNavState.ACTIVITY_ROUTE)
+                        navHostController.navigateTo(AppNavState.Activity) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
             composable(route = AppNavState.Activity.route) {
                 ActivityLevelScreen(onNavigate = {
-                    navHostController.navigateTo(AppNavState.GOAL_ROUTE)
+                    navHostController.navigateTo(AppNavState.Goal) {
+                        launchSingleTop = true
+                    }
                 })
             }
 
             composable(route = AppNavState.Goal.route) {
                 GoalScreen(onNavigate = {
-                    navHostController.navigateTo(AppNavState.NutrientGoal)
+                    navHostController.navigateTo(AppNavState.NutrientGoal) {
+                        launchSingleTop = true
+                    }
                 })
             }
             composable(route = AppNavState.NutrientGoal.route) {
