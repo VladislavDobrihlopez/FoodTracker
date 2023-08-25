@@ -63,4 +63,7 @@
     <string name="error_not_100_percent">The values must add up to 100%</string>
     <string name="your_goal">Your goal:</string>
     <string name="delete">Delete</string>
+    <string name="developed_by">Developed by Vladislav Voitov</string>
+    <string name="contacts">contacts: dobrihlopez@gmail.com</string>
+    <string name="app_version">version: 1.0</string>
 </resources>

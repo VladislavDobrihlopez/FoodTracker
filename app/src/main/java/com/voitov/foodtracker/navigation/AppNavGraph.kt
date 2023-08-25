@@ -5,6 +5,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -80,7 +81,11 @@ fun AppNavGraph(
             }
             composable(route = AppNavState.NutrientGoal.route) {
                 NutrientPlanScreen(snackBarState = scaffoldState.snackbarHostState, onNavigate = {
-                    navHostController.navigateTo(AppNavState.TrackerOverview)
+                    navHostController.navigate(AppNavState.TrackerOverview.route) {
+                        popUpTo(AppNavState.Welcome.route) {
+                            inclusive = true
+                        }
+                    }
                 })
             }
             composable(route = AppNavState.TrackerOverview.route) {
@@ -106,6 +111,13 @@ fun AppNavGraph(
                                 dayOfWeek = day
                             )
                         )
+                    },
+                    onDoReonboarding = {
+                        navHostController.navigate(AppNavState.Welcome.route) {
+                            popUpTo(AppNavState.TrackerOverview.route) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }

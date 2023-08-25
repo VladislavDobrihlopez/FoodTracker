@@ -41,11 +41,16 @@ import kotlinx.coroutines.launch
 fun HealthTrackerScreen(
     scaffoldState: ScaffoldState,
     viewModel: HealthTrackerOverviewViewModel = hiltViewModel(),
+    onDoReonboarding: () -> Unit,
     onNavigate: (MealType, Int, Int, Int) -> Unit
 ) {
     val spacing = LocalSpacing.current
     val screenState = viewModel.screenState
     val context = LocalContext.current
+    val appInfoDialogIsShownState = remember {
+        mutableStateOf(false)
+    }
+
     Log.d("TEST_STATE", screenState.toString())
 
     val eventScope = remember { CoroutineScope(Dispatchers.Main.immediate) }
@@ -58,15 +63,35 @@ fun HealthTrackerScreen(
                     is UiEvents.ShowUpSnackBar -> {
                         scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
                     }
+
                     else -> throw IllegalStateException()
                 }
             }
             .launchIn(eventScope)
     }
 
+    DeveloperAndAppInfo(
+        isShownState = appInfoDialogIsShownState,
+        onDismissClick = {
+            appInfoDialogIsShownState.value = false
+        },
+        onOkayClick = {
+            appInfoDialogIsShownState.value = false
+        }
+    )
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            NutrientOverviewHeader(screenState)
+            NutrientOverviewHeader(
+                state = screenState,
+                onAppInfoClick = {
+                    appInfoDialogIsShownState.value = true
+                },
+                onDoReonboardingClick = {
+                    viewModel.onEvent(HealthTrackerScreenEvent.DoReonbording)
+                    onDoReonboarding()
+                }
+            )
         }
 
         val dateTime = mutableStateOf(screenState.dateTime)

@@ -34,6 +34,8 @@ import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 
 @Composable
 fun NutrientOverviewHeader(
+    onAppInfoClick: () -> Unit,
+    onDoReonboardingClick: () -> Unit,
     state: HealthTrackerScreenState,
 ) {
     val spacing = LocalSpacing.current
@@ -53,11 +55,8 @@ fun NutrientOverviewHeader(
         }
         ScreenTopBar(
             isExpanded = areTopBarActionsExpanded,
-            doReonboarding = {
-
-            }, viewExplanations = {
-
-            },
+            doReonboarding = onDoReonboardingClick,
+            viewExplanations = onAppInfoClick,
             shouldExpand = {
                 areTopBarActionsExpanded.value = it
             }
@@ -109,16 +108,16 @@ fun NutrientOverviewHeader(
                 }
             }
             Spacer(Modifier.height(spacing.spaceSmall))
-        EatenFoodOverviewHorizontalBar(
-            calories = state.caloriesPerDayInFact,
-            caloriesGoal = state.caloriesPerDayGoal,
-            fat = state.fatPerDayInFact,
-            carbs = state.carbsPerDayInFact,
-            proteins = state.proteinsPerDayInFact,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-        )
+            EatenFoodOverviewHorizontalBar(
+                calories = state.caloriesPerDayInFact,
+                caloriesGoal = state.caloriesPerDayGoal,
+                fat = state.fatPerDayInFact,
+                carbs = state.carbsPerDayInFact,
+                proteins = state.proteinsPerDayInFact,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+            )
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
             Row(
                 modifier = Modifier.fillMaxWidth(),

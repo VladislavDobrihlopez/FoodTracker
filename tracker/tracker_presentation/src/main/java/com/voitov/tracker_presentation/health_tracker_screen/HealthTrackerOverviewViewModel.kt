@@ -80,7 +80,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                 }
             }
 
-            HealthTrackerScreenEvent.DoReonbording -> {
+            is HealthTrackerScreenEvent.DoReonbording -> {
                 keyValueStorage.saveWhetherOnboardingIsRequired(true)
             }
 

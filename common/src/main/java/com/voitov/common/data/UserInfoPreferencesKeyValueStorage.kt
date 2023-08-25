@@ -67,7 +67,7 @@ class UserInfoPreferencesKeyValueStorage @Inject constructor(
     }
 
     override fun loadWhetherOnboardingIsRequired(): Boolean {
-        return sharedPreferences.getBoolean(UserInfoKeyValueStorage.ONBOARDING_EXTRA_KEY, false)
+        return sharedPreferences.getBoolean(UserInfoKeyValueStorage.ONBOARDING_EXTRA_KEY, true)
     }
 
     override fun readAllUserInfo(): UserProfile {

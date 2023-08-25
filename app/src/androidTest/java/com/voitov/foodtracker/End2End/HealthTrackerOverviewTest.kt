@@ -139,7 +139,14 @@ class HealthTrackerOverviewTest {
                                         )
                                     )
                                 },
-                                viewModel = overviewViewModel
+                                viewModel = overviewViewModel,
+                                onDoReonboarding = {
+                                    navHostController.navigate(AppNavState.Welcome.route) {
+                                        popUpTo(AppNavState.TrackerOverview.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                             )
                         }
 
