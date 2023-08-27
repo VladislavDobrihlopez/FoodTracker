@@ -91,7 +91,9 @@ internal fun PreviewSearchButton() {
             onSearch = {},
             shouldShowHint = true,
             maxLines = 2
-        )
+        ) {
+
+        }
     }
 }
 

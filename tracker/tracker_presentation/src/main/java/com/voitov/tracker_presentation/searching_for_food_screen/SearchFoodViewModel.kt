@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.voitov.common.R
+import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.utils.UiEvents
 import com.voitov.common.utils.UiText
-import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.R
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,6 +69,17 @@ class SearchFoodViewModel
                     }
                 })
             }
+
+            is SearchFoodScreenEvent.OnTapCountry -> {
+                screenState =
+                    screenState.copy(countrySearchSettings = screenState.countrySearchSettings.map {
+                        if (it.country == event.country) {
+                            it.copy(isSelected = !it.isSelected)
+                        } else {
+                            it.copy(isSelected = false)
+                        }
+                    })
+            }
         }
     }
 
@@ -91,7 +102,11 @@ class SearchFoodViewModel
                 food = emptyList()
             )
 
-            trackerUseCases.searchFoodUseCase(event.searchText)
+            trackerUseCases.searchFoodUseCase(
+                event.searchText,
+                country = screenState.countrySearchSettings.find { it.isSelected }?.country
+                    ?: throw IllegalStateException()
+            )
                 .onSuccess { trackableFoodList ->
                     screenState =
                         screenState.copy(

@@ -2,10 +2,10 @@ package com.voitov.tracker_data.di
 
 import android.app.Application
 import com.voitov.tracker_data.local.db.TrackedFoodDatabase
+import com.voitov.tracker_data.remote.BaseCountryHolder
 import com.voitov.tracker_data.remote.OpenFoodApiService
 import com.voitov.tracker_data.repository.FoodTrackerRepositoryImpl
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,10 +24,15 @@ abstract class TrackerDataModule {
 //    abstract fun bindTrackerRepository(impl: FoodTrackerRepositoryImpl): FoodTrackerRepository
 
     companion object {
+        @JvmSuppressWildcards
         @Singleton
         @Provides
-        fun provideTrackedRepository(db: TrackedFoodDatabase, apiService: OpenFoodApiService): FoodTrackerRepository {
-            return FoodTrackerRepositoryImpl(apiService, db.trackedFoodDao())
+        fun provideTrackedRepository(
+            db: TrackedFoodDatabase,
+            apiService: OpenFoodApiService,
+            countryUrlHolders: List<BaseCountryHolder>
+        ): FoodTrackerRepository {
+            return FoodTrackerRepositoryImpl(apiService, db.trackedFoodDao(), countryUrlHolders)
         }
 
         @Singleton
@@ -57,6 +62,20 @@ abstract class TrackerDataModule {
         @Provides
         fun provideTrackedFoodDatabase(context: Application): TrackedFoodDatabase {
             return TrackedFoodDatabase.getInstance(context)
+        }
+
+        @Provides
+        fun provideUrlHolders(): List<BaseCountryHolder> {
+            return listOf(
+                BaseCountryHolder.Belarus(),
+                BaseCountryHolder.Ukraine(),
+                BaseCountryHolder.Germany(),
+                BaseCountryHolder.Poland(),
+                BaseCountryHolder.Russia(),
+                BaseCountryHolder.USA(),
+                BaseCountryHolder.UK(),
+                BaseCountryHolder.World(),
+            )
         }
     }
 }
