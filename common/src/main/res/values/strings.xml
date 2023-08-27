@@ -66,4 +66,14 @@
     <string name="developed_by">Developed by Vladislav Voitov</string>
     <string name="contacts">contacts: dobrihlopez@gmail.com</string>
     <string name="app_version">version: 1.0</string>
+    <string name="belarus">Belarus</string>
+    <string name="ukraine">Ukraine</string>
+    <string name="poland">Poland</string>
+    <string name="germany">Germany</string>
+    <string name="uk">United Kingdom</string>
+    <string name="russia">Russia</string>
+    <string name="usa">United states</string>
+    <string name="world">Our Earth</string>
+    <string name="country">Country</string>
+    <string name="search_settings">Search settings</string>
 </resources>
