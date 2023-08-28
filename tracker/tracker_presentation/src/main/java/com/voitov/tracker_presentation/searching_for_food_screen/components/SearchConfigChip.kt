@@ -44,7 +44,7 @@ fun SearchConfigChip(
     Chip(
         border = BorderStroke(2.dp, if (isSelected) selectedBackgroundColor else unselectedBackgroundColor),
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier.height(48.dp)
     ) {
         Image(
             modifier = Modifier.height(imageSize),
