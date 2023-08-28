@@ -1,5 +1,6 @@
 package com.voitov.foodtracker.repository
 
+import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
@@ -19,6 +20,7 @@ class FakeTrackerRepository: FoodTrackerRepository {
         query: String,
         page: Int,
         pageSize: Int,
+        country: Country,
         lowerBoundCoefficient: Float,
         upperBoundCoefficient: Float
     ): Result<List<TrackableFood>> {

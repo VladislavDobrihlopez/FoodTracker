@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.voitov.common.Configuration
 import com.voitov.tracker_data.local.db.TrackedFoodDao
 import com.voitov.tracker_data.repository.FoodTrackerRepositoryImpl
+import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -36,7 +37,20 @@ class FoodTrackerRepositoryImplTest {
             .create(OpenFoodApiService::class.java)
 
         repository =
-            FoodTrackerRepositoryImpl(apiService = api, dao = mockk<TrackedFoodDao>(relaxed = true))
+            FoodTrackerRepositoryImpl(
+                apiService = api,
+                dao = mockk<TrackedFoodDao>(relaxed = true),
+                countryUrlHolders = listOf(
+                    BaseCountryHolder.Belarus(),
+                    BaseCountryHolder.Ukraine(),
+                    BaseCountryHolder.Germany(),
+                    BaseCountryHolder.Poland(),
+                    BaseCountryHolder.Russia(),
+                    BaseCountryHolder.USA(),
+                    BaseCountryHolder.UK(),
+                    BaseCountryHolder.World(),
+                )
+            )
     }
 
     @Test
@@ -50,6 +64,7 @@ class FoodTrackerRepositoryImplTest {
             query = "integer",
             page = 1000,
             pageSize = 10,
+            country = Country.WORLD,
             lowerBoundCoefficient = Configuration.LOWER_BOUND,
             upperBoundCoefficient = Configuration.UPPER_BOUND
         )
@@ -68,6 +83,7 @@ class FoodTrackerRepositoryImplTest {
             query = "integer",
             page = 1000,
             pageSize = 10,
+            country = Country.WORLD,
             lowerBoundCoefficient = Configuration.LOWER_BOUND,
             upperBoundCoefficient = Configuration.UPPER_BOUND
         )
