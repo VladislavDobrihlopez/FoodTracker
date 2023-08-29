@@ -1,7 +1,6 @@
 package com.voitov.tracker_presentation.health_tracker_screen
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -137,28 +136,18 @@ fun HealthTrackerScreen(
                                     )
                                 )
                                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                                    "Do you want to return back?",
-                                    "Restore",
+                                    context.getString(R.string.do_you_want_go_back),
+                                    context.getString(R.string.restore),
                                     SnackbarDuration.Short
                                 )
                                 when (snackBarResult) {
                                     SnackbarResult.Dismissed -> {
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully deleted",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                         keepAliveState.value = false
                                     }
 
                                     SnackbarResult.ActionPerformed -> {
                                         viewModel.onEvent(HealthTrackerScreenEvent.RestoreFoodItem)
                                         keepAliveState.value = true
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully restored",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
                                 }
                             }
