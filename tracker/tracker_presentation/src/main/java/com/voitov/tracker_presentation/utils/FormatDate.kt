@@ -10,12 +10,15 @@ fun formatDate(date: LocalDateTime, context: Context): String {
     val dateTime = date.toLocalDate()
     val currentTime = LocalDate.now()
     return when (dateTime) {
+        currentTime -> context.getString(R.string.today)
         currentTime.plusDays(1) -> context.getString(R.string.next_day)
         currentTime.minusDays(1) -> context.getString(R.string.previous_day)
+        currentTime.plusDays(7) -> context.getString(R.string.next_week)
+        currentTime.minusDays(-7) -> context.getString(R.string.previous_week)
         else -> DateTimeFormatter.ofPattern("dd LLLL yy").format(date)
     }
 }
 
 fun formatMealDate(date: LocalDateTime): String {
-    return DateTimeFormatter.ofPattern("hh:mm").format(date)
+    return DateTimeFormatter.ofPattern("HH:mm").format(date)
 }

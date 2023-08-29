@@ -1,6 +1,7 @@
 package com.voitov.tracker_presentation.searching_for_food_screen
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -103,6 +104,14 @@ fun SearchScreen(
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         sheetState = sheetState,
         sheetContent = {
+            if (sheetState.isVisible) {
+                BackHandler {
+                    scopeAsync.launch {
+                        sheetState.hide()
+                    }
+                }
+            }
+
             Column(modifier = Modifier.padding(spacing.spaceMedium)) {
                 Text(
                     text = context.getString(R.string.search_settings),

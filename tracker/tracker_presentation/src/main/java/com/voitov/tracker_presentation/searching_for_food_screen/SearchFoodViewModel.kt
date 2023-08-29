@@ -9,6 +9,7 @@ import com.voitov.common.R
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.utils.UiEvents
 import com.voitov.common.utils.UiText
+import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,16 +72,31 @@ class SearchFoodViewModel
             }
 
             is SearchFoodScreenEvent.OnTapCountry -> {
-                screenState =
-                    screenState.copy(countrySearchSettings = screenState.countrySearchSettings.map {
-                        if (it.country == event.country) {
-                            it.copy(isSelected = !it.isSelected)
-                        } else {
-                            it.copy(isSelected = false)
-                        }
-                    })
+                changeCountry(event.country)
             }
         }
+    }
+
+    private fun changeCountry(country: Country) {
+        var countrySearchSettings = screenState.countrySearchSettings.map {
+            if (it.country == country) {
+                it.copy(isSelected = !it.isSelected)
+            } else {
+                it.copy(isSelected = false)
+            }
+        }
+
+        if (!countrySearchSettings.any { it.isSelected }) {
+            countrySearchSettings = countrySearchSettings.map {
+                if (it.country == Country.WORLD) {
+                    it.copy(isSelected = true)
+                } else {
+                    it
+                }
+            }
+        }
+
+        screenState = screenState.copy(countrySearchSettings = countrySearchSettings)
     }
 
     private fun trackFood(event: SearchFoodScreenEvent.OnAddTrackableFood) {

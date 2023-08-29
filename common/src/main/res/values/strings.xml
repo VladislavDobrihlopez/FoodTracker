@@ -76,4 +76,6 @@
     <string name="world">Our Earth</string>
     <string name="country">Country</string>
     <string name="search_settings">Search settings</string>
+    <string name="do_you_want_go_back">Do you want to return back?</string>
+    <string name="restore">restore</string>
 </resources>
