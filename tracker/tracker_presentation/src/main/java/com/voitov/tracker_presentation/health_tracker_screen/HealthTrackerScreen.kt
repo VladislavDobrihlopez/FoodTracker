@@ -2,6 +2,10 @@ package com.voitov.tracker_presentation.health_tracker_screen
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,13 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.components.AddButton
@@ -46,7 +52,7 @@ fun HealthTrackerScreen(
     val spacing = LocalSpacing.current
     val screenState = viewModel.screenState
     val context = LocalContext.current
-    val appInfoDialogIsShownState = remember {
+    val appInfoDialogIsShownState = rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -59,7 +65,7 @@ fun HealthTrackerScreen(
             .onEach { event ->
                 Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
-                    is UiEvents.ShowUpSnackBar -> {
+                    is UiSideEffect.ShowUpSnackBar -> {
                         scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
                     }
 
@@ -79,9 +85,18 @@ fun HealthTrackerScreen(
         }
     )
 
+    val areTopBarActionsExpanded = remember(viewModel.screenState.areTopBarActionsExpanded) {
+        mutableStateOf(viewModel.screenState.areTopBarActionsExpanded)
+    }
+
+    val dateTime = remember(screenState.dateTime) {
+        mutableStateOf(screenState.dateTime)
+    }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             NutrientOverviewHeader(
+                isTopBarExpanded = areTopBarActionsExpanded,
                 state = screenState,
                 onAppInfoClick = {
                     appInfoDialogIsShownState.value = true
@@ -89,11 +104,12 @@ fun HealthTrackerScreen(
                 onDoReonboardingClick = {
                     viewModel.onEvent(HealthTrackerScreenEvent.DoReonbording)
                     onDoReonboarding()
+                },
+                onToggleTopBar = {
+                    viewModel.onEvent(HealthTrackerScreenEvent.ToggleTopBar)
                 }
             )
         }
-
-        val dateTime = mutableStateOf(screenState.dateTime)
 
         item {
             DaySelector(
@@ -112,7 +128,11 @@ fun HealthTrackerScreen(
                     )
                 )
             }, meal = meal)
-            AnimatedVisibility(visible = meal.isExpanded) {
+            AnimatedVisibility(
+                visible = meal.isExpanded,
+                enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+            ) {
                 val filteredItems =
                     screenState.trackedFoods.filter { meal.mealType == it.mealType }.toList()
                 LazyColumn(modifier = Modifier.height(100.dp * (filteredItems.size + 1))) {

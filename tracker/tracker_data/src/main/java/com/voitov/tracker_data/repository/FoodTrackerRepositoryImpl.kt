@@ -2,13 +2,16 @@ package com.voitov.tracker_data.repository
 
 import com.voitov.common.utils.areNutrientComponentsCorrect
 import com.voitov.tracker_data.local.db.TrackedFoodDao
+import com.voitov.tracker_data.mapper.toCustomTrackableFood
 import com.voitov.tracker_data.mapper.toTrackableFood
+import com.voitov.tracker_data.mapper.toTrackableFoodEntity
 import com.voitov.tracker_data.mapper.toTrackedFood
 import com.voitov.tracker_data.mapper.toTrackedFoodEntity
 import com.voitov.tracker_data.remote.BaseCountryHolder
 import com.voitov.tracker_data.remote.OpenFoodApiService
 import com.voitov.tracker_data.remote.query
 import com.voitov.tracker_domain.model.Country
+import com.voitov.tracker_domain.model.CustomTrackableFood
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
@@ -40,7 +43,7 @@ class FoodTrackerRepositoryImpl(
                 ?.query(OpenFoodApiService.SEARCH_TERMS_QUERY, query)
                 ?.query(OpenFoodApiService.PAGE_QUERY, page)
                 ?.query(OpenFoodApiService.PAGE_SIZE_QUERY, pageSize)
-                ?: throw IllegalStateException("Have forgotten to handle the ${country.name}?")
+                ?: throw IllegalStateException("Have you forgotten to handle the ${country.name}?")
 
             val dto = apiService.searchForProducts(url = url)
             Result.success(dto.products.filter { serverDtoModel ->
@@ -61,7 +64,7 @@ class FoodTrackerRepositoryImpl(
 
     override suspend fun insertTrackedFood(item: TrackedFood) {
         withContext(Dispatchers.IO) {
-            dao.insertTrackableFood(item.toTrackedFoodEntity())
+            dao.insertTrackedFood(item.toTrackedFoodEntity())
         }
     }
 
@@ -85,5 +88,28 @@ class FoodTrackerRepositoryImpl(
         }.onStart {
             delay(500)
         }
+    }
+
+    override suspend fun insertTrackableFood(item: CustomTrackableFood) {
+        withContext(Dispatchers.IO) {
+            dao.insertCustomTrackableFood(item.toTrackableFoodEntity())
+        }
+    }
+
+    override suspend fun deleteTrackableFood(item: CustomTrackableFood) {
+        withContext(Dispatchers.IO) {
+            dao.deleteCustomTrackableFood(item.toTrackableFoodEntity().id)
+        }
+    }
+
+    override fun searchForCustomFood(
+        query: String,
+        page: Int,
+        pageSize: Int
+    ): Flow<List<CustomTrackableFood>> {
+        return dao.getAllCustomTrackableFood()
+            .map { dbEntities ->
+                dbEntities.map { it.toCustomTrackableFood() }
+            }
     }
 }

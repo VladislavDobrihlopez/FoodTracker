@@ -16,6 +16,7 @@ data class HealthTrackerScreenState(
     val proteinsPerDayInFact: Int = 0,
     val dateTime: LocalDateTime = LocalDateTime.now(),
     val trackedFoods: List<TrackedFood> = emptyList(),
+    val areTopBarActionsExpanded: Boolean = false,
     val mealsDuringCurrentDay: List<Meal> = allDayMealsByDefault
 )
 

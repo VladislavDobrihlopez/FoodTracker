@@ -19,4 +19,6 @@ sealed class SearchFoodScreenEvent {
         val date: LocalDateTime
     ) : SearchFoodScreenEvent()
     data class OnTapCountry(val country: Country): SearchFoodScreenEvent()
+    data class OnSelectTab(val tabSection: TabSection): SearchFoodScreenEvent()
+    data class OnDeleteLocalFood(val item: TrackableFoodUiModel): SearchFoodScreenEvent()
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +24,7 @@ class AgeViewModel @Inject constructor(
     var ageState by mutableStateOf<String>("25")
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onChange(value: String) {
@@ -36,12 +36,12 @@ class AgeViewModel @Inject constructor(
     fun onNavigate() {
         viewModelScope.launch {
             val userAge = ageState.toIntOrNull() ?: kotlin.run {
-                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_age_cant_be_empty)))
+                _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_age_cant_be_empty)))
                 return@launch
             }
 
             keyValueStorage.saveAge(userAge)
-            _uiChannel.send(UiEvents.DispatchNavigationRequest)
+            _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
     }
 }
