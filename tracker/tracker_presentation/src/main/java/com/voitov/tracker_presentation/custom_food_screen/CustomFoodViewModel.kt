@@ -61,7 +61,8 @@ class CustomFoodViewModel @Inject constructor(
                                 caloriesPer100g = result.caloriesIn100g,
                                 carbsPer100g = result.carbsIn100g,
                                 proteinPer100g = result.proteinsIn100g,
-                                fatProteinPer100g = result.fatIn100g
+                                fatProteinPer100g = result.fatIn100g,
+                                id = ""
                             ), dateTime = LocalDateTime.now()
                         )
                         Log.d("TEST_POPPING_UP", "viewmodel: success")

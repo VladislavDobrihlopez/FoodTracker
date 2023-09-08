@@ -5,6 +5,7 @@ import com.voitov.tracker_data.remote.dto.ProductDto
 import com.voitov.tracker_domain.model.CustomTrackableFood
 import com.voitov.tracker_domain.model.TrackableFood
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.math.roundToInt
 
 fun ProductDto.toTrackableFood() =
@@ -17,11 +18,13 @@ fun ProductDto.toTrackableFood() =
             caloriesPer100g = this.nutriments.energyKcal100g.roundToInt(),
             carbsPer100g = this.nutriments.carbohydrates100g.roundToInt(),
             proteinPer100g = this.nutriments.proteins100g.roundToInt(),
-            fatProteinPer100g = this.nutriments.fat100g.roundToInt()
+            fatProteinPer100g = this.nutriments.fat100g.roundToInt(),
+            id = UUID.randomUUID().toString()
         )
     }
 
 fun CustomTrackableFood.toTrackableFoodEntity() = TrackableFoodEntity(
+    id = if (this.trackableFood.id.isNotEmpty()) this.trackableFood.id.toInt() else 0,
     name = this.trackableFood.name,
     imageUri = this.trackableFood.imageSourcePath,
     caloriesPer100g = this.trackableFood.caloriesPer100g,
@@ -36,7 +39,6 @@ fun CustomTrackableFood.toTrackableFoodEntity() = TrackableFoodEntity(
 )
 
 fun TrackableFoodEntity.toCustomTrackableFood() = CustomTrackableFood(
-    id = this.id,
     trackableFood = TrackableFood(
         name = this.name,
         caloriesPer100g = this.caloriesPer100g,
@@ -44,6 +46,7 @@ fun TrackableFoodEntity.toCustomTrackableFood() = CustomTrackableFood(
         proteinPer100g = this.proteinPer100g,
         fatProteinPer100g = this.fatProteinPer100g,
         imageSourcePath = this.imageUri,
+        id = this.id.toString(),
     ),
     date = LocalDateTime.of(this.year, this.month, this.dayOfMonth, this.hours, this.minutes)
 )

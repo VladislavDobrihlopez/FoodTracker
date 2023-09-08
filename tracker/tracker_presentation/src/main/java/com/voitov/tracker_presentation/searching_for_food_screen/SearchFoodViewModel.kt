@@ -13,12 +13,15 @@ import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackableFoodSearchingType
 import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_presentation.searching_for_food_screen.mapper.toCustomTrackableFood
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,6 +45,8 @@ class SearchFoodViewModel
     ) {
         screenState = screenState.copy(tabs = tabSectionToScreenSection)
     }
+
+    private var searchJob: Job? = null
 
     fun onEvent(event: SearchFoodScreenEvent) {
         when (event) {
@@ -102,6 +107,24 @@ class SearchFoodViewModel
                     performSearch(SearchFoodScreenEvent.OnSearch(searchText = ""))
                 }
             }
+
+            is SearchFoodScreenEvent.OnDeleteLocalFood -> {
+                if (screenState.currentSelectedTab.section != TrackableFoodSearchingType.LOCAL) {
+                    throw IllegalStateException()
+                }
+
+                viewModelScope.launch {
+                    trackerUseCases.deleteTrackableCustomFoodUseCase(
+                        event.item.toCustomTrackableFood(LocalDateTime.now())
+                    )
+                }
+
+                val sectionToScreenData = screenState.tabs.toMutableMap()
+                val newSectionScreenState = sectionScreenState.copy(
+                    food = sectionScreenState.food.toMutableList().also { it.remove(event.item) })
+                sectionToScreenData[screenState.currentSelectedTab] = newSectionScreenState
+                updateSectionScreenData(sectionToScreenData)
+            }
         }
     }
 
@@ -140,7 +163,9 @@ class SearchFoodViewModel
     }
 
     private fun performSearch(event: SearchFoodScreenEvent.OnSearch) {
-        viewModelScope.launch {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
             screenState = screenState.copy(
                 isSearchingGoingOn = true
             )
@@ -197,5 +222,10 @@ class SearchFoodViewModel
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        searchJob?.cancel()
+        super.onCleared()
     }
 }

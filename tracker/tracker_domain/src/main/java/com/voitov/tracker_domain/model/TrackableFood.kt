@@ -1,6 +1,7 @@
 package com.voitov.tracker_domain.model
 
 data class TrackableFood(
+    val id: String,
     val name: String,
     val imageSourcePath: String?,
     val caloriesPer100g: Int,

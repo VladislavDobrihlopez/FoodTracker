@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,6 +55,7 @@ fun TrackableFoodUi(
     onAmountChange: (String) -> Unit,
     onCache: () -> Unit,
     modifier: Modifier = Modifier,
+    extraActions: (@Composable RowScope.() -> Unit)? = null
 ) {
     val food = foodUiModel.food
     val spacing = LocalSpacing.current
@@ -188,6 +190,7 @@ fun TrackableFoodUi(
                         modifier = Modifier.alignBy(LastBaseline)
                     )
                 }
+                extraActions?.invoke(this@Row)
                 IconButton(
                     onClick = onCache,
                     enabled = foodUiModel.amount.isNotBlank()

@@ -58,7 +58,7 @@ sealed class AppNavState(val route: String) {
 //            const val MINUTES_KEY = "minutes"
         }
     }
-    object CustomFoodManager: AppNavState(CUSTOM_FOOD_ROUTE)
+    object CustomFoodAdder: AppNavState(CUSTOM_FOOD_ROUTE)
 
     companion object {
         const val WELCOME_ROUTE = "welcome"

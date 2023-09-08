@@ -82,4 +82,11 @@
     <string name="section_search_action">Вы желаете перейти в этот раздел?</string>
     <string name="section_custom_food_manager_decsription">Раздел, где вы можете добавить свои продукты и далее использовать их при формировании приёмов пищи</string>
     <string name="section_custom_food_manager_action">Вы желаете перейти в этот раздел?</string>
+    <string name="enter_the_product_name">Название продукта</string>
+    <string name="enter_the_amount_of_carbs_in_100g">Углеводов в 100гр</string>
+    <string name="enter_the_amount_of_fat_in_100g">Жиров в 100гр</string>
+    <string name="enter_the_amount_of_protein_in_100g">Протеинов в 100гр</string>
+    <string name="save">Сохранить</string>
+    <string name="section_local">Локальные</string>
+    <string name="section_internet">Интернет</string>
 </resources>

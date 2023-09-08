@@ -104,28 +104,9 @@ fun AppNavGraph(
                 })
             }
             composable(route = AppNavState.TrackerOverview.route) {
-//                val viewModel: HealthTrackerOverviewViewModel = hiltViewModel()
-//                val state = viewModel.screenState.copy(
-//                    caloriesPerDayGoal = 3000,
-//                    caloriesPerDayInFact = 1000,
-//                    carbsPerDayGoal = 100,
-//                    carbsPerDayInFact = 50,
-//                    fatPerDayGoal = 50,
-//                    fatPerDayInFact = 30,
-//                    proteinsPerDayGoal = 20,
-//                    proteinsPerDayInFact = 19,
-//                )
                 HealthTrackerScreen(
                     scaffoldState = scaffoldState,
                     onNavigate = { mealType, year, month, day ->
-//                        navHostController.navigateTo(
-//                            AppNavState.Search.createRoute(
-//                                mealType = mealType.name,
-//                                year = year,
-//                                month = month,
-//                                dayOfWeek = day
-//                            )
-//                        )
                         navHostController.navigateTo(
                             AppNavState.TrackableFoodManager.createRoute(
                                 mealType.name,
@@ -171,7 +152,7 @@ fun AppNavGraph(
                     when (section) {
                         TrackableFoodManagerSection.ADDING_CUSTOM_FOOD_SECTION -> {
                             navHostController.navigate(
-                                AppNavState.CustomFoodManager.route
+                                AppNavState.CustomFoodAdder.route
                             )
                         }
 
@@ -222,7 +203,7 @@ fun AppNavGraph(
                 )
             }
 
-            composable(route = AppNavState.CustomFoodManager.route) {
+            composable(route = AppNavState.CustomFoodAdder.route) {
                 CustomFoodScreen(
                     snackBarState = scaffoldState.snackbarHostState,
                     onNavigateUp = {

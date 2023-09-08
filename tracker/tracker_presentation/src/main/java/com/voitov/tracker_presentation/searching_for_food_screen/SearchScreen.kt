@@ -2,6 +2,7 @@ package com.voitov.tracker_presentation.searching_for_food_screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,11 +33,11 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -45,8 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +53,7 @@ import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.TrackableFoodSearchingType
 import com.voitov.tracker_presentation.components.SearchBar
 import com.voitov.tracker_presentation.searching_for_food_screen.components.FancyIndicator
 import com.voitov.tracker_presentation.searching_for_food_screen.components.SearchConfigChip
@@ -213,18 +213,20 @@ fun SearchScreen(
                     },
                     shouldShowHint = screenState.isHintVisible,
                 ) {
-                    Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
+                    AnimatedVisibility(visible = !isInLocalMode(screenState.currentSelectedTab)) {
+                        Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
 
-                    IconButton(
-                        onClick = {
-                            keyboardController?.hide()
-                            scopeAsync.launch { sheetState.show() }
+                        IconButton(
+                            onClick = {
+                                keyboardController?.hide()
+                                scopeAsync.launch { sheetState.show() }
+                            }
+                        ) {
+                            Icon(
+                                Icons.Outlined.MoreVert,
+                                contentDescription = "menu"
+                            )
                         }
-                    ) {
-                        Icon(
-                            Icons.Outlined.MoreVert,
-                            contentDescription = "menu"
-                        )
                     }
                 }
             }
@@ -234,13 +236,13 @@ fun SearchScreen(
                 FancyIndicator(
                     MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[tabSections.indexOf(screenState.currentSelectedTab)])
+                        .tabIndicatorOffset(tabPositions[tabSections.indexOf(currentSelectedTab)])
                 )
             }
 
             TabRow(
                 backgroundColor = MaterialTheme.colors.surface,
-                selectedTabIndex = tabSections.indexOf(screenState.currentSelectedTab),
+                selectedTabIndex = tabSections.indexOf(currentSelectedTab),
                 indicator = indicator
             ) {
                 tabSections.forEachIndexed { _, tabSection ->
@@ -248,7 +250,7 @@ fun SearchScreen(
                         onClick = {
                             viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
                         },
-                        selected = tabSection == screenState.currentSelectedTab,
+                        selected = tabSection == currentSelectedTab,
                         modifier = Modifier.clickable {
                             viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
                         },
@@ -268,7 +270,7 @@ fun SearchScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(screenState.tabSectionScreenState.food) { foodUi ->
+                items(screenState.tabSectionScreenState.food, key = { it.food.id }) { foodUi ->
                     TrackableFoodUi(foodUiModel = foodUi, onClick = {
                         viewModel.onEvent(SearchFoodScreenEvent.ToggleTrackableFoodItem(foodUi.food))
                     }, onAmountChange = {
@@ -288,9 +290,27 @@ fun SearchScreen(
                                 LocalDateTime.of(year, month, day, localTime.hour, localTime.minute)
                             )
                         )
+                    }, extraActions = {
+                        if (isInLocalMode(screenState.currentSelectedTab)) {
+                            IconButton(
+                                onClick = {
+                                    viewModel.onEvent(SearchFoodScreenEvent.OnDeleteLocalFood(foodUi))
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete food item"
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(spacing.spaceSmall))
+                        }
                     })
                 }
             }
         }
     }
+}
+
+private fun isInLocalMode(selectedTab: TabSection): Boolean {
+    return selectedTab.section == TrackableFoodSearchingType.LOCAL
 }

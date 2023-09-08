@@ -98,7 +98,7 @@ class FoodTrackerRepositoryImpl(
 
     override suspend fun deleteTrackableFood(item: CustomTrackableFood) {
         withContext(Dispatchers.IO) {
-            dao.deleteCustomTrackableFood(item.toTrackableFoodEntity())
+            dao.deleteCustomTrackableFood(item.toTrackableFoodEntity().id)
         }
     }
 

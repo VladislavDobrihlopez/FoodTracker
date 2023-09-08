@@ -2,6 +2,7 @@ package com.voitov.tracker_domain.di
 
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
+import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
 import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
 import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
@@ -32,6 +33,7 @@ object TrackerDomainModule {
             RestoreFoodUseCase(repository),
             RetrieveAllTrackedFoodOnDateUseCase(repository),
             SearchTrackableFoodUseCase(repository),
-            SearchCustomTrackableFoodUseCase(repository)
+            SearchCustomTrackableFoodUseCase(repository),
+            DeleteTrackableCustomFoodUseCase(repository)
         )
 }
