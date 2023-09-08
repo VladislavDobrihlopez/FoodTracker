@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.domain.entities.PhysicalActivityLevel
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.SelectionButton
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +43,7 @@ fun ActivityLevelScreen(
             .onEach { event ->
                 Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
-                    UiEvents.DispatchNavigationRequest -> onNavigate()
+                    UiSideEffect.DispatchNavigationRequest -> onNavigate()
                     else -> throw IllegalStateException()
                 }
             }

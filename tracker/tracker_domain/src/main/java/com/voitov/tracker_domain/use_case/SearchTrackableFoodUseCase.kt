@@ -5,7 +5,7 @@ import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
 
-class SearchFoodUseCase(
+class SearchTrackableFoodUseCase(
     private val repository: FoodTrackerRepository
 ) {
     suspend operator fun invoke(

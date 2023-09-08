@@ -2,7 +2,7 @@ package com.voitov.tracker_domain.model
 
 import java.time.LocalDateTime
 
-data class TrackedFood(
+data class  TrackedFood(
     val id: Int = 0,
     val name: String,
     val imageUrl: String?,

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.onboarding_domain.use_cases.HandleNutrientPlanUseCase
@@ -24,7 +24,7 @@ class NutrientPlanViewModel @Inject constructor(
     var screenState by mutableStateOf(NutrientScreenState("50", "30", "20"))
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onEvent(event: NutrientScreenEvent) {
@@ -59,11 +59,11 @@ class NutrientPlanViewModel @Inject constructor(
                             keyValueStorage.saveCarbRatio(result.carbRatio)
                             keyValueStorage.saveFatRatio(result.fatRatio)
                             keyValueStorage.saveProteinRatio(result.proteinRatio)
-                            _uiChannel.send(UiEvents.DispatchNavigationRequest)
+                            _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
                         }
 
                         is HandleNutrientPlanUseCase.Result.Error -> {
-                            _uiChannel.send(UiEvents.ShowUpSnackBar(result.message))
+                            _uiChannel.send(UiSideEffect.ShowUpSnackBar(result.message))
                         }
                     }
                 }
