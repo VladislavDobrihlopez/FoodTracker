@@ -61,7 +61,7 @@
     <string name="lose_keep_or_gain_weight">Желаете сбросить, сохранить или набрать вес?</string>
     <string name="whats_your_activity_level">Ваш уровень физической активности?</string>
     <string name="error_not_100_percent">Суммарно должно получаться 100%</string>
-    <string name="your_goal">Ваша цель:</string>
+    <string name="your_goal">Ваша цель</string>
     <string name="delete">Удалить</string>
     <string name="developed_by">Разработано Войтовым Владиславом</string>
     <string name="contacts">контакты: dobrihlopez@gmail.com</string>
@@ -78,4 +78,8 @@
     <string name="search_settings">Настройки поиска</string>
     <string name="do_you_want_go_back">Вернуть обратно?</string>
     <string name="restore">отменить</string>
+    <string name="section_search_description">Раздел с поиском продуктов по интернету либо выбором из локально сохранённых</string>
+    <string name="section_search_action">Вы желаете перейти в этот раздел?</string>
+    <string name="section_custom_food_manager_decsription">Раздел, где вы можете добавить свои продукты и далее использовать их при формировании приёмов пищи</string>
+    <string name="section_custom_food_manager_action">Вы желаете перейти в этот раздел?</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.voitov.tracker_presentation.components
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import coil.request.CachePolicy
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.TrackedFood
@@ -105,6 +108,7 @@ fun TrackedFoodItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Log.d("TEST_IMAGE_DISPLAYING", "${Uri.parse(item.imageUrl)}")
                 Image(
                     painter = rememberImagePainter(
                         data = item.imageUrl,

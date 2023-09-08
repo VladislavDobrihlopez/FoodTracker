@@ -32,13 +32,13 @@ import com.voitov.foodtracker.repository.FakeTrackerRepository
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_domain.model.TrackableFood
-import com.voitov.tracker_domain.use_case.DeleteFoodUseCase
+import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
-import com.voitov.tracker_domain.use_case.InsertFoodUseCase
-import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
-import com.voitov.tracker_domain.use_case.RetrieveAllFoodOnDateUseCase
-import com.voitov.tracker_domain.use_case.SearchFoodUseCase
+import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
+import com.voitov.tracker_domain.use_case.SearchTrackableFoodUseCase
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerOverviewViewModel
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchFoodViewModel
@@ -95,16 +95,16 @@ class HealthTrackerOverviewTest {
         )
 
         useCasesWrapper = NutrientStuffUseCasesWrapper(
-            deleteFoodUseCase = DeleteFoodUseCase(repository = repository),
+            deleteTrackedFoodUseCase = DeleteTrackedFoodUseCase(repository = repository),
             doNutrientMathUseCase = DoNutrientMathUseCase(
                 keyValueStorage = keyValueStorage
             ),
-            insertFoodUseCase = InsertFoodUseCase(repository = repository),
+            insertTrackableFoodUseCase = InsertTrackableFoodUseCase(repository = repository),
             restoreFoodUseCase = RestoreFoodUseCase(repository = repository),
-            retrieveAllFoodOnDateUseCase = RetrieveAllFoodOnDateUseCase(
+            retrieveAllTrackedFoodOnDateUseCase = RetrieveAllTrackedFoodOnDateUseCase(
                 repository = repository
             ),
-            searchFoodUseCase = SearchFoodUseCase(repository = repository)
+            searchTrackableFoodUseCase = SearchTrackableFoodUseCase(repository = repository)
         )
         filterOutUseCase = FilterOutDigitsUseCase()
         searchViewModel = SearchFoodViewModel(
@@ -197,7 +197,7 @@ class HealthTrackerOverviewTest {
         repository.apiSearchResults = listOf<TrackableFood>(
             TrackableFood(
                 name = "Belarusian draniki",
-                imageUrl = null,
+                imageSourcePath = null,
                 caloriesPer100g = 4100,
                 carbsPer100g = 400,
                 proteinPer100g = 400,

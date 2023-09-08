@@ -78,7 +78,7 @@ fun TrackableFoodUi(
                     .size(125.dp)
                     .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)),
                 painter = rememberImagePainter(
-                    data = food.imageUrl,
+                    data = food.imageSourcePath,
                     builder = {
                         crossfade(true)
                         error(R.drawable.food_error)

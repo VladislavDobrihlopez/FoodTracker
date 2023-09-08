@@ -61,7 +61,7 @@
     <string name="lose_keep_or_gain_weight">Do you want to lose, keep or gain weight?</string>
     <string name="whats_your_activity_level">What\'s your activity level?</string>
     <string name="error_not_100_percent">The values must add up to 100%</string>
-    <string name="your_goal">Your goal:</string>
+    <string name="your_goal">Your goal</string>
     <string name="delete">Delete</string>
     <string name="developed_by">Developed by Vladislav Voitov</string>
     <string name="contacts">contacts: dobrihlopez@gmail.com</string>
@@ -78,4 +78,15 @@
     <string name="search_settings">Search settings</string>
     <string name="do_you_want_go_back">Do you want to return back?</string>
     <string name="restore">restore</string>
+    <string name="section_search_action">Do you want to navigate there?</string>
+    <string name="section_custom_food_manager_decsription">Create your own food and use it when composing meals</string>
+    <string name="section_custom_food_manager_action">Do you want to navigate there?</string>
+    <string name="section_search_description">Pick existent food</string>
+    <string name="enter_the_product_name">Enter the product name</string>
+    <string name="enter_the_amount_of_carbs_in_100g">Enter the amount of carbs in 100g</string>
+    <string name="enter_the_amount_of_fat_in_100g">Enter the amount of fat in 100g</string>
+    <string name="enter_the_amount_of_protein_in_100g">Enter the amount of protein in 100g</string>
+    <string name="save">Save</string>
+    <string name="section_local">Local</string>
+    <string name="section_internet">Internet</string>
 </resources>

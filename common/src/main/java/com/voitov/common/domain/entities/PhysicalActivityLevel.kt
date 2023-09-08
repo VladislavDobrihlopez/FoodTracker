@@ -1,6 +1,6 @@
 package com.voitov.common.domain.entities
 
-import com.voitov.common.domain.PreferencesIoException
+import com.voitov.common.domain.FoodTrackerDomainException
 
 sealed class PhysicalActivityLevel(val name: String) {
     object Low : PhysicalActivityLevel(LOW_ACTIVITY)
@@ -17,7 +17,7 @@ sealed class PhysicalActivityLevel(val name: String) {
                 LOW_ACTIVITY -> Low
                 MEDIUM_ACTIVITY -> Medium
                 HIGH_ACTIVITY -> High
-                else -> throw PreferencesIoException.EncounteredUnknownPreferenceEntity()
+                else -> throw FoodTrackerDomainException.EncounteredUnknownPreferenceEntity()
             }
         }
     }

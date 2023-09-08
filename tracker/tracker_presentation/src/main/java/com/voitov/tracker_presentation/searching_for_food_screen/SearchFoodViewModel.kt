@@ -7,13 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import com.voitov.tracker_domain.model.Country
-import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.model.TrackableFood
+import com.voitov.tracker_domain.model.TrackableFoodSearchingType
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,8 +31,17 @@ class SearchFoodViewModel
     var screenState by mutableStateOf(SearchFoodScreenState())
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
+
+    private val sectionScreenState: TabSectionScreenState
+        get() = screenState.tabs[screenState.currentSelectedTab] ?: throw IllegalStateException()
+
+    private fun updateSectionScreenData(
+        tabSectionToScreenSection: Map<TabSection, TabSectionScreenState>,
+    ) {
+        screenState = screenState.copy(tabs = tabSectionToScreenSection)
+    }
 
     fun onEvent(event: SearchFoodScreenEvent) {
         when (event) {
@@ -38,13 +50,18 @@ class SearchFoodViewModel
             }
 
             is SearchFoodScreenEvent.OnAmountForFoodChange -> {
-                screenState = screenState.copy(food = screenState.food.map { uiModel ->
-                    if (uiModel.food == event.food) {
-                        uiModel.copy(amount = filterOutDigitsUseCase(event.amount))
-                    } else {
-                        uiModel
-                    }
-                })
+                val sectionToScreenData = screenState.tabs.toMutableMap()
+                val newSectionData =
+                    sectionScreenState.copy(food = sectionScreenState.food.map { uiModel ->
+                        if (uiModel.food == event.food) {
+                            uiModel.copy(amount = filterOutDigitsUseCase(event.amount))
+                        } else {
+                            uiModel
+                        }
+                    })
+
+                sectionToScreenData[screenState.currentSelectedTab] = newSectionData
+                updateSectionScreenData(sectionToScreenData.toMap())
             }
 
             is SearchFoodScreenEvent.OnSearch -> {
@@ -58,21 +75,32 @@ class SearchFoodViewModel
 
             is SearchFoodScreenEvent.OnSearchTextChange -> {
                 screenState =
-                    screenState.copy(searchBarText = UiText.DynamicResource(event.foodName))
+                    screenState.copy(searchBarText = event.foodName)
             }
 
             is SearchFoodScreenEvent.ToggleTrackableFoodItem -> {
-                screenState = screenState.copy(food = screenState.food.map {
-                    if (it.food == event.food) {
-                        it.copy(isExpanded = !it.isExpanded)
-                    } else {
-                        it
-                    }
-                })
+                val sectionToScreenData = screenState.tabs.toMutableMap()
+                val newSectionData =
+                    sectionScreenState.copy(food = sectionScreenState.food.map { uiModel ->
+                        if (uiModel.food == event.food) {
+                            uiModel.copy(isExpanded = !uiModel.isExpanded)
+                        } else {
+                            uiModel
+                        }
+                    })
+                sectionToScreenData[screenState.currentSelectedTab] = newSectionData
+                updateSectionScreenData(sectionToScreenData.toMap())
             }
 
             is SearchFoodScreenEvent.OnTapCountry -> {
                 changeCountry(event.country)
+            }
+
+            is SearchFoodScreenEvent.OnSelectTab -> {
+                screenState = screenState.copy(currentSelectedTab = event.tabSection)
+                if (event.tabSection.section == TrackableFoodSearchingType.LOCAL) {
+                    performSearch(SearchFoodScreenEvent.OnSearch(searchText = ""))
+                }
             }
         }
     }
@@ -101,41 +129,73 @@ class SearchFoodViewModel
 
     private fun trackFood(event: SearchFoodScreenEvent.OnAddTrackableFood) {
         viewModelScope.launch {
-            trackerUseCases.insertFoodUseCase(
+            trackerUseCases.insertTrackableFoodUseCase(
                 food = event.food.food,
                 amount = event.food.amount.toIntOrNull() ?: return@launch,
                 dateTime = event.date,
                 mealType = event.mealType
             )
-            _uiChannel.send(UiEvents.NavigateUp)
+            _uiChannel.send(UiSideEffect.NavigateUp)
         }
     }
 
     private fun performSearch(event: SearchFoodScreenEvent.OnSearch) {
         viewModelScope.launch {
             screenState = screenState.copy(
-                isSearchingGoingOn = true,
-                food = emptyList()
+                isSearchingGoingOn = true
             )
 
-            trackerUseCases.searchFoodUseCase(
-                event.searchText,
-                country = screenState.countrySearchSettings.find { it.isSelected }?.country
-                    ?: throw IllegalStateException()
-            )
-                .onSuccess { trackableFoodList ->
-                    screenState =
-                        screenState.copy(
-                            searchBarText = UiText.DynamicResource(""),
-                            isSearchingGoingOn = false,
-                            food = trackableFoodList.map {
-                                TrackableFoodUiModel(food = it)
-                            })
+            when (screenState.currentSelectedTab.section) {
+                TrackableFoodSearchingType.LOCAL -> {
+                    trackerUseCases.searchCustomTrackableFoodUseCase(event.searchText)
+                        .catch {
+                            screenState = screenState.copy(isSearchingGoingOn = false)
+                            _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_unknown)))
+                        }
+                        .collect { trackableFoodList ->
+                            val sectionToScreenData = screenState.tabs.toMutableMap()
+                            val newSectionScreenState =
+                                sectionScreenState.copy(
+                                    food = trackableFoodList.map {
+                                        TrackableFoodUiModel(food = it.trackableFood)
+                                    })
+                            sectionToScreenData[screenState.currentSelectedTab] =
+                                newSectionScreenState
+                            updateSectionScreenData(sectionToScreenData)
+                            screenState = screenState.copy(
+                                searchBarText = "",
+                                isSearchingGoingOn = false,
+                            )
+                        }
                 }
-                .onFailure {
-                    screenState = screenState.copy(isSearchingGoingOn = false)
-                    _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_unknown)))
+
+                TrackableFoodSearchingType.INTERNET -> {
+                    trackerUseCases.searchTrackableFoodUseCase(
+                        event.searchText,
+                        country = screenState.countrySearchSettings.find { it.isSelected }?.country
+                            ?: throw IllegalStateException()
+                    )
+                        .onSuccess { trackableFoodList ->
+                            val sectionToScreenData = screenState.tabs.toMutableMap()
+                            val newSectionScreenState =
+                                sectionScreenState.copy(
+                                    food = trackableFoodList.map {
+                                        TrackableFoodUiModel(food = it)
+                                    })
+                            sectionToScreenData[screenState.currentSelectedTab] =
+                                newSectionScreenState
+                            updateSectionScreenData(sectionToScreenData)
+                            screenState = screenState.copy(
+                                searchBarText = "",
+                                isSearchingGoingOn = false,
+                            )
+                        }
+                        .onFailure {
+                            screenState = screenState.copy(isSearchingGoingOn = false)
+                            _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_unknown)))
+                        }
                 }
+            }
         }
     }
 }

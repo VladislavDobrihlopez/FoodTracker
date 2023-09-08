@@ -7,7 +7,7 @@ import com.voitov.tracker_domain.repository.FoodTrackerRepository
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
-class InsertFoodUseCase(
+class InsertTrackableFoodUseCase(
     private val repository: FoodTrackerRepository
 ) {
     suspend operator fun invoke(
@@ -19,7 +19,7 @@ class InsertFoodUseCase(
         repository.insertTrackedFood(
             TrackedFood(
                 name = food.name,
-                imageUrl = food.imageUrl,
+                imageUrl = food.imageSourcePath,
                 calories = ((food.caloriesPer100g * amount) / 100f).roundToInt(),
                 carbs = ((food.carbsPer100g * amount) / 100f).roundToInt(),
                 protein = ((food.proteinPer100g * amount) / 100f).roundToInt(),

@@ -2,6 +2,7 @@ package com.voitov.tracker_presentation.searching_for_food_screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Tab
+import androidx.compose.material.TabPosition
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,14 +45,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.components.SearchBar
+import com.voitov.tracker_presentation.searching_for_food_screen.components.FancyIndicator
 import com.voitov.tracker_presentation.searching_for_food_screen.components.SearchConfigChip
 import com.voitov.tracker_presentation.searching_for_food_screen.components.TrackableFoodUi
 import kotlinx.coroutines.CoroutineScope
@@ -83,12 +92,12 @@ fun SearchScreen(
             .onEach { event ->
                 Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
-                    is UiEvents.ShowUpSnackBar -> {
+                    is UiSideEffect.ShowUpSnackBar -> {
                         scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
                         keyboardController?.hide()
                     }
 
-                    is UiEvents.NavigateUp -> {
+                    is UiSideEffect.NavigateUp -> {
                         onNavigateUp()
                     }
 
@@ -99,6 +108,7 @@ fun SearchScreen(
     }
 
     val screenState = viewModel.screenState
+    val currentSelectedTab = screenState.currentSelectedTab
 
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -154,7 +164,7 @@ fun SearchScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             when {
                 screenState.isSearchingGoingOn -> CircularProgressIndicator()
-                screenState.food.isEmpty() ->
+                screenState.tabSectionScreenState.food.isEmpty() ->
                     Text(
                         text = stringResource(id = R.string.no_results),
                         textAlign = TextAlign.Center,
@@ -186,12 +196,11 @@ fun SearchScreen(
             )
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 SearchBar(
                     modifier = Modifier.fillMaxWidth(),
-                    text = screenState.searchBarText.asString(context),
+                    text = screenState.searchBarText,
                     onValueChange = {
                         viewModel.onEvent(SearchFoodScreenEvent.OnSearchTextChange(it))
                     },
@@ -202,7 +211,7 @@ fun SearchScreen(
                         keyboardController?.hide()
                         viewModel.onEvent(SearchFoodScreenEvent.OnSearch(it))
                     },
-                    shouldShowHint = viewModel.screenState.isHintVisible,
+                    shouldShowHint = screenState.isHintVisible,
                 ) {
                     Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
 
@@ -221,10 +230,45 @@ fun SearchScreen(
             }
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
 
+            val indicator = @Composable { tabPositions: List<TabPosition> ->
+                FancyIndicator(
+                    MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[tabSections.indexOf(screenState.currentSelectedTab)])
+                )
+            }
+
+            TabRow(
+                backgroundColor = MaterialTheme.colors.surface,
+                selectedTabIndex = tabSections.indexOf(screenState.currentSelectedTab),
+                indicator = indicator
+            ) {
+                tabSections.forEachIndexed { _, tabSection ->
+                    Tab(
+                        onClick = {
+                            viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
+                        },
+                        selected = tabSection == screenState.currentSelectedTab,
+                        modifier = Modifier.clickable {
+                            viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
+                        },
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(vertical = spacing.spaceSmall),
+                            text = tabSection.name.asString(context),
+                            color = MaterialTheme.colors.onSurface,
+                            style = MaterialTheme.typography.button,
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(screenState.food) { foodUi ->
+                items(screenState.tabSectionScreenState.food) { foodUi ->
                     TrackableFoodUi(foodUiModel = foodUi, onClick = {
                         viewModel.onEvent(SearchFoodScreenEvent.ToggleTrackableFoodItem(foodUi.food))
                     }, onAmountChange = {

@@ -16,4 +16,5 @@ sealed class HealthTrackerScreenEvent {
         HealthTrackerScreenEvent()
 
     data class ToggleMeal(val mealType: MealType) : HealthTrackerScreenEvent()
+    object ToggleTopBar: HealthTrackerScreenEvent()
 }

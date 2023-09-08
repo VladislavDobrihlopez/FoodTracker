@@ -2,13 +2,14 @@ package com.voitov.tracker_domain.di
 
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
-import com.voitov.tracker_domain.use_case.DeleteFoodUseCase
+import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
-import com.voitov.tracker_domain.use_case.InsertFoodUseCase
-import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
-import com.voitov.tracker_domain.use_case.RetrieveAllFoodOnDateUseCase
-import com.voitov.tracker_domain.use_case.SearchFoodUseCase
+import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
+import com.voitov.tracker_domain.use_case.SearchCustomTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.SearchTrackableFoodUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,11 +26,12 @@ object TrackerDomainModule {
         repository: FoodTrackerRepository
     ) =
         NutrientStuffUseCasesWrapper(
-            DeleteFoodUseCase(repository),
+            DeleteTrackedFoodUseCase(repository),
             DoNutrientMathUseCase(keyValueStorage),
-            InsertFoodUseCase(repository),
+            InsertTrackableFoodUseCase(repository),
             RestoreFoodUseCase(repository),
-            RetrieveAllFoodOnDateUseCase(repository),
-            SearchFoodUseCase(repository)
+            RetrieveAllTrackedFoodOnDateUseCase(repository),
+            SearchTrackableFoodUseCase(repository),
+            SearchCustomTrackableFoodUseCase(repository)
         )
 }

@@ -1,6 +1,6 @@
 package com.voitov.common.domain.entities
 
-import com.voitov.common.domain.PreferencesIoException
+import com.voitov.common.domain.FoodTrackerDomainException
 
 sealed class Gender(val name: String) {
     object Male : Gender(MALE_GENDER)
@@ -14,7 +14,7 @@ sealed class Gender(val name: String) {
             return when (className) {
                 MALE_GENDER -> Male
                 FEMALE_GENDER -> Female
-                else -> throw PreferencesIoException.EncounteredUnknownPreferenceEntity()
+                else -> throw FoodTrackerDomainException.EncounteredUnknownPreferenceEntity()
             }
         }
     }

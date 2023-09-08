@@ -1,6 +1,6 @@
 package com.voitov.common.domain.entities
 
-import com.voitov.common.domain.PreferencesIoException
+import com.voitov.common.domain.FoodTrackerDomainException
 
 sealed class GoalType(val name: String) {
     object LoseWeight : GoalType(LOSE_WEIGHT)
@@ -17,7 +17,7 @@ sealed class GoalType(val name: String) {
                 LOSE_WEIGHT -> LoseWeight
                 KEEP_WEIGHT -> KeepWeight
                 GAIN_WEIGHT -> GainWeight
-                else -> throw PreferencesIoException.EncounteredUnknownPreferenceEntity()
+                else -> throw FoodTrackerDomainException.EncounteredUnknownPreferenceEntity()
             }
         }
     }
