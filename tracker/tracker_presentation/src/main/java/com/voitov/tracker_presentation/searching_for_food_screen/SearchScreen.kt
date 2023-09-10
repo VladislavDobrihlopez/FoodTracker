@@ -1,6 +1,5 @@
 package com.voitov.tracker_presentation.searching_for_food_screen
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -58,6 +57,8 @@ import com.voitov.tracker_presentation.components.SearchBar
 import com.voitov.tracker_presentation.searching_for_food_screen.components.FancyIndicator
 import com.voitov.tracker_presentation.searching_for_food_screen.components.SearchConfigChip
 import com.voitov.tracker_presentation.searching_for_food_screen.components.TrackableFoodUi
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.SearchFoodScreenEvent
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -90,7 +91,6 @@ fun SearchScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
                     is UiSideEffect.ShowUpSnackBar -> {
                         scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
@@ -236,16 +236,16 @@ fun SearchScreen(
                 FancyIndicator(
                     MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[tabSections.indexOf(currentSelectedTab)])
+                        .tabIndicatorOffset(tabPositions[com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(currentSelectedTab)])
                 )
             }
 
             TabRow(
                 backgroundColor = MaterialTheme.colors.surface,
-                selectedTabIndex = tabSections.indexOf(currentSelectedTab),
+                selectedTabIndex = com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(currentSelectedTab),
                 indicator = indicator
             ) {
-                tabSections.forEachIndexed { _, tabSection ->
+                com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.forEachIndexed { _, tabSection ->
                     Tab(
                         onClick = {
                             viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))

@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.custom_food_screen.contract
+package com.voitov.tracker_presentation.custom_food_screen
 
 import android.net.Uri
 

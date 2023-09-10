@@ -21,7 +21,7 @@ class AgeViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var ageState by mutableStateOf<String>("25")
+    var ageState by mutableStateOf<String>(AGE_BY_DEFAULT)
         private set
 
     private val _uiChannel = Channel<UiSideEffect>()
@@ -43,5 +43,9 @@ class AgeViewModel @Inject constructor(
             keyValueStorage.saveAge(userAge)
             _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
+    }
+
+    companion object {
+        private const val AGE_BY_DEFAULT = "25"
     }
 }

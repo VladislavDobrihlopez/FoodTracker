@@ -1,19 +1,16 @@
 package com.voitov.tracker_presentation.custom_food_screen
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
-import com.voitov.tracker_domain.model.CustomTrackableFood
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.use_case.InsertCustomTrackableFoodUseCase
 import com.voitov.tracker_domain.use_case.TryValidatingCustomFoodEnteredNutrientsUseCase
-import com.voitov.tracker_presentation.custom_food_screen.contract.CustomFoodScreenEvent
-import com.voitov.tracker_presentation.custom_food_screen.contract.CustomFoodScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -40,10 +37,9 @@ class CustomFoodViewModel @Inject constructor(
                         fat = screenState.enteredFatPer100g,
                         carbohydrates = screenState.enteredCarbsPer100g
                     )
-                    Log.d("TEST_POPPING_UP", "$screenState")
 
                     if (screenState.imageUri === null) {
-                        _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.DynamicResource("You should set an image")))
+                        _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.you_should_set_image)))
                     } else if (result is TryValidatingCustomFoodEnteredNutrientsUseCase.Result.Error) {
                         screenState = screenState.copy(
                             isEnteredNameIncorrect = result.isNameIncorrect,
@@ -52,7 +48,6 @@ class CustomFoodViewModel @Inject constructor(
                             isEnteredProteinAmountIncorrect = result.areProteinsIncorrect
                         )
                         _uiChannel.send(UiSideEffect.ShowUpSnackBar(result.message))
-                        Log.d("TEST_POPPING_UP", "viewmodel: failure")
                     } else if (result is TryValidatingCustomFoodEnteredNutrientsUseCase.Result.Success) {
                         insertCustomTrackableFoodUseCase(
                             food = TrackableFood(
@@ -65,7 +60,6 @@ class CustomFoodViewModel @Inject constructor(
                                 id = ""
                             ), dateTime = LocalDateTime.now()
                         )
-                        Log.d("TEST_POPPING_UP", "viewmodel: success")
                         _uiChannel.send(UiSideEffect.NavigateUp)
                     }
                 }

@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.health_tracker_screen
+package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -16,8 +16,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +30,7 @@ import com.voitov.common_ui.ProteinColor
 import com.voitov.tracker_presentation.components.EatenFoodCircularBar
 import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
+import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreenState
 
 @Composable
 fun NutrientOverviewHeader(
@@ -50,7 +49,7 @@ fun NutrientOverviewHeader(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
+            .clip(RoundedCornerShape(bottomStart = 45.dp, bottomEnd = 45.dp))
             .background(MaterialTheme.colors.primary)
     ) {
         ScreenTopBar(

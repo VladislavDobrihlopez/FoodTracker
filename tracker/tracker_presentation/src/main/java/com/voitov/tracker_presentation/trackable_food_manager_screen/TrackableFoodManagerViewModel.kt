@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrackableFoodManagerViewModel @Inject constructor() : ViewModel() {
-    private val _uiChannel = Channel<TrackableFoodManagerUiEvent>()
+    private val _uiChannel = Channel<TrackableFoodManagerUiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     var screenState by mutableStateOf(TrackableFoodManagerScreenState(sectionsByDefault))
@@ -34,7 +34,7 @@ class TrackableFoodManagerViewModel @Inject constructor() : ViewModel() {
                 }
 
                 is TrackableFoodManagerScreenEvent.OnNavAgreementButtonClick -> {
-                    _uiChannel.send(TrackableFoodManagerUiEvent.NavigateToSection(event.sectionUiModel.section))
+                    _uiChannel.send(TrackableFoodManagerUiSideEffect.NavigateToSection(event.sectionUiModel.section))
                 }
             }
         }

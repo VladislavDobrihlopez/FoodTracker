@@ -2,11 +2,9 @@ package com.voitov.tracker_presentation.custom_food_screen
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,20 +30,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_presentation.custom_food_screen.components.PhotoPicker
-import com.voitov.tracker_presentation.custom_food_screen.contract.CustomFoodScreenEvent
-import com.voitov.tracker_presentation.custom_food_screen.contract.CustomFoodScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -80,7 +73,6 @@ fun CustomFoodScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvents
             .onEach { event ->
-                Log.d("TEST_POPPING_UP", "$event")
                 when (event) {
                     is UiSideEffect.NavigateUp -> {
                         onNavigateUp()
@@ -98,7 +90,6 @@ fun CustomFoodScreen(
         }
             .distinctUntilChanged()
             .collect {
-                Log.d("TEST_SNAPSHOT", "$it")
                 orientation = it
             }
     }

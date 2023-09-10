@@ -6,4 +6,6 @@ object Configuration {
     const val CALORIES_PER_PROTEIN_GRAM = 4
     const val CALORIES_PER_CARBOHYDRATES_GRAM = 4
     const val CALORIES_PER_FAT_GRAM = 9
+
+    const val APP_VERSION = "2.0"
 }

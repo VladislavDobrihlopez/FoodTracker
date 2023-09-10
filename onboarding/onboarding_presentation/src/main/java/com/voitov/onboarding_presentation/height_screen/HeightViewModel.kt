@@ -21,7 +21,7 @@ class HeightViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var heightState by mutableStateOf<String>("175")
+    var heightState by mutableStateOf<String>(HEIGHT_BY_DEFAULT.toString())
         private set
 
     private val _uiChannel = Channel<UiSideEffect>()
@@ -43,5 +43,9 @@ class HeightViewModel @Inject constructor(
             keyValueStorage.saveHeight(userHeight)
             _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
+    }
+
+    companion object {
+        private const val HEIGHT_BY_DEFAULT = 175
     }
 }

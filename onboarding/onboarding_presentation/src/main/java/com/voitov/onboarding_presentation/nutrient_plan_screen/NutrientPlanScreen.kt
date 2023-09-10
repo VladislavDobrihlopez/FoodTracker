@@ -1,6 +1,5 @@
 package com.voitov.onboarding_presentation.nutrient_plan_screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,6 @@ fun NutrientPlanScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
                     UiSideEffect.DispatchNavigationRequest -> onNavigate()
                     is UiSideEffect.ShowUpSnackBar -> {
@@ -102,7 +100,7 @@ fun NutrientPlanScreen(
                 .align(Alignment.BottomEnd),
             text = stringResource(id = R.string.next)
         ) {
-            viewModel.onEvent(NutrientScreenEvent.NavigateNext)
+            viewModel.onEvent(NutrientScreenEvent.OnClickNavigationElement)
         }
     }
 }

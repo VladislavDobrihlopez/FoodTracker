@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.health_tracker_screen
+package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

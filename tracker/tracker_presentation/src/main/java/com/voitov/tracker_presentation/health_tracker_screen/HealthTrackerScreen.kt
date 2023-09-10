@@ -1,6 +1,5 @@
 package com.voitov.tracker_presentation.health_tracker_screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -35,6 +34,9 @@ import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.MealItem
 import com.voitov.tracker_presentation.components.TrackedFoodItem
+import com.voitov.tracker_presentation.health_tracker_screen.components.DaySelector
+import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
+import com.voitov.tracker_presentation.health_tracker_screen.components.NutrientOverviewHeader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -56,14 +58,11 @@ fun HealthTrackerScreen(
         mutableStateOf(false)
     }
 
-    Log.d("TEST_STATE", screenState.toString())
-
     val eventScope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     val scope = remember { CoroutineScope(Dispatchers.Main) }
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
                     is UiSideEffect.ShowUpSnackBar -> {
                         scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
@@ -75,7 +74,7 @@ fun HealthTrackerScreen(
             .launchIn(eventScope)
     }
 
-    DeveloperAndAppInfo(
+    AppInfo(
         isShownState = appInfoDialogIsShownState,
         onDismissClick = {
             appInfoDialogIsShownState.value = false

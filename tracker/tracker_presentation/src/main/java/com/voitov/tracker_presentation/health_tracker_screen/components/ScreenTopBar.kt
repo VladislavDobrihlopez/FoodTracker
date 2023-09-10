@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.health_tracker_screen
+package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.voitov.common.R
 
 @Composable
 fun ScreenTopBar(
@@ -29,7 +31,7 @@ fun ScreenTopBar(
             Icon(
                 if (isExpanded.value) Icons.Default.Close else Icons.Default.KeyboardArrowRight,
                 tint = color,
-                contentDescription = "close",
+                contentDescription = stringResource(id = R.string.content_description_close),
             )
         }
         AnimatedVisibility(visible = isExpanded.value) {
@@ -52,10 +54,18 @@ private fun TopBarContent(
 ) {
     Row(modifier = modifier) {
         IconButton(onClick = doReonboarding) {
-            Icon(Icons.Default.Edit, contentDescription = "do re-onboarding", tint = color)
+            Icon(
+                Icons.Default.Edit,
+                contentDescription = stringResource(id = R.string.content_description_do_reonboarding),
+                tint = color
+            )
         }
         IconButton(onClick = viewExplanations) {
-            Icon(Icons.Default.Info, contentDescription = "watch explanations", tint = color)
+            Icon(
+                Icons.Default.Info,
+                contentDescription = stringResource(id = R.string.content_description_take_look_at_explanations),
+                tint = color
+            )
         }
     }
 }

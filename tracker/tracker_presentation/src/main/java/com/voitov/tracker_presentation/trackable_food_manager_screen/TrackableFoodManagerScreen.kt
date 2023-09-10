@@ -17,9 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.voitov.common.R
 import com.voitov.common.nav.TrackableFoodManagerSection
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_presentation.trackable_food_manager_screen.components.ActionSection
@@ -42,8 +45,8 @@ fun TrackableFoodManagerScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                when(event) {
-                    is TrackableFoodManagerUiEvent.NavigateToSection -> {
+                when (event) {
+                    is TrackableFoodManagerUiSideEffect.NavigateToSection -> {
                         onNavigate(event.section)
                     }
                 }
@@ -56,7 +59,7 @@ fun TrackableFoodManagerScreen(
             .fillMaxSize()
             .padding(spacing.spaceSmall)
     ) {
-        Text(text = "Options", style = MaterialTheme.typography.h1)
+        Text(text = stringResource(id = R.string.options), style = MaterialTheme.typography.h1)
         Spacer(modifier = Modifier.height(spacing.spaceSmall))
         LazyHorizontalGrid(
             rows = GridCells.Adaptive(192.dp),
@@ -71,7 +74,8 @@ fun TrackableFoodManagerScreen(
                 ActionSection(
                     modifier = Modifier
                         .aspectRatio(1f)
-                        .padding(spacing.spaceSmall),
+                        .padding(spacing.spaceSmall)
+                        .alpha(0.95f),
                     isWrapped = sectionCard.isInWrappedState,
                     sectionDescription = sectionCard.description.asString(context),
                     actionText = sectionCard.action.asString(context),

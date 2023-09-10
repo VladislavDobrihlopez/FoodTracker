@@ -13,7 +13,7 @@ import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.SearchBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 import com.voitov.tracker_presentation.custom_food_screen.components.PhotoPicker
-import com.voitov.tracker_presentation.health_tracker_screen.DeveloperAndAppInfo
+import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
 
 @Preview(showBackground = true)
 @Composable
@@ -103,7 +103,7 @@ internal fun PreviewSearchButton() {
 @Composable
 internal fun PreviewDeveloperAndAppInfo() {
     FoodTrackerTheme {
-        DeveloperAndAppInfo(
+        AppInfo(
             isShownState = mutableStateOf(true),
             onOkayClick = {},
             onDismissClick = {})

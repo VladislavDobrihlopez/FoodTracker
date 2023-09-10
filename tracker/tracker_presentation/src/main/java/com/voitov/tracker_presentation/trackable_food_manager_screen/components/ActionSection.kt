@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -34,13 +35,13 @@ fun ActionSection(
     onCardClick: () -> Unit,
     onActionClick: () -> Unit,
     modifier: Modifier = Modifier,
+    clipRadius: CornerBasedShape = MaterialTheme.shapes.medium,
 ) {
     val spacing = LocalSpacing.current
     Card(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(clipRadius)
             .background(MaterialTheme.colors.primaryVariant)
-            .alpha(0.95f)
             .clickable { onCardClick() },
         elevation = 4.dp,
     ) {
@@ -49,7 +50,7 @@ fun ActionSection(
                 .fillMaxSize()
                 .border(
                     BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
-                    RoundedCornerShape(8.dp)
+                    clipRadius
                 ),
             contentAlignment = Alignment.Center
         ) {

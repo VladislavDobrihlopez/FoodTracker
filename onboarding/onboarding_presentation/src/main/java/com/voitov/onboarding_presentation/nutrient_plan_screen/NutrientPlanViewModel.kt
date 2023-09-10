@@ -21,7 +21,13 @@ class NutrientPlanViewModel @Inject constructor(
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase,
     private val nutrientPlanUseCase: HandleNutrientPlanUseCase
 ) : ViewModel() {
-    var screenState by mutableStateOf(NutrientScreenState("50", "30", "20"))
+    var screenState by mutableStateOf(
+        NutrientScreenState(
+            CARB_RATIO_BY_DEFAULT.toString(),
+            PROTEIN_RATIO_BY_DEFAULT.toString(),
+            FAT_RATIO_BY_DEFAULT.toString()
+        )
+    )
         private set
 
     private val _uiChannel = Channel<UiSideEffect>()
@@ -47,7 +53,7 @@ class NutrientPlanViewModel @Inject constructor(
                 screenState = screenState.copy(proteinRation = filterOutDigitsUseCase(event.value))
             }
 
-            NutrientScreenEvent.NavigateNext -> {
+            NutrientScreenEvent.OnClickNavigationElement -> {
                 viewModelScope.launch {
                     val result = nutrientPlanUseCase(
                         carbsRatioText = screenState.carbRatio,
@@ -69,5 +75,11 @@ class NutrientPlanViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val CARB_RATIO_BY_DEFAULT = 50
+        private const val FAT_RATIO_BY_DEFAULT = 30
+        private const val PROTEIN_RATIO_BY_DEFAULT = 20
     }
 }

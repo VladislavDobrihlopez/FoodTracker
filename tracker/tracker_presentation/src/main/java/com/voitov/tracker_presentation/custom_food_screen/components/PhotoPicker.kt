@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
@@ -53,7 +54,7 @@ fun PhotoPicker(
                     modifier = Modifier.size(imageSize - iconMargin),
                     imageVector = Icons.Default.Add,
                     colorFilter = ColorFilter.tint(iconColor),
-                    contentDescription = "add photo"
+                    contentDescription = stringResource(id = R.string.content_description_add_photo)
                 )
             }
         } else {
@@ -65,7 +66,7 @@ fun PhotoPicker(
                         error(R.drawable.food_error)
                     }
                 ),
-                contentDescription = "some food",
+                contentDescription = stringResource(id = R.string.content_description_some_food),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()

@@ -1,6 +1,5 @@
 package com.voitov.onboarding_presentation.weight_screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
-import com.voitov.common_ui.LocalSpacing
 import com.voitov.common.utils.UiSideEffect
+import com.voitov.common_ui.LocalSpacing
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.UnitEditText
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +41,6 @@ fun WeightScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
                     UiSideEffect.DispatchNavigationRequest -> onNavigate()
                     is UiSideEffect.ShowUpSnackBar -> {

@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.searching_for_food_screen
+package com.voitov.tracker_presentation.searching_for_food_screen.contract
 
 import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.MealType

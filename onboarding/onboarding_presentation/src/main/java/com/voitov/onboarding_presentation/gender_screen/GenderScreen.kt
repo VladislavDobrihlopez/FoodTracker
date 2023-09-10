@@ -1,6 +1,5 @@
 package com.voitov.onboarding_presentation.gender_screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.domain.entities.Gender
-import com.voitov.common_ui.LocalSpacing
 import com.voitov.common.utils.UiSideEffect
+import com.voitov.common_ui.LocalSpacing
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.SelectionButton
 import kotlinx.coroutines.CoroutineScope
@@ -34,14 +33,13 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun GenderScreen(
     onNavigate: () -> Unit,
-    viewModel: GenderViewModel = hiltViewModel<GenderViewModel>(),
+    viewModel: GenderViewModel = hiltViewModel(),
 ) {
     val spacing = LocalSpacing.current
     val scope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent
             .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
                 when (event) {
                     UiSideEffect.DispatchNavigationRequest -> onNavigate()
                     else -> throw IllegalStateException()

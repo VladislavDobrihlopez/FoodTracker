@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WeightViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
-    private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var weightState by mutableStateOf<String>("70.0")
+    var weightState by mutableStateOf<String>(WEIGHT_BY_DEFAULT.toString())
         private set
 
     private val _uiChannel = Channel<UiSideEffect>()
@@ -43,5 +41,9 @@ class WeightViewModel @Inject constructor(
             keyValueStorage.saveWeight(userWeight)
             _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
+    }
+
+    companion object {
+        private const val WEIGHT_BY_DEFAULT = 70.0
     }
 }

@@ -1,4 +1,4 @@
-package com.voitov.tracker_presentation.health_tracker_screen
+package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -31,11 +30,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.voitov.common.Configuration
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
 
 @Composable
-fun DeveloperAndAppInfo(
+fun AppInfo(
     isShownState: State<Boolean>,
     onDismissClick: () -> Unit,
     onOkayClick: () -> Unit,
@@ -49,9 +49,9 @@ fun DeveloperAndAppInfo(
         }) {
             Column(
                 modifier = modifier
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(MaterialTheme.shapes.large)
                     .padding(2.dp)
-                    .shadow(elevation = 4.dp, RoundedCornerShape(24.dp))
+                    .shadow(elevation = 4.dp, MaterialTheme.shapes.large)
                     .background(MaterialTheme.colors.surface)
                     .padding(spacing.spaceMedium),
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -99,7 +99,7 @@ fun DeveloperAndAppInfo(
                     color = MaterialTheme.colors.onSurface
                 )
                 Text(
-                    text = stringResource(R.string.app_version),
+                    text = Configuration.APP_VERSION,
                     style = MaterialTheme.typography.body1,
                     fontSize = descriptionTextSize,
                     color = MaterialTheme.colors.onSurface
@@ -107,7 +107,7 @@ fun DeveloperAndAppInfo(
                 Spacer(modifier = Modifier.height(spacing.spaceExtraSmall))
                 Spacer(modifier = Modifier.height(spacing.spaceMedium))
                 TextButton(modifier = Modifier.align(Alignment.End), onClick = onOkayClick) {
-                    Text(text = "Okay", style = MaterialTheme.typography.button)
+                    Text(text = stringResource(id = R.string.okay), style = MaterialTheme.typography.button)
                 }
             }
         }

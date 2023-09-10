@@ -1,8 +1,8 @@
 package com.voitov.tracker_presentation.trackable_food_manager_screen
 
-import com.voitov.common.utils.UiText
 import com.voitov.common.R
 import com.voitov.common.nav.TrackableFoodManagerSection
+import com.voitov.common.utils.UiText
 
 data class TrackableFoodManagerScreenState(
     val sections: List<SectionUiModel>
@@ -22,3 +22,16 @@ val sectionsByDefault = listOf(
         section = TrackableFoodManagerSection.ADDING_CUSTOM_FOOD_SECTION
     )
 )
+
+sealed class TrackableFoodManagerScreenEvent {
+    data class OnCardContentClick(val sectionUiModel: SectionUiModel) :
+        TrackableFoodManagerScreenEvent()
+
+    data class OnNavAgreementButtonClick(val sectionUiModel: SectionUiModel) :
+        TrackableFoodManagerScreenEvent()
+}
+
+sealed class TrackableFoodManagerUiSideEffect {
+    data class NavigateToSection(val section: TrackableFoodManagerSection) :
+        TrackableFoodManagerUiSideEffect()
+}

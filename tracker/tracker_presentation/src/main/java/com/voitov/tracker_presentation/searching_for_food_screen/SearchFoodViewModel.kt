@@ -10,9 +10,12 @@ import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import com.voitov.tracker_domain.model.Country
-import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackableFoodSearchingType
 import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.SearchFoodScreenEvent
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.SearchFoodScreenState
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSection
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSectionScreenState
 import com.voitov.tracker_presentation.searching_for_food_screen.mapper.toCustomTrackableFood
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
