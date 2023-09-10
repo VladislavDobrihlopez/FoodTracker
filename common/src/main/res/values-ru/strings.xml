@@ -89,4 +89,12 @@
     <string name="save">Сохранить</string>
     <string name="section_local">Локальные</string>
     <string name="section_internet">Интернет</string>
+    <string name="content_description_add_photo">Добавить фото</string>
+    <string name="content_description_some_food">Немного еды</string>
+    <string name="you_should_set_image">Вы должны поставить сообщение</string>
+    <string name="content_description_close">Закрыть</string>
+    <string name="content_description_do_reonboarding">Пройти онбординг заново</string>
+    <string name="content_description_take_look_at_explanations">Посмотреть объяснения</string>
+    <string name="options">Возможности</string>
+    <string name="okay">Хорошо</string>
 </resources>
