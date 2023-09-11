@@ -1,6 +1,5 @@
 package com.voitov.onboarding_presentation.activity_level_screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,32 +20,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.domain.entities.PhysicalActivityLevel
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.common.utils.UiEvents
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.SelectionButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun ActivityLevelScreen(
     onNavigate: () -> Unit,
-    viewModel: ActivityLevelViewModel = hiltViewModel<ActivityLevelViewModel>(),
+    viewModel: ActivityLevelViewModel = hiltViewModel(),
 ) {
     val spacing = LocalSpacing.current
-    val scope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvent
-            .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
-                when (event) {
-                    UiEvents.DispatchNavigationRequest -> onNavigate()
-                    else -> throw IllegalStateException()
-                }
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                UiSideEffect.DispatchNavigationRequest -> onNavigate()
+                else -> throw IllegalStateException()
             }
-            .launchIn(scope)
+        }
     }
 
     Box(

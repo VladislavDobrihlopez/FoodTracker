@@ -61,6 +61,8 @@ dependencies {
     implementation(Compose.viewModelCompose)
     implementation(Compose.activityCompose)
 
+    implementation(MaterialDialogs.dialogs)
+
     implementation(Dagger2Hilt.hiltAndroid)
     "kapt"(Dagger2Hilt.hiltCompiler)
 

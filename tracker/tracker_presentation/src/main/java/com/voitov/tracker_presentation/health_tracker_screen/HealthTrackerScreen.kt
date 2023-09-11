@@ -1,8 +1,10 @@
 package com.voitov.tracker_presentation.health_tracker_screen
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,65 +13,97 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.MealItem
 import com.voitov.tracker_presentation.components.TrackedFoodItem
+import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
+import com.voitov.tracker_presentation.health_tracker_screen.components.DaySelector
+import com.voitov.tracker_presentation.health_tracker_screen.components.NutrientOverviewHeader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 fun HealthTrackerScreen(
-    scaffoldState: ScaffoldState,
+    snackbarHostState: SnackbarHostState,
+    onDoReonboarding: () -> Unit,
+    onNavigate: (MealType, Int, Int, Int) -> Unit,
     viewModel: HealthTrackerOverviewViewModel = hiltViewModel(),
-    onNavigate: (MealType, Int, Int, Int) -> Unit
 ) {
     val spacing = LocalSpacing.current
     val screenState = viewModel.screenState
     val context = LocalContext.current
-    Log.d("TEST_STATE", screenState.toString())
+    val appInfoDialogIsShownState = rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    val eventScope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     val scope = remember { CoroutineScope(Dispatchers.Main) }
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvent
-            .onEach { event ->
-                Log.d("TEST_CHANNEL", "delivered")
-                when (event) {
-                    is UiEvents.ShowUpSnackBar -> {
-                        scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
-                    }
-                    else -> throw IllegalStateException()
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiSideEffect.ShowUpSnackBar -> {
+                    snackbarHostState.showSnackbar(event.text.asString(context))
                 }
+
+                else -> throw IllegalStateException()
             }
-            .launchIn(eventScope)
+        }
+    }
+
+    AppInfo(
+        isShownState = appInfoDialogIsShownState,
+        onDismissClick = {
+            appInfoDialogIsShownState.value = false
+        },
+        onOkayClick = {
+            appInfoDialogIsShownState.value = false
+        }
+    )
+
+    val areTopBarActionsExpanded = remember(viewModel.screenState.areTopBarActionsExpanded) {
+        mutableStateOf(viewModel.screenState.areTopBarActionsExpanded)
+    }
+
+    val dateTime = remember(screenState.dateTime) {
+        mutableStateOf(screenState.dateTime)
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            NutrientOverviewHeader(screenState)
+            NutrientOverviewHeader(
+                isTopBarExpanded = areTopBarActionsExpanded,
+                state = screenState,
+                onAppInfoClick = {
+                    appInfoDialogIsShownState.value = true
+                },
+                onDoReonboardingClick = {
+                    viewModel.onEvent(HealthTrackerScreenEvent.DoReonbording)
+                    onDoReonboarding()
+                },
+                onToggleTopBar = {
+                    viewModel.onEvent(HealthTrackerScreenEvent.ToggleTopBar)
+                }
+            )
         }
-
-        val dateTime = mutableStateOf(screenState.dateTime)
 
         item {
             DaySelector(
@@ -88,7 +122,11 @@ fun HealthTrackerScreen(
                     )
                 )
             }, meal = meal)
-            AnimatedVisibility(visible = meal.isExpanded) {
+            AnimatedVisibility(
+                visible = meal.isExpanded,
+                enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+            ) {
                 val filteredItems =
                     screenState.trackedFoods.filter { meal.mealType == it.mealType }.toList()
                 LazyColumn(modifier = Modifier.height(100.dp * (filteredItems.size + 1))) {
@@ -111,29 +149,19 @@ fun HealthTrackerScreen(
                                         foodItem
                                     )
                                 )
-                                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                                    "Do you want to return back?",
-                                    "Restore",
+                                val snackBarResult = snackbarHostState.showSnackbar(
+                                    context.getString(R.string.do_you_want_go_back),
+                                    context.getString(R.string.restore),
                                     SnackbarDuration.Short
                                 )
                                 when (snackBarResult) {
                                     SnackbarResult.Dismissed -> {
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully deleted",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                         keepAliveState.value = false
                                     }
 
                                     SnackbarResult.ActionPerformed -> {
                                         viewModel.onEvent(HealthTrackerScreenEvent.RestoreFoodItem)
                                         keepAliveState.value = true
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully restored",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
                                 }
                             }

@@ -25,24 +25,31 @@ import com.voitov.common.domain.entities.PhysicalActivityLevel
 import com.voitov.common.domain.entities.UserProfile
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
+import com.voitov.common.nav.TrackableFoodManagerSection
 import com.voitov.foodtracker.MainActivity
 import com.voitov.foodtracker.navigation.AppNavState
 import com.voitov.foodtracker.navigation.navigateTo
 import com.voitov.foodtracker.repository.FakeTrackerRepository
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
+import com.voitov.foodtracker.waitUntilTimeout
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_domain.model.TrackableFood
-import com.voitov.tracker_domain.use_case.DeleteFoodUseCase
+import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
+import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
-import com.voitov.tracker_domain.use_case.InsertFoodUseCase
-import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
-import com.voitov.tracker_domain.use_case.RetrieveAllFoodOnDateUseCase
-import com.voitov.tracker_domain.use_case.SearchFoodUseCase
+import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
+import com.voitov.tracker_domain.use_case.SearchCustomTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.SearchTrackableFoodUseCase
+import com.voitov.tracker_presentation.custom_food_screen.CustomFoodScreen
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerOverviewViewModel
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchFoodViewModel
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchScreen
+import com.voitov.tracker_presentation.trackable_food_manager_screen.TrackableFoodManagerScreen
+import com.voitov.tracker_presentation.trackable_food_manager_screen.TrackableFoodManagerViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.mockk.every
@@ -68,6 +75,7 @@ class HealthTrackerOverviewTest {
     private lateinit var filterOutUseCase: FilterOutDigitsUseCase
     private lateinit var searchViewModel: SearchFoodViewModel
     private lateinit var overviewViewModel: HealthTrackerOverviewViewModel
+    private lateinit var trackableManagerViewModel: TrackableFoodManagerViewModel
     private lateinit var navHostController: NavHostController
 
     @Before
@@ -95,16 +103,18 @@ class HealthTrackerOverviewTest {
         )
 
         useCasesWrapper = NutrientStuffUseCasesWrapper(
-            deleteFoodUseCase = DeleteFoodUseCase(repository = repository),
+            deleteTrackedFoodUseCase = DeleteTrackedFoodUseCase(repository = repository),
             doNutrientMathUseCase = DoNutrientMathUseCase(
                 keyValueStorage = keyValueStorage
             ),
-            insertFoodUseCase = InsertFoodUseCase(repository = repository),
+            insertTrackableFoodUseCase = InsertTrackableFoodUseCase(repository = repository),
             restoreFoodUseCase = RestoreFoodUseCase(repository = repository),
-            retrieveAllFoodOnDateUseCase = RetrieveAllFoodOnDateUseCase(
+            retrieveAllTrackedFoodOnDateUseCase = RetrieveAllTrackedFoodOnDateUseCase(
                 repository = repository
             ),
-            searchFoodUseCase = SearchFoodUseCase(repository = repository)
+            searchTrackableFoodUseCase = SearchTrackableFoodUseCase(repository = repository),
+            deleteTrackableCustomFoodUseCase = DeleteTrackableCustomFoodUseCase(repository = repository),
+            searchCustomTrackableFoodUseCase = SearchCustomTrackableFoodUseCase(repository = repository)
         )
         filterOutUseCase = FilterOutDigitsUseCase()
         searchViewModel = SearchFoodViewModel(
@@ -115,6 +125,7 @@ class HealthTrackerOverviewTest {
             useCase = useCasesWrapper,
             keyValueStorage = keyValueStorage
         )
+        trackableManagerViewModel = TrackableFoodManagerViewModel()
 
         composableRule.activity.setContent {
             FoodTrackerTheme {
@@ -128,19 +139,75 @@ class HealthTrackerOverviewTest {
                     ) {
                         composable(route = AppNavState.TrackerOverview.route) {
                             HealthTrackerScreen(
-                                scaffoldState = scaffoldState,
+                                snackbarHostState = scaffoldState.snackbarHostState,
                                 onNavigate = { mealType, year, month, day ->
                                     navHostController.navigateTo(
-                                        AppNavState.Search.createRoute(
-                                            mealType = mealType.name,
-                                            year = year,
-                                            month = month,
-                                            dayOfWeek = day
+                                        AppNavState.TrackableFoodManager.createRoute(
+                                            mealType.name,
+                                            year,
+                                            month,
+                                            day
                                         )
                                     )
                                 },
-                                viewModel = overviewViewModel
+                                viewModel = overviewViewModel,
+                                onDoReonboarding = {
+                                    navHostController.navigate(AppNavState.Welcome.route) {
+                                        popUpTo(AppNavState.TrackerOverview.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                             )
+                        }
+
+                        composable(
+                            route = AppNavState.TRACKABLE_FOOD_MANAGER_ROUTE,
+                            arguments = listOf(
+                                navArgument(AppNavState.TrackableFoodManager.MEAL_TYPE_KEY) {
+                                    type = NavType.StringType
+                                },
+                                navArgument(AppNavState.TrackableFoodManager.YEAR_KEY) {
+                                    type = NavType.IntType
+                                },
+                                navArgument(AppNavState.TrackableFoodManager.MONTH_KEY) {
+                                    type = NavType.IntType
+                                },
+                                navArgument(AppNavState.TrackableFoodManager.DAY_OF_WEEK_KEY) {
+                                    type = NavType.IntType
+                                })
+                        ) { backStackEntry ->
+                            val mealType =
+                                backStackEntry.arguments?.getString(AppNavState.Search.MEAL_TYPE_KEY)!!
+                            val year =
+                                backStackEntry.arguments?.getInt(AppNavState.Search.YEAR_KEY)!!
+                            val month =
+                                backStackEntry.arguments?.getInt(AppNavState.Search.MONTH_KEY)!!
+                            val day =
+                                backStackEntry.arguments?.getInt(AppNavState.Search.DAY_OF_WEEK_KEY)!!
+
+                            TrackableFoodManagerScreen(
+                                viewModel = trackableManagerViewModel,
+                                onNavigate = { section ->
+                                    when (section) {
+                                        TrackableFoodManagerSection.ADDING_CUSTOM_FOOD_SECTION -> {
+                                            navHostController.navigateTo(
+                                                AppNavState.CustomFoodAdder.route
+                                            )
+                                        }
+
+                                        TrackableFoodManagerSection.SEARCHING_FROM_EXTERNAL_OR_INTERNAL_FOOD_SECTION -> {
+                                            navHostController.navigateTo(
+                                                AppNavState.Search.createRoute(
+                                                    mealType,
+                                                    year,
+                                                    month,
+                                                    day
+                                                )
+                                            )
+                                        }
+                                    }
+                                })
                         }
 
                         composable(
@@ -168,6 +235,7 @@ class HealthTrackerOverviewTest {
                             val day =
                                 backStackEntry.arguments?.getInt(AppNavState.Search.DAY_OF_WEEK_KEY)!!
                             SearchScreen(
+                                viewModel = searchViewModel,
                                 scaffoldState = scaffoldState,
                                 mealType = MealType.valueOf(mealType),
                                 day = day,
@@ -175,8 +243,16 @@ class HealthTrackerOverviewTest {
                                 year = year,
                                 onNavigateUp = {
                                     navHostController.navigateUp()
-                                },
-                                viewModel = searchViewModel
+                                }
+                            )
+                        }
+
+                        composable(route = AppNavState.CustomFoodAdder.route) {
+                            CustomFoodScreen(
+                                snackBarState = scaffoldState.snackbarHostState,
+                                onNavigateUp = {
+                                    navHostController.popBackStack()
+                                }
                             )
                         }
                     }
@@ -190,11 +266,12 @@ class HealthTrackerOverviewTest {
         repository.apiSearchResults = listOf<TrackableFood>(
             TrackableFood(
                 name = "Belarusian draniki",
-                imageUrl = null,
+                imageSourcePath = null,
                 caloriesPer100g = 4100,
                 carbsPer100g = 400,
                 proteinPer100g = 400,
-                fatProteinPer100g = 100
+                fatProteinPer100g = 100,
+                id = "1"
             )
         )
 
@@ -216,7 +293,19 @@ class HealthTrackerOverviewTest {
 
         assertThat(
             navHostController.currentDestination
-                ?.route?.startsWith("search/")
+                ?.route?.startsWith("trackable_manager/")
+        ).isTrue()
+
+        composableRule.onNodeWithText("Pick existent food")
+            .performClick()
+
+        composableRule.onNodeWithText("Go")
+            .assertExists()
+            .performClick()
+
+        assertThat(
+            navHostController.currentDestination
+                ?.route?.startsWith( "search/")
         ).isTrue()
 
         composableRule.onNodeWithTag("searchbar_textfield")
@@ -228,7 +317,10 @@ class HealthTrackerOverviewTest {
         composableRule.onNodeWithTag("trackablefood_textfield")
             .assertDoesNotExist()
 
-        composableRule.onNodeWithText("Carbs")
+        composableRule.waitUntilTimeout(1000)
+
+        composableRule
+            .onNodeWithText("Carbs")
             .performClick()
 
         composableRule.onNodeWithTag("trackablefood_textfield")
@@ -236,6 +328,14 @@ class HealthTrackerOverviewTest {
 
         composableRule.onNodeWithContentDescription("Track")
             .performClick()
+
+        composableRule.waitUntilTimeout(500)
+
+        composableRule.onNodeWithText("OKAY").performClick()
+
+        composableRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
 
         assertThat(
             navHostController.currentDestination

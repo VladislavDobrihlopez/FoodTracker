@@ -20,15 +20,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FoodTrackerTheme {
-                AppNavGraph(startDestination = getStartDestination())
+                AppNavGraph(
+                    startDestination = getStartDestination(),
+                )
             }
         }
     }
 
-    private fun getStartDestination() =
-        when (keyValueStorage.loadWhetherOnboardingIsRequired()) {
-            true -> AppNavState.Welcome.route
-            false -> AppNavState.TrackerOverview.route
+    private fun getStartDestination(): String {
+        val needOnboarding = keyValueStorage.loadWhetherOnboardingIsRequired()
+        return if (needOnboarding) {
+            AppNavState.Welcome.route
+        } else {
+            AppNavState.TrackerOverview.route
         }
+    }
 }
 

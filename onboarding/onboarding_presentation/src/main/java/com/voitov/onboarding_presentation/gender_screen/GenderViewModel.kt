@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.domain.entities.Gender
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -21,8 +21,8 @@ class GenderViewModel @Inject constructor(
     var genderState by mutableStateOf<Gender>(Gender.Male)
         private set
 
-    private val _uiEvent = Channel<UiEvents>()
-    val uiEvent = _uiEvent
+    private val _uiSideEffect = Channel<UiSideEffect>()
+    val uiEvent = _uiSideEffect
         .receiveAsFlow()
 
     fun onSelect(gender: Gender) {
@@ -32,7 +32,7 @@ class GenderViewModel @Inject constructor(
     fun onNavigate() {
         viewModelScope.launch {
             keyValueStorage.saveGender(genderState)
-            _uiEvent.send(UiEvents.DispatchNavigationRequest)
+            _uiSideEffect.send(UiSideEffect.DispatchNavigationRequest)
         }
     }
 }

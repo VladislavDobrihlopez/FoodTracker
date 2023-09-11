@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,10 +21,10 @@ class HeightViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var heightState by mutableStateOf<String>("175")
+    var heightState by mutableStateOf<String>(HEIGHT_BY_DEFAULT.toString())
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onChange(value: String) {
@@ -36,12 +36,16 @@ class HeightViewModel @Inject constructor(
     fun onNavigate() {
         viewModelScope.launch {
             val userHeight = heightState.toIntOrNull() ?: kotlin.run {
-                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_height_cant_be_empty)))
+                _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_height_cant_be_empty)))
                 return@launch
             }
 
             keyValueStorage.saveHeight(userHeight)
-            _uiChannel.send(UiEvents.DispatchNavigationRequest)
+            _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
+    }
+
+    companion object {
+        private const val HEIGHT_BY_DEFAULT = 175
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.voitov.tracker_data.local.entity.TrackableFoodEntity
 import com.voitov.tracker_data.local.entity.TrackedFoodEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -19,8 +20,17 @@ interface TrackedFoodDao {
     fun selectByDate(year: Int, month: Int, dayOfMonth: Int): Flow<List<TrackedFoodEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrackableFood(food: TrackedFoodEntity)
+    fun insertTrackedFood(food: TrackedFoodEntity)
 
     @Delete
     fun deleteTrackedFood(food: TrackedFoodEntity)
+
+    @Query("DELETE FROM trackable_food WHERE id=:id")
+    fun deleteCustomTrackableFood(id: Int)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCustomTrackableFood(food: TrackableFoodEntity)
+
+    @Query("SELECT * FROM trackable_food")
+    fun getAllCustomTrackableFood(): Flow<List<TrackableFoodEntity>>
 }

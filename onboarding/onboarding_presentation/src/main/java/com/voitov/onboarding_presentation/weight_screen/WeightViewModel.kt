@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,12 +18,11 @@ import javax.inject.Inject
 @HiltViewModel
 class WeightViewModel @Inject constructor(
     private val keyValueStorage: UserInfoKeyValueStorage,
-    private val filterOutDigitsUseCase: FilterOutDigitsUseCase
 ) : ViewModel() {
-    var weightState by mutableStateOf<String>("70.0")
+    var weightState by mutableStateOf<String>(WEIGHT_BY_DEFAULT.toString())
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onChange(value: String) {
@@ -36,12 +34,16 @@ class WeightViewModel @Inject constructor(
     fun onNavigate() {
         viewModelScope.launch {
             val userWeight = weightState.toFloatOrNull() ?: kotlin.run {
-                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_height_cant_be_empty)))
+                _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_height_cant_be_empty)))
                 return@launch
             }
 
             keyValueStorage.saveWeight(userWeight)
-            _uiChannel.send(UiEvents.DispatchNavigationRequest)
+            _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
         }
+    }
+
+    companion object {
+        private const val WEIGHT_BY_DEFAULT = 70.0
     }
 }

@@ -1,8 +1,9 @@
 package com.voitov.tracker_presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,7 +28,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
@@ -44,47 +44,51 @@ fun SearchBar(
     textAndHintStyle: TextStyle = MaterialTheme.typography.body1,
     textColor: Color = MaterialTheme.colors.onSurface,
     maxLines: Int = 2,
+    content: @Composable RowScope.() -> Unit
 ) {
     val spacing = LocalSpacing.current
-    Box(modifier = modifier) {
-        BasicTextField(
-            modifier = Modifier
-                .padding(2.dp)
-                .shadow(2.dp, RoundedCornerShape(5.dp))
-                .background(MaterialTheme.colors.surface)
-                .clip(RoundedCornerShape(5.dp))
-                .fillMaxWidth()
-                .padding(spacing.spaceMedium)
-                .padding(end = spacing.spaceSmall)
-                .onFocusChanged { onFocusChange(it) }
-                .testTag("searchbar_textfield"),
-            // to let text not overlap the search icon
-            value = text,
-            onValueChange = onValueChange,
-            maxLines = maxLines,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = {
-                onSearch(text)
-                defaultKeyboardAction(ImeAction.Search)
-            }),
-        )
-        if (shouldShowHint) {
-            Text(
+    Row(modifier = modifier) {
+        Box(modifier = Modifier.weight(1f)) {
+            BasicTextField(
                 modifier = Modifier
-                    .padding(start = spacing.spaceSmall)
-                    .align(Alignment.CenterStart),
-                text = hint,
-                color = textColor,
-                style = textAndHintStyle
+                    .padding(2.dp)
+                    .shadow(2.dp, RoundedCornerShape(5.dp))
+                    .background(MaterialTheme.colors.surface)
+                    .clip(RoundedCornerShape(5.dp))
+                    .fillMaxWidth()
+                    .padding(spacing.spaceMedium)
+                    .padding(end = spacing.spaceSmall)
+                    .onFocusChanged { onFocusChange(it) }
+                    .testTag("searchbar_textfield"),
+                // to let text not overlap the search icon
+                value = text,
+                onValueChange = onValueChange,
+                maxLines = maxLines,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {
+                    onSearch(text)
+                    defaultKeyboardAction(ImeAction.Search)
+                }),
             )
+            if (shouldShowHint) {
+                Text(
+                    modifier = Modifier
+                        .padding(start = spacing.spaceSmall)
+                        .align(Alignment.CenterStart),
+                    text = hint,
+                    color = textColor,
+                    style = textAndHintStyle
+                )
+            }
+            IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = {
+                onSearch(text)
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
         }
-        IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = {
-            onSearch(text)
-        }) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = stringResource(R.string.search)
-            )
-        }
+        content()
     }
 }

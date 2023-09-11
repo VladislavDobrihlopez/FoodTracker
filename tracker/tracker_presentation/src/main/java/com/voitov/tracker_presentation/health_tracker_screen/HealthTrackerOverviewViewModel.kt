@@ -6,11 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voitov.common.R
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.tracker_domain.model.TrackedFood
-import com.voitov.tracker_domain.use_case.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -31,7 +31,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     var screenState by mutableStateOf(HealthTrackerScreenState())
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     private var ongoingRefreshingJob: Job? = null
@@ -80,13 +80,13 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                 }
             }
 
-            HealthTrackerScreenEvent.DoReonbording -> {
+            is HealthTrackerScreenEvent.DoReonbording -> {
                 keyValueStorage.saveWhetherOnboardingIsRequired(true)
             }
 
             is HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked -> {
                 viewModelScope.launch {
-                    useCase.deleteFoodUseCase(event.foodItem)
+                    useCase.deleteTrackedFoodUseCase(event.foodItem)
                     lastDeletedItems.push(event.foodItem)
                     refreshScreenDataForCurrentDay()
                 }
@@ -98,12 +98,16 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                     refreshScreenDataForCurrentDay()
                 }
             }
+
+            HealthTrackerScreenEvent.ToggleTopBar -> {
+                screenState = screenState.copy(areTopBarActionsExpanded = !screenState.areTopBarActionsExpanded)
+            }
         }
     }
 
     private fun refreshScreenDataForCurrentDay() {
         ongoingRefreshingJob?.cancel()
-        ongoingRefreshingJob = useCase.retrieveAllFoodOnDateUseCase(screenState.dateTime)
+        ongoingRefreshingJob = useCase.retrieveAllTrackedFoodOnDateUseCase(screenState.dateTime)
             .onEach { trackedFoods ->
                 val nutrientCalculationsResult = useCase.doNutrientMathUseCase(trackedFoods)
                 screenState = screenState.copy(
@@ -136,7 +140,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                 )
             }
             .catch {
-                _uiChannel.send(UiEvents.ShowUpSnackBar(UiText.StaticResource(R.string.error_unknown)))
+                _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.StaticResource(R.string.error_unknown)))
             }
             .launchIn(viewModelScope)
     }

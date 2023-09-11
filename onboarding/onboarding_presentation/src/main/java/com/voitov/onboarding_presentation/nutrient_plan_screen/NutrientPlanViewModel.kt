@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.voitov.common.utils.UiEvents
+import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.common.domain.use_cases.FilterOutDigitsUseCase
 import com.voitov.onboarding_domain.use_cases.HandleNutrientPlanUseCase
@@ -21,10 +21,16 @@ class NutrientPlanViewModel @Inject constructor(
     private val filterOutDigitsUseCase: FilterOutDigitsUseCase,
     private val nutrientPlanUseCase: HandleNutrientPlanUseCase
 ) : ViewModel() {
-    var screenState by mutableStateOf(NutrientScreenState("50", "30", "20"))
+    var screenState by mutableStateOf(
+        NutrientScreenState(
+            CARB_RATIO_BY_DEFAULT.toString(),
+            PROTEIN_RATIO_BY_DEFAULT.toString(),
+            FAT_RATIO_BY_DEFAULT.toString()
+        )
+    )
         private set
 
-    private val _uiChannel = Channel<UiEvents>()
+    private val _uiChannel = Channel<UiSideEffect>()
     val uiEvent = _uiChannel.receiveAsFlow()
 
     fun onEvent(event: NutrientScreenEvent) {
@@ -47,7 +53,7 @@ class NutrientPlanViewModel @Inject constructor(
                 screenState = screenState.copy(proteinRation = filterOutDigitsUseCase(event.value))
             }
 
-            NutrientScreenEvent.NavigateNext -> {
+            NutrientScreenEvent.OnClickNavigationElement -> {
                 viewModelScope.launch {
                     val result = nutrientPlanUseCase(
                         carbsRatioText = screenState.carbRatio,
@@ -59,15 +65,21 @@ class NutrientPlanViewModel @Inject constructor(
                             keyValueStorage.saveCarbRatio(result.carbRatio)
                             keyValueStorage.saveFatRatio(result.fatRatio)
                             keyValueStorage.saveProteinRatio(result.proteinRatio)
-                            _uiChannel.send(UiEvents.DispatchNavigationRequest)
+                            _uiChannel.send(UiSideEffect.DispatchNavigationRequest)
                         }
 
                         is HandleNutrientPlanUseCase.Result.Error -> {
-                            _uiChannel.send(UiEvents.ShowUpSnackBar(result.message))
+                            _uiChannel.send(UiSideEffect.ShowUpSnackBar(result.message))
                         }
                     }
                 }
             }
         }
+    }
+
+    companion object {
+        private const val CARB_RATIO_BY_DEFAULT = 50
+        private const val FAT_RATIO_BY_DEFAULT = 30
+        private const val PROTEIN_RATIO_BY_DEFAULT = 20
     }
 }

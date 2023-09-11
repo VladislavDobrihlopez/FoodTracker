@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +32,9 @@ fun AddButton(
     val spacing = LocalSpacing.current
     Row(modifier = modifier
         .fillMaxWidth()
-        .clip(RoundedCornerShape(100f))
+        .clip(CircleShape)
         .clickable { onClick() }
-        .border(borderThin, borderColor, RoundedCornerShape(100f))
+        .border(borderThin, borderColor, CircleShape)
         .padding(spacing.spaceSmall),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
