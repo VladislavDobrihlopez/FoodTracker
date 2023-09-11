@@ -15,13 +15,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.voitov.common.R
 import com.voitov.common.nav.TrackableFoodManagerSection
 import com.voitov.common_ui.LocalSpacing
@@ -30,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @Composable
 fun TrackableFoodManagerScreen(
@@ -38,20 +45,15 @@ fun TrackableFoodManagerScreen(
 ) {
     val spacing = LocalSpacing.current
     val context = LocalContext.current
-    val scope = remember {
-        CoroutineScope(Dispatchers.Main.immediate)
-    }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvent
-            .onEach { event ->
-                when (event) {
-                    is TrackableFoodManagerUiSideEffect.NavigateToSection -> {
-                        onNavigate(event.section)
-                    }
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is TrackableFoodManagerUiSideEffect.NavigateToSection -> {
+                    onNavigate(event.section)
                 }
             }
-            .launchIn(scope)
+        }
     }
 
     Column(

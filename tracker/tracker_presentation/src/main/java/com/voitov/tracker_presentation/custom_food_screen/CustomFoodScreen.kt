@@ -40,11 +40,7 @@ import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_presentation.custom_food_screen.components.PhotoPicker
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun CustomFoodScreen(
@@ -57,9 +53,6 @@ fun CustomFoodScreen(
     var orientation by remember {
         mutableStateOf(appConfig.orientation)
     }
-    val scope = remember {
-        CoroutineScope(Dispatchers.Main.immediate)
-    }
 
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -71,19 +64,17 @@ fun CustomFoodScreen(
     )
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvents
-            .onEach { event ->
-                when (event) {
-                    is UiSideEffect.NavigateUp -> {
-                        onNavigateUp()
-                    }
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is UiSideEffect.NavigateUp -> {
+                    onNavigateUp()
+                }
 
-                    is UiSideEffect.ShowUpSnackBar -> {
-                        snackBarState.showSnackbar(message = event.text.asString(context))
-                    }
+                is UiSideEffect.ShowUpSnackBar -> {
+                    snackBarState.showSnackbar(message = event.text.asString(context))
                 }
             }
-            .launchIn(scope)
+        }
 
         snapshotFlow {
             appConfig.orientation
@@ -100,7 +91,10 @@ fun CustomFoodScreen(
         onSaveRequestButtonClick = {
             viewModel.onEvent(CustomFoodScreenEvent.OnSaveButtonClick)
             viewModel.screenState.imageUri?.let {
-                context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
             }
         },
         onAddImageButtonClick = {

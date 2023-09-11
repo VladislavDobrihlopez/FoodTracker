@@ -19,7 +19,6 @@ class TrackableFoodManagerViewModel @Inject constructor() : ViewModel() {
     var screenState by mutableStateOf(TrackableFoodManagerScreenState(sectionsByDefault))
         private set
 
-
     fun onEvent(event: TrackableFoodManagerScreenEvent) {
         viewModelScope.launch {
             when (event) {

@@ -20,7 +20,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FoodTrackerTheme {
-                AppNavGraph(startDestination = getStartDestination())
+                AppNavGraph(
+                    startDestination = getStartDestination(),
+                )
             }
         }
     }

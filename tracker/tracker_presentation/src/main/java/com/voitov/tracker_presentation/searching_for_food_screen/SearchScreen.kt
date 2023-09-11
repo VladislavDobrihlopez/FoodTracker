@@ -37,7 +37,6 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -59,10 +58,6 @@ import com.voitov.tracker_presentation.searching_for_food_screen.components.Sear
 import com.voitov.tracker_presentation.searching_for_food_screen.components.TrackableFoodUi
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.SearchFoodScreenEvent
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSection
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -83,28 +78,25 @@ fun SearchScreen(
 ) {
     val spacing = LocalSpacing.current
     val context = LocalContext.current
-    val scope = remember { CoroutineScope(Dispatchers.Main.immediate) }
     val scopeAsync = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.uiEvent
-            .onEach { event ->
-                when (event) {
-                    is UiSideEffect.ShowUpSnackBar -> {
-                        scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
-                        keyboardController?.hide()
-                    }
-
-                    is UiSideEffect.NavigateUp -> {
-                        onNavigateUp()
-                    }
-
-                    else -> throw IllegalStateException()
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiSideEffect.ShowUpSnackBar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(event.text.asString(context))
+                    keyboardController?.hide()
                 }
+
+                is UiSideEffect.NavigateUp -> {
+                    onNavigateUp()
+                }
+
+                else -> throw IllegalStateException()
             }
-            .launchIn(scope)
+        }
     }
 
     val screenState = viewModel.screenState
@@ -137,7 +129,10 @@ fun SearchScreen(
                 Spacer(modifier = Modifier.height(spacing.spaceExtraSmall))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+                    horizontalArrangement = Arrangement.spacedBy(
+                        4.dp,
+                        Alignment.CenterHorizontally
+                    )
                 ) {
                     screenState.countrySearchSettings.forEach { countryConfig ->
                         SearchConfigChip(
@@ -236,13 +231,19 @@ fun SearchScreen(
                 FancyIndicator(
                     MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(currentSelectedTab)])
+                        .tabIndicatorOffset(
+                            tabPositions[com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(
+                                currentSelectedTab
+                            )]
+                        )
                 )
             }
 
             TabRow(
                 backgroundColor = MaterialTheme.colors.surface,
-                selectedTabIndex = com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(currentSelectedTab),
+                selectedTabIndex = com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(
+                    currentSelectedTab
+                ),
                 indicator = indicator
             ) {
                 com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.forEachIndexed { _, tabSection ->
@@ -287,14 +288,24 @@ fun SearchScreen(
                             SearchFoodScreenEvent.OnAddTrackableFood(
                                 foodUi,
                                 mealType,
-                                LocalDateTime.of(year, month, day, localTime.hour, localTime.minute)
+                                LocalDateTime.of(
+                                    year,
+                                    month,
+                                    day,
+                                    localTime.hour,
+                                    localTime.minute
+                                )
                             )
                         )
                     }, extraActions = {
                         if (isInLocalMode(screenState.currentSelectedTab)) {
                             IconButton(
                                 onClick = {
-                                    viewModel.onEvent(SearchFoodScreenEvent.OnDeleteLocalFood(foodUi))
+                                    viewModel.onEvent(
+                                        SearchFoodScreenEvent.OnDeleteLocalFood(
+                                            foodUi
+                                        )
+                                    )
                                 },
                             ) {
                                 Icon(

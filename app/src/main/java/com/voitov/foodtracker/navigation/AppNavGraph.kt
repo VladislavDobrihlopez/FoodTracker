@@ -1,11 +1,9 @@
 package com.voitov.foodtracker.navigation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,12 +27,15 @@ import com.voitov.tracker_presentation.trackable_food_manager_screen.TrackableFo
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AppNavGraph(
-    navHostController: NavHostController = rememberNavController(),
     startDestination: String
 ) {
     val scaffoldState = rememberScaffoldState()
-    Scaffold(scaffoldState = scaffoldState, content = {
-        NavHost(startDestination = startDestination, navController = navHostController) {
+    val navHostController = rememberNavController()
+
+        NavHost(
+            startDestination = startDestination,
+            navController = navHostController
+        ) {
             composable(route = AppNavState.Welcome.route) {
                 HelloScreen {
                     navHostController.navigateTo(AppNavState.Gender) {
@@ -95,17 +96,19 @@ fun AppNavGraph(
                 })
             }
             composable(route = AppNavState.NutrientGoal.route) {
-                NutrientPlanScreen(snackBarState = scaffoldState.snackbarHostState, onNavigate = {
-                    navHostController.navigate(AppNavState.TrackerOverview.route) {
-                        popUpTo(AppNavState.Welcome.route) {
-                            inclusive = true
+                NutrientPlanScreen(
+                    snackBarState = scaffoldState.snackbarHostState,
+                    onNavigate = {
+                        navHostController.navigate(AppNavState.TrackerOverview.route) {
+                            popUpTo(AppNavState.Welcome.route) {
+                                inclusive = true
+                            }
                         }
-                    }
-                })
+                    })
             }
             composable(route = AppNavState.TrackerOverview.route) {
                 HealthTrackerScreen(
-                    scaffoldState = scaffoldState,
+                    snackbarHostState = scaffoldState.snackbarHostState,
                     onNavigate = { mealType, year, month, day ->
                         navHostController.navigateTo(
                             AppNavState.TrackableFoodManager.createRoute(
@@ -117,7 +120,7 @@ fun AppNavGraph(
                         )
                     },
                     onDoReonboarding = {
-                        navHostController.navigate(AppNavState.Welcome.route) {
+                        navHostController.navigateTo(AppNavState.Welcome.route) {
                             popUpTo(AppNavState.TrackerOverview.route) {
                                 inclusive = true
                             }
@@ -151,13 +154,13 @@ fun AppNavGraph(
                 TrackableFoodManagerScreen(onNavigate = { section ->
                     when (section) {
                         TrackableFoodManagerSection.ADDING_CUSTOM_FOOD_SECTION -> {
-                            navHostController.navigate(
+                            navHostController.navigateTo(
                                 AppNavState.CustomFoodAdder.route
                             )
                         }
 
                         TrackableFoodManagerSection.SEARCHING_FROM_EXTERNAL_OR_INTERNAL_FOOD_SECTION -> {
-                            navHostController.navigate(
+                            navHostController.navigateTo(
                                 AppNavState.Search.createRoute(
                                     mealType,
                                     year,
@@ -207,11 +210,9 @@ fun AppNavGraph(
                 CustomFoodScreen(
                     snackBarState = scaffoldState.snackbarHostState,
                     onNavigateUp = {
-                        Log.d("TEST_POPPING_UP", "popped ${navHostController.graph.nodes.size()}")
                         navHostController.popBackStack()
                     }
                 )
             }
         }
-    })
 }
