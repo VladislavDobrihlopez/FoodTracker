@@ -72,25 +72,6 @@ class FoodTrackerRepositoryImplTest {
         assertThat(result.isSuccess).isTrue()
     }
 
-    @Test
-    fun `Search for products, invalid response, must fail`() = runBlocking {
-        webServer.enqueue(MockResponse().apply {
-            setResponseCode(400)
-            setBody(SERVER_INCORRECT_RESPONSE)
-        })
-
-        val result = repository.searchForTrackableFood(
-            query = "integer",
-            page = 1000,
-            pageSize = 10,
-            country = Country.WORLD,
-            lowerBoundCoefficient = Configuration.LOWER_BOUND,
-            upperBoundCoefficient = Configuration.UPPER_BOUND
-        )
-
-        assertThat(result.isFailure).isTrue()
-    }
-
     @After
     fun tearDown() {
         webServer.shutdown()

@@ -1,5 +1,6 @@
 package com.voitov.tracker_domain.use_case
 
+import android.util.Log
 import com.voitov.common.Configuration
 import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.TrackableFood
@@ -17,6 +18,8 @@ class SearchTrackableFoodUseCase(
         lowerBoundCoefficient: Float = Configuration.LOWER_BOUND,
         upperBoundCoefficient: Float = Configuration.UPPER_BOUND
     ): Result<List<TrackableFood>> {
+        Log.d("TEST_E2E", "usecase $query $page $pageSize $country")
+
         return if (query.isNotBlank()) {
             repository.searchForTrackableFood(
                 query.trim(),
@@ -26,7 +29,9 @@ class SearchTrackableFoodUseCase(
                 lowerBoundCoefficient,
                 upperBoundCoefficient
             )
-                .map { it -> it.map { it.copy(id = UUID.randomUUID().toString()) } }
+                .map { it -> it.map { Log.d("TEST_E2E", "$it")
+                    it.copy(id = UUID.randomUUID().toString()) } }
+
         } else {
             Result.success(emptyList())
         }

@@ -1,9 +1,11 @@
 package com.voitov.foodtracker.navigation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +34,7 @@ fun AppNavGraph(
     val scaffoldState = rememberScaffoldState()
     val navHostController = rememberNavController()
 
+    Scaffold(scaffoldState = scaffoldState, modifier = Modifier.fillMaxSize()) {
         NavHost(
             startDestination = startDestination,
             navController = navHostController
@@ -215,4 +218,5 @@ fun AppNavGraph(
                 )
             }
         }
+    }
 }

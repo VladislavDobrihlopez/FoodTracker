@@ -1,5 +1,6 @@
 package com.voitov.tracker_presentation.searching_for_food_screen
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -37,7 +38,10 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -47,9 +51,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
+import com.voitov.common_ui.ProjectDimensions
 import com.voitov.tracker_domain.model.MealType
 import com.voitov.tracker_domain.model.TrackableFoodSearchingType
 import com.voitov.tracker_presentation.components.SearchBar
@@ -58,13 +66,14 @@ import com.voitov.tracker_presentation.searching_for_food_screen.components.Sear
 import com.voitov.tracker_presentation.searching_for_food_screen.components.TrackableFoodUi
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.SearchFoodScreenEvent
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSection
+import com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections
+import com.voitov.tracker_presentation.searching_for_food_screen.model.SearchConfigUiModel
+import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 @OptIn(
-    ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class,
-    ExperimentalLayoutApi::class
+    ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun SearchScreen(
@@ -113,49 +122,17 @@ fun SearchScreen(
                     }
                 }
             }
-
-            Column(modifier = Modifier.padding(spacing.spaceMedium)) {
-                Text(
-                    text = context.getString(R.string.search_settings),
-                    style = MaterialTheme.typography.h1,
-                    color = MaterialTheme.colors.onSurface
-                )
-                Spacer(modifier = Modifier.height(spacing.spaceSmall))
-                Text(
-                    text = context.getString(R.string.country),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onSurface
-                )
-                Spacer(modifier = Modifier.height(spacing.spaceExtraSmall))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        4.dp,
-                        Alignment.CenterHorizontally
+            BottomSheetContent(
+                settings = screenState.countrySearchSettings,
+                context = context,
+                spacing = spacing,
+                onChangeSearchConfig = {
+                    viewModel.onEvent(
+                        SearchFoodScreenEvent.OnTapCountry(it.country)
                     )
-                ) {
-                    screenState.countrySearchSettings.forEach { countryConfig ->
-                        SearchConfigChip(
-                            modifier = Modifier,
-                            onClick = {
-                                viewModel.onEvent(
-                                    SearchFoodScreenEvent.OnTapCountry(
-                                        countryConfig.country
-                                    )
-                                )
-                            },
-                            textStyle = MaterialTheme.typography.button,
-                            isSelected = countryConfig.isSelected,
-                            unSelectedText = countryConfig.country.shortenCode,
-                            selectedText = countryConfig.name.asString(context),
-                            imageResId = countryConfig.pictureResId
-                        )
-                    }
                 }
-                Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            }
+            )
         }) {
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             when {
                 screenState.isSearchingGoingOn -> CircularProgressIndicator()
@@ -173,22 +150,7 @@ fun SearchScreen(
                 .fillMaxSize()
                 .padding(spacing.spaceSmall)
         ) {
-            Text(
-                text = stringResource(
-                    id = R.string.add_meal, stringResource(
-                        id = when (mealType) {
-                            MealType.BREAKFAST -> R.string.breakfast
-                            MealType.BRUNCH -> R.string.brunch
-                            MealType.LUNCH -> R.string.lunch
-                            MealType.SUPPER -> R.string.supper
-                            MealType.DINNER -> R.string.dinner
-                            MealType.SNACK -> R.string.snacks
-                        }
-                    ).lowercase()
-                ),
-                style = MaterialTheme.typography.h1,
-                maxLines = 1
-            )
+            SectionHeader(mealType = mealType)
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
             Row(
                 modifier = Modifier.fillMaxWidth()
@@ -208,20 +170,12 @@ fun SearchScreen(
                     },
                     shouldShowHint = screenState.isHintVisible,
                 ) {
-                    AnimatedVisibility(visible = !isInLocalMode(screenState.currentSelectedTab)) {
-                        Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
-
-                        IconButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                scopeAsync.launch { sheetState.show() }
-                            }
-                        ) {
-                            Icon(
-                                Icons.Outlined.MoreVert,
-                                contentDescription = "menu"
-                            )
-                        }
+                    ButtonSearchSettings(
+                        isVisible = !isInLocalMode(screenState.currentSelectedTab),
+                        spacing = spacing
+                    ) {
+                        keyboardController?.hide()
+                        scopeAsync.launch { sheetState.show() }
                     }
                 }
             }
@@ -231,22 +185,18 @@ fun SearchScreen(
                 FancyIndicator(
                     MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .tabIndicatorOffset(
-                            tabPositions[com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(
-                                currentSelectedTab
-                            )]
-                        )
+                        .tabIndicatorOffset(tabPositions[tabSections.indexOf(currentSelectedTab)])
                 )
             }
 
             TabRow(
                 backgroundColor = MaterialTheme.colors.surface,
-                selectedTabIndex = com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.indexOf(
+                selectedTabIndex = tabSections.indexOf(
                     currentSelectedTab
                 ),
                 indicator = indicator
             ) {
-                com.voitov.tracker_presentation.searching_for_food_screen.contract.tabSections.forEachIndexed { _, tabSection ->
+                tabSections.forEachIndexed { _, tabSection ->
                     Tab(
                         onClick = {
                             viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
@@ -268,6 +218,37 @@ fun SearchScreen(
 
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
 
+            val dialogState = rememberMaterialDialogState()
+            val chosenFood = rememberSaveable {
+                mutableStateOf<TrackableFoodUiModel?>(null)
+            }
+            MaterialDialog(
+                dialogState = dialogState,
+                buttons = {
+                    positiveButton(
+                        textStyle = MaterialTheme.typography.button,
+                        res = R.string.take_time
+                    )
+                    negativeButton(
+                        textStyle = MaterialTheme.typography.button,
+                        res = R.string.cancel_time
+                    )
+                }
+            ) {
+                timepicker(
+                    title = stringResource(id = R.string.select_time),
+                    is24HourClock = true
+                ) { time ->
+                    viewModel.onEvent(
+                        SearchFoodScreenEvent.OnAddTrackableFood(
+                            chosenFood.value ?: throw IllegalStateException(),
+                            mealType,
+                            LocalDateTime.of(year, month, day, time.hour, time.minute)
+                        )
+                    )
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -282,21 +263,9 @@ fun SearchScreen(
                             )
                         )
                     }, onCache = {
+                        chosenFood.value = foodUi
                         keyboardController?.hide()
-                        val localTime = LocalTime.now()
-                        viewModel.onEvent(
-                            SearchFoodScreenEvent.OnAddTrackableFood(
-                                foodUi,
-                                mealType,
-                                LocalDateTime.of(
-                                    year,
-                                    month,
-                                    day,
-                                    localTime.hour,
-                                    localTime.minute
-                                )
-                            )
-                        )
+                        dialogState.show()
                     }, extraActions = {
                         if (isInLocalMode(screenState.currentSelectedTab)) {
                             IconButton(
@@ -310,7 +279,7 @@ fun SearchScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete food item"
+                                    contentDescription = stringResource(id = R.string.content_description_delete_food_item)
                                 )
                             }
                             Spacer(modifier = Modifier.width(spacing.spaceSmall))
@@ -320,6 +289,87 @@ fun SearchScreen(
             }
         }
     }
+}
+
+@Composable
+fun ButtonSearchSettings(isVisible: Boolean, spacing: ProjectDimensions, onClick: () -> Unit) {
+    AnimatedVisibility(visible = isVisible) {
+        Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
+
+        IconButton(
+            onClick = onClick
+        ) {
+            Icon(
+                Icons.Outlined.MoreVert,
+                contentDescription = stringResource(id = R.string.content_description_search_menu)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun BottomSheetContent(
+    settings: List<SearchConfigUiModel>,
+    context: Context,
+    spacing: ProjectDimensions,
+    onChangeSearchConfig: (SearchConfigUiModel) -> Unit
+) {
+
+    Column(modifier = Modifier.padding(spacing.spaceMedium)) {
+        Text(
+            text = context.getString(R.string.search_settings),
+            style = MaterialTheme.typography.h1,
+            color = MaterialTheme.colors.onSurface
+        )
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
+        Text(
+            text = context.getString(R.string.country),
+            style = MaterialTheme.typography.h2,
+            color = MaterialTheme.colors.onSurface
+        )
+        Spacer(modifier = Modifier.height(spacing.spaceExtraSmall))
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(
+                4.dp,
+                Alignment.CenterHorizontally
+            )
+        ) {
+            settings.forEach { countryConfig ->
+                SearchConfigChip(
+                    modifier = Modifier,
+                    onClick = { onChangeSearchConfig(countryConfig) },
+                    textStyle = MaterialTheme.typography.button,
+                    isSelected = countryConfig.isSelected,
+                    unSelectedText = countryConfig.country.shortenCode,
+                    selectedText = countryConfig.name.asString(context),
+                    imageResId = countryConfig.pictureResId
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
+    }
+}
+
+@Composable
+internal fun SectionHeader(mealType: MealType) {
+    Text(
+        text = stringResource(
+            id = R.string.add_meal, stringResource(
+                id = when (mealType) {
+                    MealType.BREAKFAST -> R.string.breakfast
+                    MealType.BRUNCH -> R.string.brunch
+                    MealType.LUNCH -> R.string.lunch
+                    MealType.SUPPER -> R.string.supper
+                    MealType.DINNER -> R.string.dinner
+                    MealType.SNACK -> R.string.snacks
+                }
+            ).lowercase()
+        ),
+        style = MaterialTheme.typography.h1,
+        maxLines = 1
+    )
 }
 
 private fun isInLocalMode(selectedTab: TabSection): Boolean {
