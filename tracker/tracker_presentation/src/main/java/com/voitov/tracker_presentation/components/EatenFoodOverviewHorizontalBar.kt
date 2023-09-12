@@ -30,11 +30,11 @@ fun EatenFoodOverviewHorizontalBar(
 ) {
     val backgroundColor = MaterialTheme.colors.background
 
-    val animatedFat = animateFloatAsState(targetValue = (fat * 9f) / caloriesGoal, label = "fat")
+    val animatedFat = animateFloatAsState(targetValue = (fat * 9f) / caloriesGoal)
     val animatedCarbs =
-        animateFloatAsState(targetValue = (carbs * 4f) / caloriesGoal, label = "carbs")
+        animateFloatAsState(targetValue = (carbs * 4f) / caloriesGoal)
     val animatedProteins =
-        animateFloatAsState(targetValue = (proteins * 4f) / caloriesGoal, label = "proteins")
+        animateFloatAsState(targetValue = (proteins * 4f) / caloriesGoal)
 
     Canvas(modifier = modifier) {
         val carbsWidth = animatedCarbs.value * size.width

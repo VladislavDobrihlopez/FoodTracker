@@ -99,7 +99,7 @@ fun AppInfo(
                     color = MaterialTheme.colors.onSurface
                 )
                 Text(
-                    text = Configuration.APP_VERSION,
+                    text = stringResource(id = R.string.app_version, Configuration.APP_VERSION),
                     style = MaterialTheme.typography.body1,
                     fontSize = descriptionTextSize,
                     color = MaterialTheme.colors.onSurface
@@ -107,7 +107,10 @@ fun AppInfo(
                 Spacer(modifier = Modifier.height(spacing.spaceExtraSmall))
                 Spacer(modifier = Modifier.height(spacing.spaceMedium))
                 TextButton(modifier = Modifier.align(Alignment.End), onClick = onOkayClick) {
-                    Text(text = stringResource(id = R.string.okay), style = MaterialTheme.typography.button)
+                    Text(
+                        text = stringResource(id = R.string.okay),
+                        style = MaterialTheme.typography.button
+                    )
                 }
             }
         }

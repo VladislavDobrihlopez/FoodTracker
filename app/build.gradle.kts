@@ -62,6 +62,7 @@ dependencies {
     implementation(Compose.activityCompose)
 
     implementation(MaterialDialogs.dialogs)
+    implementation(SplashScreen.splashScreenCore)
 
     implementation(Dagger2Hilt.hiltAndroid)
     "kapt"(Dagger2Hilt.hiltCompiler)

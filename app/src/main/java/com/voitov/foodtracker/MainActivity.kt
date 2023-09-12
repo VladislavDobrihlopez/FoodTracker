@@ -3,6 +3,7 @@ package com.voitov.foodtracker
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.foodtracker.navigation.AppNavGraph
 import com.voitov.foodtracker.navigation.AppNavState
@@ -16,11 +17,21 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var keyValueStorage: UserInfoKeyValueStorage
 
+    private var keepSplashScreenVisible = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                keepSplashScreenVisible
+            }
+        }
         setContent {
             FoodTrackerTheme {
                 AppNavGraph(
+                    onScreenIsReady = { isReady ->
+                      keepSplashScreenVisible = !isReady
+                    },
                     startDestination = getStartDestination(),
                 )
             }

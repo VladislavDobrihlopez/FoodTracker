@@ -55,8 +55,7 @@ fun ActionSection(
             contentAlignment = Alignment.Center
         ) {
             AnimatedContent(
-                targetState = isWrapped,
-                label = "wrap_anim"
+                targetState = isWrapped
             ) { wrappedState ->
                 if (wrappedState) {
                     Column(

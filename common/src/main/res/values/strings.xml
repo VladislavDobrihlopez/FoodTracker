@@ -64,8 +64,8 @@
     <string name="your_goal">Your goal</string>
     <string name="delete">Delete</string>
     <string name="developed_by">Developed by Vladislav Voitov</string>
-    <string name="contacts">contacts: dobrihlopez@gmail.com</string>
-    <string name="app_version">version: 1.0</string>
+    <string name="contacts">Сontacts: dobrihlopez@gmail.com</string>
+    <string name="app_version">Version: %s</string>
     <string name="belarus">Belarus</string>
     <string name="ukraine">Ukraine</string>
     <string name="poland">Poland</string>
@@ -92,7 +92,7 @@
     <string name="content_description_add_photo">Add a photo</string>
     <string name="content_description_some_food">Some food</string>
     <string name="you_should_set_image">You should set an image</string>
-    <string name="content_description_close" translatable="false">Close</string>
+    <string name="content_description_close">Close</string>
     <string name="content_description_do_reonboarding">Do re-onboarding</string>
     <string name="content_description_take_look_at_explanations">See explanations</string>
     <string name="options">Options</string>

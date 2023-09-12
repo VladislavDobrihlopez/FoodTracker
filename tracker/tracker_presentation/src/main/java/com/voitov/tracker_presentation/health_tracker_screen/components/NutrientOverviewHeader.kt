@@ -42,8 +42,7 @@ fun NutrientOverviewHeader(
 ) {
     val spacing = LocalSpacing.current
     val animatedCaloriesHorizontalBar = animateIntAsState(
-        targetValue = state.caloriesPerDayInFact,
-        label = "calories_bar"
+        targetValue = state.caloriesPerDayInFact
     )
 
     Column(

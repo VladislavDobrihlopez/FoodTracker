@@ -3,6 +3,9 @@ package com.voitov.onboarding_presentation.goal_screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +28,7 @@ import com.voitov.common_ui.LocalSpacing
 import com.voitov.onboarding_presentation.components.ActionButton
 import com.voitov.onboarding_presentation.components.SelectionButton
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun GoalScreen(
     onNavigate: () -> Unit,
@@ -58,7 +62,11 @@ fun GoalScreen(
             )
             Spacer(Modifier.height(spacing.spaceMedium))
 
-            Row(modifier = Modifier.padding(spacing.spaceSmall)) {
+            FlowRow(
+                modifier = Modifier.padding(spacing.spaceSmall),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 val currentGoalType = viewModel.goalState
 
                 SelectionButton(
