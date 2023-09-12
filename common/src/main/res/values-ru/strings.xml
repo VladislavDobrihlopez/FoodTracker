@@ -29,7 +29,7 @@
     <string name="amount_info">%dгр</string>
     <string name="grams">гр</string>
     <string name="extend">расширить</string>
-    <string name="collapse">сузить</string>
+    <string name="collapse">сжать</string>
     <string name="breakfast">Завтрак</string>
     <string name="lunch">Обед</string>
     <string name="brunch">Полдник</string>
@@ -64,8 +64,8 @@
     <string name="your_goal">Ваша цель</string>
     <string name="delete">Удалить</string>
     <string name="developed_by">Разработано Войтовым Владиславом</string>
-    <string name="contacts">контакты: dobrihlopez@gmail.com</string>
-    <string name="app_version">версия: 1.0</string>
+    <string name="contacts">Контакты: dobrihlopez@gmail.com</string>
+    <string name="app_version">Версия: %s</string>
     <string name="belarus">Беларусь</string>
     <string name="ukraine">Украина</string>
     <string name="poland">Польша</string>
@@ -77,10 +77,10 @@
     <string name="country">Страна</string>
     <string name="search_settings">Настройки поиска</string>
     <string name="do_you_want_go_back">Вернуть обратно?</string>
-    <string name="restore">отменить</string>
-    <string name="section_search_description">Раздел с поиском продуктов по интернету либо выбором из локально сохранённых</string>
+    <string name="restore">восстановить</string>
+    <string name="section_search_description">Раздел поиска интернет-продуктов либо из локальных</string>
     <string name="section_search_action">Вы желаете перейти в этот раздел?</string>
-    <string name="section_custom_food_manager_decsription">Раздел, где вы можете добавить свои продукты и далее использовать их при формировании приёмов пищи</string>
+    <string name="section_custom_food_manager_decsription">Раздел добавления собственной пищи</string>
     <string name="section_custom_food_manager_action">Вы желаете перейти в этот раздел?</string>
     <string name="enter_the_product_name">Название продукта</string>
     <string name="enter_the_amount_of_carbs_in_100g">Углеводов в 100гр</string>
@@ -97,4 +97,9 @@
     <string name="content_description_take_look_at_explanations">Посмотреть объяснения</string>
     <string name="options">Возможности</string>
     <string name="okay">Хорошо</string>
+    <string name="content_description_delete_food_item">Удаление еды</string>
+    <string name="content_description_search_menu">Настройки поиска</string>
+    <string name="take_time">Далее</string>
+    <string name="cancel_time">Отменить</string>
+    <string name="select_time">Выберите время</string>
 </resources>

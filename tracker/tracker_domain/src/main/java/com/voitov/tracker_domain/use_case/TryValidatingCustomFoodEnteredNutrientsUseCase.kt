@@ -4,6 +4,8 @@ import com.voitov.common.Configuration
 import com.voitov.common.domain.FoodTrackerDomainException
 import com.voitov.common.utils.UiText
 import com.voitov.common.utils.areNutrientComponentsCorrect
+import com.voitov.common.utils.calculateCalories
+import com.voitov.common.R
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,7 +51,11 @@ class TryValidatingCustomFoodEnteredNutrientsUseCase @Inject constructor() {
                 throw FoodTrackerDomainException.EnteredValueFormatException()
             }
             try {
-                mappedCalories = carbohydrates.trim().toInt()
+                mappedCalories = calculateCalories(
+                    carbohydrates = mappedCarbohydrates,
+                    fat = mappedFat,
+                    protein = mappedProtein
+                )
             } catch (ex: NumberFormatException) {
                 passedTestValues[3] = false
                 throw FoodTrackerDomainException.EnteredValueFormatException()
@@ -82,7 +88,7 @@ class TryValidatingCustomFoodEnteredNutrientsUseCase @Inject constructor() {
                 caloriesIn100g = mappedCalories
             )
         } else {
-            Result.Error(UiText.DynamicResource("Unknown error"))
+            Result.Error(UiText.StaticResource(R.string.error_unknown))
         }
     }
 
