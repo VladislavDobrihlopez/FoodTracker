@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FoodTracker.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/dark_gray</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon_with_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.FoodTracker</item>
+    </style>
+</resources>

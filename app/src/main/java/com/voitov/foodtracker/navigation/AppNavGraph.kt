@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,6 +30,7 @@ import com.voitov.tracker_presentation.trackable_food_manager_screen.TrackableFo
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AppNavGraph(
+    onScreenIsReady: (Boolean) -> Unit,
     startDestination: String
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -44,6 +46,9 @@ fun AppNavGraph(
                     navHostController.navigateTo(AppNavState.Gender) {
                         launchSingleTop = true
                     }
+                }
+                LaunchedEffect(key1 = Unit) {
+                    onScreenIsReady(true)
                 }
             }
             composable(route = AppNavState.Gender.route) {
@@ -130,6 +135,9 @@ fun AppNavGraph(
                         }
                     }
                 )
+                LaunchedEffect(key1 = Unit) {
+                    onScreenIsReady(true)
+                }
             }
 
             composable(
