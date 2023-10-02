@@ -61,14 +61,11 @@ fun TrackableFoodUi(
     val spacing = LocalSpacing.current
     Column(
         modifier = modifier
+            .shadow(1.dp, RoundedCornerShape(5.dp))
+            .background(MaterialTheme.colors.surface)
             .clickable {
                 onClick()
             }
-            .clip(RoundedCornerShape(5.dp))
-            .padding(2.dp)
-            .shadow(1.dp, RoundedCornerShape(5.dp))
-            .background(MaterialTheme.colors.surface)
-            .padding(spacing.spaceMedium)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -77,7 +74,7 @@ fun TrackableFoodUi(
         ) {
             Image(
                 modifier = Modifier
-                    .size(125.dp)
+                    .size(100.dp)
                     .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)),
                 painter = rememberImagePainter(
                     data = food.imageSourcePath,

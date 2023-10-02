@@ -37,7 +37,7 @@ class SearchFoodViewModel
     var screenState by mutableStateOf(SearchFoodScreenState())
         private set
 
-    private val _uiChannel = Channel<UiSideEffect>()
+    private val _uiChannel = Channel<UiSideEffect>(Channel.BUFFERED)
     val uiEvent = _uiChannel.receiveAsFlow()
 
     private val sectionScreenState: TabSectionScreenState

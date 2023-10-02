@@ -3,6 +3,7 @@ package com.voitov.foodtracker.End2End
 import androidx.activity.compose.setContent
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,11 +40,11 @@ import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
 import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
 import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
-import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
 import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
 import com.voitov.tracker_domain.use_case.SearchCustomTrackableFoodUseCase
 import com.voitov.tracker_domain.use_case.SearchTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.custom_food_screen.CustomFoodScreen
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerOverviewViewModel
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
@@ -127,6 +129,14 @@ class HealthTrackerOverviewTest {
         )
         trackableManagerViewModel = TrackableFoodManagerViewModel()
 
+        var splashIsVisible = true
+//
+        composableRule.activity.installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                splashIsVisible
+            }
+        }
+
         composableRule.activity.setContent {
             FoodTrackerTheme {
                 navHostController = rememberNavController()
@@ -150,6 +160,7 @@ class HealthTrackerOverviewTest {
                                         )
                                     )
                                 },
+
                                 viewModel = overviewViewModel,
                                 onDoReonboarding = {
                                     navHostController.navigate(AppNavState.Welcome.route) {
@@ -159,6 +170,9 @@ class HealthTrackerOverviewTest {
                                     }
                                 }
                             )
+                            LaunchedEffect(key1 = Unit) {
+                                splashIsVisible = false
+                            }
                         }
 
                         composable(
@@ -305,7 +319,7 @@ class HealthTrackerOverviewTest {
 
         assertThat(
             navHostController.currentDestination
-                ?.route?.startsWith( "search/")
+                ?.route?.startsWith("search/")
         ).isTrue()
 
         composableRule.onNodeWithTag("searchbar_textfield")

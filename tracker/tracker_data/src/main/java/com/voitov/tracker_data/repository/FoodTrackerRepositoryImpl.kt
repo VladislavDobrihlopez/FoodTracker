@@ -86,7 +86,7 @@ class FoodTrackerRepositoryImpl(
         ).map { dbEntities ->
             dbEntities.map { it.toTrackedFood() }
         }.onStart {
-            delay(500)
+            delay(450)
         }
     }
 

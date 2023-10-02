@@ -32,7 +32,7 @@ class CustomFoodViewModel @Inject constructor(
             when (event) {
                 CustomFoodScreenEvent.OnSaveButtonClick -> {
                     val result = tryValidatingCustomFoodEnteredNutrientsUseCase(
-                        name = screenState.enteredName,
+                        name = screenState.enteredName.trim(),
                         protein = screenState.enteredProteinPer100g,
                         fat = screenState.enteredFatPer100g,
                         carbohydrates = screenState.enteredCarbsPer100g
@@ -75,7 +75,7 @@ class CustomFoodViewModel @Inject constructor(
                 }
 
                 is CustomFoodScreenEvent.OnValueEnter.OnNameEnter -> {
-                    screenState = screenState.copy(enteredName = event.value.trim())
+                    screenState = screenState.copy(enteredName = event.value)
                     tryDisplayingCalculatedCalories()
                 }
 

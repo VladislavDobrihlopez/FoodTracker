@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FoodTracker</string>
+    <string name="app_name">Jeza: Food &amp; diabetes tracker</string>
     <string name="error_unknown">Ошибка</string>
     <string name="welcome_text">Привет! Давай немного узнаем о тебе</string>
     <string name="lets_go">Погнали</string>

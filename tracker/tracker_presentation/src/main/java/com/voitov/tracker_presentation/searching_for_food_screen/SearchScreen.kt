@@ -39,12 +39,12 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -89,7 +89,10 @@ fun SearchScreen(
     val context = LocalContext.current
     val scopeAsync = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
@@ -121,30 +124,19 @@ fun SearchScreen(
                         sheetState.hide()
                     }
                 }
-            }
-            BottomSheetContent(
-                settings = screenState.countrySearchSettings,
-                context = context,
-                spacing = spacing,
-                onChangeSearchConfig = {
-                    viewModel.onEvent(
-                        SearchFoodScreenEvent.OnTapCountry(it.country)
-                    )
-                }
-            )
-        }) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            when {
-                screenState.isSearchingGoingOn -> CircularProgressIndicator()
-                screenState.tabSectionScreenState.food.isEmpty() ->
-                    Text(
-                        text = stringResource(id = R.string.no_results),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body1
-                    )
-            }
-        }
 
+                BottomSheetContent(
+                    settings = screenState.countrySearchSettings,
+                    context = context,
+                    spacing = spacing,
+                    onChangeSearchConfig = {
+                        viewModel.onEvent(
+                            SearchFoodScreenEvent.OnTapCountry(it.country)
+                        )
+                    }
+                )
+            }
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -179,7 +171,7 @@ fun SearchScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
 
             val indicator = @Composable { tabPositions: List<TabPosition> ->
                 FancyIndicator(
@@ -202,9 +194,11 @@ fun SearchScreen(
                             viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
                         },
                         selected = tabSection == currentSelectedTab,
-                        modifier = Modifier.clickable {
-                            viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
-                        },
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable {
+                                viewModel.onEvent(SearchFoodScreenEvent.OnSelectTab(tabSection))
+                            },
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = spacing.spaceSmall),
@@ -249,42 +243,60 @@ fun SearchScreen(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(screenState.tabSectionScreenState.food, key = { it.food.id }) { foodUi ->
-                    TrackableFoodUi(foodUiModel = foodUi, onClick = {
-                        viewModel.onEvent(SearchFoodScreenEvent.ToggleTrackableFoodItem(foodUi.food))
-                    }, onAmountChange = {
-                        viewModel.onEvent(
-                            SearchFoodScreenEvent.OnAmountForFoodChange(
-                                it,
-                                foodUi.food
-                            )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box {
+                    when {
+                        screenState.isSearchingGoingOn -> CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
                         )
-                    }, onCache = {
-                        chosenFood.value = foodUi
-                        keyboardController?.hide()
-                        dialogState.show()
-                    }, extraActions = {
-                        if (isInLocalMode(screenState.currentSelectedTab)) {
-                            IconButton(
-                                onClick = {
-                                    viewModel.onEvent(
-                                        SearchFoodScreenEvent.OnDeleteLocalFood(
-                                            foodUi
-                                        )
-                                    )
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = stringResource(id = R.string.content_description_delete_food_item)
+
+                        screenState.tabSectionScreenState.food.isEmpty() ->
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = stringResource(id = R.string.no_results),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.body1
+                            )
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(spacing.spaceExtraSmall)
+                ) {
+                    items(screenState.tabSectionScreenState.food, key = { it.food.id }) { foodUi ->
+                        TrackableFoodUi(foodUiModel = foodUi, onClick = {
+                            viewModel.onEvent(SearchFoodScreenEvent.ToggleTrackableFoodItem(foodUi.food))
+                        }, onAmountChange = {
+                            viewModel.onEvent(
+                                SearchFoodScreenEvent.OnAmountForFoodChange(
+                                    it,
+                                    foodUi.food
                                 )
+                            )
+                        }, onCache = {
+                            chosenFood.value = foodUi
+                            keyboardController?.hide()
+                            dialogState.show()
+                        }, extraActions = {
+                            if (isInLocalMode(screenState.currentSelectedTab)) {
+                                IconButton(
+                                    onClick = {
+                                        viewModel.onEvent(
+                                            SearchFoodScreenEvent.OnDeleteLocalFood(
+                                                foodUi
+                                            )
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = stringResource(id = R.string.content_description_delete_food_item)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(spacing.spaceSmall))
                             }
-                            Spacer(modifier = Modifier.width(spacing.spaceSmall))
-                        }
-                    })
+                        })
+                    }
                 }
             }
         }
@@ -315,7 +327,6 @@ fun BottomSheetContent(
     spacing: ProjectDimensions,
     onChangeSearchConfig: (SearchConfigUiModel) -> Unit
 ) {
-
     Column(modifier = Modifier.padding(spacing.spaceMedium)) {
         Text(
             text = context.getString(R.string.search_settings),

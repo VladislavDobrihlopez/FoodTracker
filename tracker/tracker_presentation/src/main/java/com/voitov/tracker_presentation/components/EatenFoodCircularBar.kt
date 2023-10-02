@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.voitov.common.R
+import com.voitov.common_ui.LocalSpacing
 
 @Composable
 fun EatenFoodCircularBar(
@@ -29,6 +31,7 @@ fun EatenFoodCircularBar(
     goal: Int,
     name: String,
     color: Color,
+    innerContentPadding: Dp,
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 8.dp,
 ) {
@@ -82,7 +85,7 @@ fun EatenFoodCircularBar(
             }
         }
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(innerContentPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UiNumberFollowedByUnit(
@@ -101,7 +104,8 @@ fun EatenFoodCircularBar(
                     MaterialTheme.colors.onPrimary
                 } else goalExceededColor,
                 style = MaterialTheme.typography.body1,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
+                maxLines = 1,
             )
         }
     }
