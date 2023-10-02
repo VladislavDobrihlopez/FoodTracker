@@ -10,7 +10,7 @@ data class  TrackedFood(
     val carbs: Int,
     val protein: Int,
     val fat: Int,
-    val mealType: MealType,
+    val mealTimeType: MealTimeType,
     val amount: Int,
     val date: LocalDateTime,
 )

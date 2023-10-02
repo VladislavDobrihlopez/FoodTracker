@@ -7,6 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -30,10 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -44,18 +48,22 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
+import com.voitov.tracker_domain.model.MealPhysicsType
 import com.voitov.tracker_presentation.components.NutrientValueInfo
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 
-@OptIn(ExperimentalCoilApi::class)
+@OptIn(ExperimentalCoilApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun TrackableFoodUi(
     foodUiModel: TrackableFoodUiModel,
-    onClick: () -> Unit,
+    onCardClick: () -> Unit,
     onAmountChange: (String) -> Unit,
-    onCache: () -> Unit,
+    onAgreeClick: () -> Unit,
+    onChipShortClick: (MealPhysicsType) -> Unit,
+    onBadgeClick: (MealPhysicsType) -> Unit,
+    onRefreshClick: () -> Unit,
     modifier: Modifier = Modifier,
-    extraActions: (@Composable RowScope.() -> Unit)? = null
+    actions: (@Composable RowScope.() -> Unit)? = null
 ) {
     val food = foodUiModel.food
     val spacing = LocalSpacing.current
@@ -64,7 +72,7 @@ fun TrackableFoodUi(
             .shadow(1.dp, RoundedCornerShape(5.dp))
             .background(MaterialTheme.colors.surface)
             .clickable {
-                onClick()
+                onCardClick()
             }
     ) {
         Row(
@@ -90,7 +98,7 @@ fun TrackableFoodUi(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(top = spacing.spaceSmall, end = spacing.spaceSmall),
+                    .padding(top = spacing.spaceSmall, bottom = spacing.spaceSmall),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -146,26 +154,34 @@ fun TrackableFoodUi(
             }
         }
         AnimatedVisibility(visible = foodUiModel.isExpanded) {
-            Row(
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(spacing.spaceMedium),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                OrderMenu(
+                    state = foodUiModel.menu,
+                    onMealTypeClick = {
+                        onChipShortClick(it)
+                    }, onBadgeCountClick = {
+                        onBadgeClick(it)
+                    }
+                )
                 Row {
                     BasicTextField(
-                        value = foodUiModel.amount,
+                        value = foodUiModel.menu.amount,
                         onValueChange = onAmountChange,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = if (foodUiModel.amount.isNotBlank()) {
+                            imeAction = if (foodUiModel.menu.amount.isNotBlank()) {
                                 ImeAction.Done
                             } else ImeAction.Default
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                onCache()
+                                onAgreeClick()
                                 defaultKeyboardAction(ImeAction.Done)
                             }
                         ),
@@ -187,15 +203,24 @@ fun TrackableFoodUi(
                         modifier = Modifier.alignBy(LastBaseline)
                     )
                 }
-                extraActions?.invoke(this@Row)
-                IconButton(
-                    onClick = onCache,
-                    enabled = foodUiModel.amount.isNotBlank()
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = stringResource(id = R.string.track)
-                    )
+                Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
+                FlowRow {
+                    actions?.invoke(this)
+                    IconButton(onClick = onRefreshClick) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.refresh),
+                            contentDescription = stringResource(id = R.string.refresh)
+                        )
+                    }
+                    IconButton(
+                        onClick = onAgreeClick,
+                        enabled = foodUiModel.menu.amount.isNotBlank()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(id = R.string.track)
+                        )
+                    }
                 }
             }
         }

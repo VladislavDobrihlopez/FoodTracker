@@ -39,10 +39,10 @@ fun MealItem(
     val spacing = LocalSpacing.current
     val context = LocalContext.current
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            modifier = Modifier.size(picSize),
-            painter = painterResource(id = meal.pictureResId),
-            contentDescription = meal.mealType.name,
+        MealImage(
+            resId = meal.pictureResId,
+            contentDescription = meal.mealTimeType.name,
+            size = picSize
         )
         Spacer(modifier = Modifier.width(spacing.spaceSmall))
         Row(
@@ -87,4 +87,13 @@ fun MealItem(
             }
         }
     }
+}
+
+@Composable
+private fun MealImage(resId: Int, contentDescription: String = "", size: Dp) {
+    Image(
+        modifier = Modifier.size(size),
+        painter = painterResource(id = resId),
+        contentDescription = contentDescription,
+    )
 }

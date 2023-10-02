@@ -6,7 +6,7 @@ import com.voitov.common.domain.entities.GoalType
 import com.voitov.common.domain.entities.PhysicalActivityLevel
 import com.voitov.common.domain.entities.UserProfile
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_domain.model.TrackedFood
 import io.mockk.every
 import io.mockk.mockk
@@ -58,13 +58,13 @@ class DoNutrientMathUseCaseTest {
                         carbs = carbs,
                         protein = protein,
                         fat = fat,
-                        mealType = listOf(
-                            MealType.SNACK,
-                            MealType.SUPPER,
-                            MealType.BRUNCH,
-                            MealType.BREAKFAST,
-                            MealType.LUNCH,
-                            MealType.DINNER,
+                        mealTimeType = listOf(
+                            MealTimeType.SNACK,
+                            MealTimeType.SUPPER,
+                            MealTimeType.BRUNCH,
+                            MealTimeType.BREAKFAST,
+                            MealTimeType.LUNCH,
+                            MealTimeType.DINNER,
                         ).random(),
                         amount = 100,
                         date = LocalDateTime.now(),
@@ -77,21 +77,21 @@ class DoNutrientMathUseCaseTest {
     @Test
     fun `Sum of calories after nutrient calculations mustn't change`() {
         val result = useCase(dummyDate)
-        val mealType = listOf(
-            MealType.SNACK,
-            MealType.SUPPER,
-            MealType.BRUNCH,
-            MealType.BREAKFAST,
-            MealType.LUNCH,
-            MealType.DINNER,
+        val mealTimeType = listOf(
+            MealTimeType.SNACK,
+            MealTimeType.SUPPER,
+            MealTimeType.BRUNCH,
+            MealTimeType.BREAKFAST,
+            MealTimeType.LUNCH,
+            MealTimeType.DINNER,
         ).random()
 
         val caloriesBefore = dummyDate
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.calories }
 
         val caloriesAfter = result.mealTimeToNutrients.values
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.calories }
 
         assertThat(caloriesBefore).isEqualTo(caloriesAfter)
@@ -100,21 +100,21 @@ class DoNutrientMathUseCaseTest {
     @Test
     fun `Sum of carbs after nutrient calculations mustn't change`() {
         val result = useCase(dummyDate)
-        val mealType = listOf(
-            MealType.SNACK,
-            MealType.SUPPER,
-            MealType.BRUNCH,
-            MealType.BREAKFAST,
-            MealType.LUNCH,
-            MealType.DINNER,
+        val mealTimeType = listOf(
+            MealTimeType.SNACK,
+            MealTimeType.SUPPER,
+            MealTimeType.BRUNCH,
+            MealTimeType.BREAKFAST,
+            MealTimeType.LUNCH,
+            MealTimeType.DINNER,
         ).random()
 
         val carbsBefore = dummyDate
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.carbs }
 
         val carbsAfter = result.mealTimeToNutrients.values
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.carbs }
 
         assertThat(carbsBefore).isEqualTo(carbsAfter)
@@ -123,21 +123,21 @@ class DoNutrientMathUseCaseTest {
     @Test
     fun `Sum of fat after nutrient calculations mustn't change`() {
         val result = useCase(dummyDate)
-        val mealType = listOf(
-            MealType.SNACK,
-            MealType.SUPPER,
-            MealType.BRUNCH,
-            MealType.BREAKFAST,
-            MealType.LUNCH,
-            MealType.DINNER,
+        val mealTimeType = listOf(
+            MealTimeType.SNACK,
+            MealTimeType.SUPPER,
+            MealTimeType.BRUNCH,
+            MealTimeType.BREAKFAST,
+            MealTimeType.LUNCH,
+            MealTimeType.DINNER,
         ).random()
 
         val fatBefore = dummyDate
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.fat }
 
         val fatAfter = result.mealTimeToNutrients.values
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.fat }
 
         assertThat(fatBefore).isEqualTo(fatAfter)
@@ -146,21 +146,21 @@ class DoNutrientMathUseCaseTest {
     @Test
     fun `Sum of protein after nutrient calculations mustn't change`() {
         val result = useCase(dummyDate)
-        val mealType = listOf(
-            MealType.SNACK,
-            MealType.SUPPER,
-            MealType.BRUNCH,
-            MealType.BREAKFAST,
-            MealType.LUNCH,
-            MealType.DINNER,
+        val mealTimeType = listOf(
+            MealTimeType.SNACK,
+            MealTimeType.SUPPER,
+            MealTimeType.BRUNCH,
+            MealTimeType.BREAKFAST,
+            MealTimeType.LUNCH,
+            MealTimeType.DINNER,
         ).random()
 
         val proteinBefore = dummyDate
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.protein }
 
         val proteinAfter = result.mealTimeToNutrients.values
-            .filter { it.mealType == mealType }
+            .filter { it.mealTimeType == mealTimeType }
             .sumOf { it.proteins }
 
         assertThat(proteinBefore).isEqualTo(proteinAfter)

@@ -34,7 +34,7 @@ import com.voitov.foodtracker.navigation.navigateTo
 import com.voitov.foodtracker.repository.FakeTrackerRepository
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
 import com.voitov.foodtracker.waitUntilTimeout
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
 import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
@@ -251,7 +251,7 @@ class HealthTrackerOverviewTest {
                             SearchScreen(
                                 viewModel = searchViewModel,
                                 scaffoldState = scaffoldState,
-                                mealType = MealType.valueOf(mealType),
+                                mealTimeType = MealTimeType.valueOf(mealType),
                                 day = day,
                                 month = month,
                                 year = year,

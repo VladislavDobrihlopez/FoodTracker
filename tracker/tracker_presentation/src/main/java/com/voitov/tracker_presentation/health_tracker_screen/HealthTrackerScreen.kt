@@ -34,15 +34,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.MealItem
 import com.voitov.tracker_presentation.components.TrackedFoodItem
 import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
 import com.voitov.tracker_presentation.health_tracker_screen.components.DaySelector
 import com.voitov.tracker_presentation.health_tracker_screen.components.NutrientOverviewHeader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -50,7 +48,7 @@ import kotlinx.coroutines.launch
 fun HealthTrackerScreen(
     snackbarHostState: SnackbarHostState,
     onDoReonboarding: () -> Unit,
-    onNavigate: (MealType, Int, Int, Int) -> Unit,
+    onNavigate: (MealTimeType, Int, Int, Int) -> Unit,
     viewModel: HealthTrackerOverviewViewModel = hiltViewModel(),
 ) {
     val spacing = LocalSpacing.current
@@ -127,7 +125,7 @@ fun HealthTrackerScreen(
                     .clickable {
                         viewModel.onEvent(
                             HealthTrackerScreenEvent.ToggleMeal(
-                                mealType = meal.mealType
+                                mealTimeType = meal.mealTimeType
                             )
                         )
                     }, meal = meal
@@ -138,7 +136,7 @@ fun HealthTrackerScreen(
                 exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
             ) {
                 val filteredItems =
-                    screenState.trackedFoods.filter { meal.mealType == it.mealType }.toList()
+                    screenState.trackedFoods.filter { meal.mealTimeType == it.mealTimeType }.toList()
                 LazyColumn(
                     modifier = Modifier.height((100.dp) * (filteredItems.size + 1)),
                     verticalArrangement = Arrangement.spacedBy(spacing.spaceExtraSmall),
@@ -193,7 +191,7 @@ fun HealthTrackerScreen(
                             textColor = MaterialTheme.colors.primary
                         ) {
                             onNavigate(
-                                meal.mealType,
+                                meal.mealTimeType,
                                 dateTime.value.year,
                                 dateTime.value.monthValue,
                                 dateTime.value.dayOfMonth

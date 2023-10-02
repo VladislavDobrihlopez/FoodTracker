@@ -21,7 +21,7 @@ import com.voitov.onboarding_presentation.height_screen.HeightScreen
 import com.voitov.onboarding_presentation.nutrient_plan_screen.NutrientPlanScreen
 import com.voitov.onboarding_presentation.weight_screen.WeightScreen
 import com.voitov.onboarding_presentation.welcome.HelloScreen
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_presentation.custom_food_screen.CustomFoodScreen
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreen
 import com.voitov.tracker_presentation.searching_for_food_screen.SearchScreen
@@ -207,7 +207,7 @@ fun AppNavGraph(
                 val day = backStackEntry.arguments?.getInt(AppNavState.Search.DAY_OF_WEEK_KEY)!!
                 SearchScreen(
                     scaffoldState = scaffoldState,
-                    mealType = MealType.valueOf(mealType),
+                    mealTimeType = MealTimeType.valueOf(mealType),
                     day = day,
                     month = month,
                     year = year,

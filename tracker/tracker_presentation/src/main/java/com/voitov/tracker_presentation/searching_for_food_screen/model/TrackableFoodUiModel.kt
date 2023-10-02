@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TrackableFoodUiModel(
     val food: TrackableFood,
-    val amount: String = "",
+    val menu: OrderMenuUiModel = OrderMenuUiModel(),
     val isExpanded: Boolean = false,
 ): Parcelable

@@ -1,6 +1,6 @@
 package com.voitov.tracker_presentation.health_tracker_screen
 
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_presentation.health_tracker_screen.model.Meal
 import com.voitov.tracker_presentation.health_tracker_screen.model.allDayMealsByDefault
@@ -32,6 +32,6 @@ sealed class HealthTrackerScreenEvent {
     data class DeleteTrackableFoodFromBeingTracked(val foodItem: TrackedFood) :
         HealthTrackerScreenEvent()
 
-    data class ToggleMeal(val mealType: MealType) : HealthTrackerScreenEvent()
+    data class ToggleMeal(val mealTimeType: MealTimeType) : HealthTrackerScreenEvent()
     object ToggleTopBar: HealthTrackerScreenEvent()
 }
