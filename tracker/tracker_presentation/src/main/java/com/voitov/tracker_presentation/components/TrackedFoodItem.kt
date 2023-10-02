@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,7 +46,7 @@ import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_presentation.utils.formatMealDate
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun TrackedFoodItem(
     item: TrackedFood,
@@ -74,12 +77,12 @@ fun TrackedFoodItem(
 
     if (!dismissState.isDismissed(DismissDirection.EndToStart) || keepAlive.value) {
         SwipeToDismiss(
-            modifier = modifier,
+            modifier = Modifier,
             state = dismissState,
             directions = setOf(DismissDirection.EndToStart),
             background = {
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(
                             start = spacing.spaceMedium,
@@ -93,8 +96,6 @@ fun TrackedFoodItem(
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(5.dp))
-                    .padding(spacing.spaceExtraSmall)
                     .shadow(
                         elevation = 1.dp,
                         shape = RoundedCornerShape(5.dp)
@@ -122,9 +123,11 @@ fun TrackedFoodItem(
                         .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp))
                 )
                 Spacer(Modifier.width(spacing.spaceExtraSmall))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Column(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(4f),
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(text = time, style = MaterialTheme.typography.body1)
@@ -145,7 +148,7 @@ fun TrackedFoodItem(
                         }
                     }
                     Spacer(Modifier.width(spacing.spaceExtraSmall))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    FlowRow(modifier = Modifier.weight(6f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                         NutrientValueInfo(
                             nutrientName = stringResource(id = R.string.carbs),
                             amount = item.carbs.toString(),
@@ -154,7 +157,7 @@ fun TrackedFoodItem(
                             unitTextSize = 12.sp,
                             nutrientTextStyle = MaterialTheme.typography.body2
                         )
-                        Spacer(Modifier.width(spacing.spaceSmall))
+                        Spacer(Modifier.width(spacing.spaceExtraSmall))
                         NutrientValueInfo(
                             nutrientName = stringResource(id = R.string.fat),
                             amount = item.fat.toString(),
@@ -163,7 +166,7 @@ fun TrackedFoodItem(
                             unitTextSize = 12.sp,
                             nutrientTextStyle = MaterialTheme.typography.body2
                         )
-                        Spacer(Modifier.width(spacing.spaceSmall))
+                        Spacer(Modifier.width(spacing.spaceExtraSmall))
                         NutrientValueInfo(
                             nutrientName = stringResource(id = R.string.protein),
                             amount = item.protein.toString(),

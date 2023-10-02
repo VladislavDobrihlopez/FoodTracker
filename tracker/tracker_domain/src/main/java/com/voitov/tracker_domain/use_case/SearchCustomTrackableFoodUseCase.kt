@@ -15,15 +15,16 @@ class SearchCustomTrackableFoodUseCase @Inject constructor(
         page: Int = 1,
         pageSize: Int = 100,
     ): Flow<List<CustomTrackableFood>> {
+        val formattedQuery = query.trim().lowercase()
         return repository.searchForCustomFood(
-            query.trim(),
+            formattedQuery.trim(),
             page,
             pageSize,
         ).map { items ->
-            if (query.isEmpty()) {
+            if (formattedQuery.isEmpty()) {
                 items
             } else {
-                items.filter { it.trackableFood.name.contains(query) }
+                items.filter { it.trackableFood.name.lowercase().contains(formattedQuery) }
             }
         }
     }

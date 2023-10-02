@@ -1,13 +1,11 @@
 package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -24,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.voitov.common.R
 import com.voitov.common_ui.LocalSpacing
 import com.voitov.tracker_presentation.utils.formatDate
@@ -49,8 +49,8 @@ fun DaySelector(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = spacing.spaceMedium),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .padding(horizontal = spacing.spaceSmall),
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row {
@@ -67,7 +67,14 @@ fun DaySelector(
                 )
             }
         }
-        Text(text = time, style = MaterialTheme.typography.h2)
+        Text(
+            modifier = Modifier.weight(1f),
+            text = time,
+            style = MaterialTheme.typography.h2,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
+        )
         Row {
             IconButton(onClick = onNextDayClick) {
                 Icon(

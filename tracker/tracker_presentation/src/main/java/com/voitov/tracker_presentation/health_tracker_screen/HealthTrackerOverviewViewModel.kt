@@ -67,7 +67,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
 
             is HealthTrackerScreenEvent.ToggleMeal -> {
                 val oldMeal =
-                    screenState.mealsDuringCurrentDay.find { it.mealType == event.mealType }
+                    screenState.mealsDuringCurrentDay.find { it.mealTimeType == event.mealTimeType }
                 //todo add error throwing
                 oldMeal?.let {
                     val index = screenState.mealsDuringCurrentDay.indexOf(oldMeal)
@@ -123,7 +123,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                     trackedFoods = trackedFoods,
                     mealsDuringCurrentDay = screenState.mealsDuringCurrentDay.map { oldMeal ->
                         val trackedFoodForMealType =
-                            nutrientCalculationsResult.mealTimeToNutrients[oldMeal.mealType]
+                            nutrientCalculationsResult.mealTimeToNutrients[oldMeal.mealTimeType]
                                 ?: return@map oldMeal.copy(
                                     calories = 0,
                                     carbohydrates = 0,

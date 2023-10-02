@@ -6,6 +6,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,15 +34,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common_ui.LocalSpacing
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_presentation.components.AddButton
 import com.voitov.tracker_presentation.components.MealItem
 import com.voitov.tracker_presentation.components.TrackedFoodItem
 import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
 import com.voitov.tracker_presentation.health_tracker_screen.components.DaySelector
 import com.voitov.tracker_presentation.health_tracker_screen.components.NutrientOverviewHeader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -46,7 +48,7 @@ import kotlinx.coroutines.launch
 fun HealthTrackerScreen(
     snackbarHostState: SnackbarHostState,
     onDoReonboarding: () -> Unit,
-    onNavigate: (MealType, Int, Int, Int) -> Unit,
+    onNavigate: (MealTimeType, Int, Int, Int) -> Unit,
     viewModel: HealthTrackerOverviewViewModel = hiltViewModel(),
 ) {
     val spacing = LocalSpacing.current
@@ -56,7 +58,7 @@ fun HealthTrackerScreen(
         mutableStateOf(false)
     }
 
-    val scope = remember { CoroutineScope(Dispatchers.Main) }
+    val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -103,33 +105,43 @@ fun HealthTrackerScreen(
                     viewModel.onEvent(HealthTrackerScreenEvent.ToggleTopBar)
                 }
             )
-        }
 
-        item {
             DaySelector(
                 date = dateTime,
                 onPreviousDayClick = { viewModel.onEvent(HealthTrackerScreenEvent.NavigateToPreviousDay) },
                 onNextDayClick = { viewModel.onEvent(HealthTrackerScreenEvent.NavigateToNextDay) },
                 onPreviousWeekClick = { viewModel.onEvent(HealthTrackerScreenEvent.NavigateToWeekBehind) },
-                onNextWeekClick = { viewModel.onEvent(HealthTrackerScreenEvent.NavigateToWeekAhead) })
+                onNextWeekClick = { viewModel.onEvent(HealthTrackerScreenEvent.NavigateToWeekAhead) }
+            )
         }
 
         items(screenState.mealsDuringCurrentDay) { meal ->
-            MealItem(modifier = Modifier.clickable {
-                viewModel.onEvent(
-                    HealthTrackerScreenEvent.ToggleMeal(
-                        mealType = meal.mealType
+            MealItem(
+                modifier = Modifier
+                    .padding(
+                        horizontal = spacing.spaceSmall,
+                        vertical = spacing.spaceExtraSmall
                     )
-                )
-            }, meal = meal)
+                    .clickable {
+                        viewModel.onEvent(
+                            HealthTrackerScreenEvent.ToggleMeal(
+                                mealTimeType = meal.mealTimeType
+                            )
+                        )
+                    }, meal = meal
+            )
             AnimatedVisibility(
                 visible = meal.isExpanded,
                 enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
                 exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
             ) {
                 val filteredItems =
-                    screenState.trackedFoods.filter { meal.mealType == it.mealType }.toList()
-                LazyColumn(modifier = Modifier.height(100.dp * (filteredItems.size + 1))) {
+                    screenState.trackedFoods.filter { meal.mealTimeType == it.mealTimeType }.toList()
+                LazyColumn(
+                    modifier = Modifier.height((100.dp) * (filteredItems.size + 1)),
+                    verticalArrangement = Arrangement.spacedBy(spacing.spaceExtraSmall),
+                    contentPadding = PaddingValues(spacing.spaceSmall)
+                ) {
                     items(filteredItems, key = { it.id }) { foodItem ->
                         val keepAliveState = remember {
                             mutableStateOf<Boolean>(true)
@@ -140,10 +152,9 @@ fun HealthTrackerScreen(
                             keepAlive = keepAliveState,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = spacing.spaceSmall)
                         ) {
                             scope.launch {
-                                delay(250)
+                                delay(150)
                                 viewModel.onEvent(
                                     HealthTrackerScreenEvent.DeleteTrackableFoodFromBeingTracked(
                                         foodItem
@@ -152,7 +163,7 @@ fun HealthTrackerScreen(
                                 val snackBarResult = snackbarHostState.showSnackbar(
                                     context.getString(R.string.do_you_want_go_back),
                                     context.getString(R.string.restore),
-                                    SnackbarDuration.Short
+                                    SnackbarDuration.Long
                                 )
                                 when (snackBarResult) {
                                     SnackbarResult.Dismissed -> {
@@ -168,8 +179,11 @@ fun HealthTrackerScreen(
                         }
                     }
                     item {
+                        Spacer(modifier = Modifier.height(spacing.spaceSmall))
                         AddButton(
-                            modifier = Modifier.height(50.dp),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .padding(horizontal = spacing.spaceSmall),
                             text = stringResource(
                                 id = R.string.add_meal,
                                 meal.name.asString(context = context)
@@ -177,7 +191,7 @@ fun HealthTrackerScreen(
                             textColor = MaterialTheme.colors.primary
                         ) {
                             onNavigate(
-                                meal.mealType,
+                                meal.mealTimeType,
                                 dateTime.value.year,
                                 dateTime.value.monthValue,
                                 dateTime.value.dayOfMonth
@@ -186,7 +200,6 @@ fun HealthTrackerScreen(
                     }
                 }
             }
-
         }
     }
 }

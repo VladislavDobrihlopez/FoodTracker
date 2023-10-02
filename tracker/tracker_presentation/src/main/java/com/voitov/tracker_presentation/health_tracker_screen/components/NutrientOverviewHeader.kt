@@ -4,6 +4,9 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +35,7 @@ import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreenState
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NutrientOverviewHeader(
     isTopBarExpanded: State<Boolean>,
@@ -63,18 +67,17 @@ fun NutrientOverviewHeader(
         Column(
             modifier = Modifier.padding(
                 horizontal = spacing.spaceLarge,
-                vertical = spacing.spaceLarge
+                vertical = spacing.spaceMedium
             ),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 UiNumberFollowedByUnit(
                     amount = animatedCaloriesHorizontalBar.value.toString(),
-                    amountTextSize = 40.sp,
+                    amountTextSize = 36.sp,
                     unitTextSize = 24.sp,
                     amountColor = MaterialTheme.colors.onPrimary,
                     unitColor = MaterialTheme.colors.onPrimary,
@@ -85,7 +88,7 @@ fun NutrientOverviewHeader(
                 Text(
                     text = "/",
                     color = MaterialTheme.colors.onPrimary,
-                    fontSize = 40.sp,
+                    fontSize = 24.sp,
                     modifier = Modifier.align(Alignment.Bottom)
                 )
                 Spacer(modifier = Modifier.width(spacing.spaceExtraSmall))
@@ -97,7 +100,7 @@ fun NutrientOverviewHeader(
                     )
                     UiNumberFollowedByUnit(
                         amount = state.caloriesPerDayGoal.toString(),
-                        amountTextSize = 40.sp,
+                        amountTextSize = 36.sp,
                         unitTextSize = 24.sp,
                         amountColor = MaterialTheme.colors.onPrimary,
                         unitColor = MaterialTheme.colors.onPrimary,
@@ -127,23 +130,26 @@ fun NutrientOverviewHeader(
                     goal = state.carbsPerDayGoal,
                     name = stringResource(id = R.string.carbs),
                     color = CarbColor,
-                    modifier = Modifier.size(90.dp)
+                    innerContentPadding = LocalSpacing.current.spaceSmall,
+                    modifier = Modifier.weight(1f).padding(spacing.spaceExtraSmall)
                 )
-                Spacer(modifier = Modifier.width(spacing.spaceSmall))
+
                 EatenFoodCircularBar(
                     value = state.fatPerDayInFact,
                     goal = state.fatPerDayGoal,
                     name = stringResource(id = R.string.fat),
+                    innerContentPadding = LocalSpacing.current.spaceSmall,
                     color = FatColor,
-                    modifier = Modifier.size(90.dp)
+                    modifier = Modifier.weight(1f).padding(spacing.spaceExtraSmall)
                 )
-                Spacer(modifier = Modifier.width(spacing.spaceSmall))
+
                 EatenFoodCircularBar(
                     value = state.proteinsPerDayInFact,
                     goal = state.proteinsPerDayGoal,
                     name = stringResource(id = R.string.protein),
+                    innerContentPadding = LocalSpacing.current.spaceSmall,
                     color = ProteinColor,
-                    modifier = Modifier.size(90.dp)
+                    modifier = Modifier.weight(1f).padding(spacing.spaceExtraSmall)
                 )
             }
         }

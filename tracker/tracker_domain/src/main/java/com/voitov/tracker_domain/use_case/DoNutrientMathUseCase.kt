@@ -5,7 +5,7 @@ import com.voitov.common.domain.entities.GoalType
 import com.voitov.common.domain.entities.PhysicalActivityLevel
 import com.voitov.common.domain.entities.UserProfile
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_domain.model.TrackedFood
 import kotlin.math.roundToInt
 
@@ -14,10 +14,10 @@ class DoNutrientMathUseCase(
 ) {
     operator fun invoke(trackedFood: List<TrackedFood>): Result {
         val mealTimeToNutrients = trackedFood.groupBy {
-            it.mealType
+            it.mealTimeType
         }.mapValues { entry ->
             NutrientsHolder(
-                mealType = entry.key,
+                mealTimeType = entry.key,
                 carbs = entry.value.sumOf { it.carbs },
                 calories = entry.value.sumOf { it.calories },
                 fat = entry.value.sumOf { it.fat },
@@ -59,11 +59,11 @@ class DoNutrientMathUseCase(
         val fatPerDayInFact: Int,
         val proteinsPerDayGoal: Int,
         val proteinsPerDayInFact: Int,
-        val mealTimeToNutrients: Map<MealType, NutrientsHolder>
+        val mealTimeToNutrients: Map<MealTimeType, NutrientsHolder>
     )
 
     data class NutrientsHolder(
-        val mealType: MealType,
+        val mealTimeType: MealTimeType,
         val carbs: Int,
         val calories: Int,
         val fat: Int,

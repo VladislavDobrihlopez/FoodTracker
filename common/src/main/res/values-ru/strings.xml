@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FoodTracker</string>
+    <string name="app_name">Jeza: Food &amp; diabetes tracker</string>
     <string name="error_unknown">Ошибка</string>
     <string name="welcome_text">Привет! Давай немного узнаем о тебе</string>
     <string name="lets_go">Погнали</string>
@@ -102,4 +102,7 @@
     <string name="take_time">Далее</string>
     <string name="cancel_time">Отменить</string>
     <string name="select_time">Выберите время</string>
+    <string name="for_linking_privacy_policy">политика конфиденциальности</string>
+    <string name="privacy_text">Нажимая на кнопку вы соглашаетесь с %s</string>
+    <string name="refresh">Начать с чистого листа</string>
 </resources>

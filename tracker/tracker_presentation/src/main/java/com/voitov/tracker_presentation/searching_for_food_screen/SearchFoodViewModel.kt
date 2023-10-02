@@ -17,6 +17,7 @@ import com.voitov.tracker_presentation.searching_for_food_screen.contract.Search
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSection
 import com.voitov.tracker_presentation.searching_for_food_screen.contract.TabSectionScreenState
 import com.voitov.tracker_presentation.searching_for_food_screen.mapper.toCustomTrackableFood
+import com.voitov.tracker_presentation.searching_for_food_screen.model.OrderMenuUiModel
 import com.voitov.tracker_presentation.searching_for_food_screen.model.TrackableFoodUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -37,7 +38,7 @@ class SearchFoodViewModel
     var screenState by mutableStateOf(SearchFoodScreenState())
         private set
 
-    private val _uiChannel = Channel<UiSideEffect>()
+    private val _uiChannel = Channel<UiSideEffect>(Channel.BUFFERED)
     val uiEvent = _uiChannel.receiveAsFlow()
 
     private val sectionScreenState: TabSectionScreenState
@@ -62,7 +63,13 @@ class SearchFoodViewModel
                 val newSectionData =
                     sectionScreenState.copy(food = sectionScreenState.food.map { uiModel ->
                         if (uiModel.food == event.food) {
-                            uiModel.copy(amount = filterOutDigitsUseCase(event.amount))
+                            uiModel.copy(
+                                menu = uiModel.menu.copy(
+                                    amount = filterOutDigitsUseCase(
+                                        event.amount
+                                    )
+                                )
+                            )
                         } else {
                             uiModel
                         }
@@ -128,6 +135,46 @@ class SearchFoodViewModel
                 sectionToScreenData[screenState.currentSelectedTab] = newSectionScreenState
                 updateSectionScreenData(sectionToScreenData)
             }
+
+            is SearchFoodScreenEvent.OnChangeOrderContent -> {
+                val sectionToScreenData = screenState.tabs.toMutableMap()
+
+                val newSectionData =
+                    sectionScreenState.copy(food = sectionScreenState.food.map { uiModel ->
+                        if (uiModel.food == event.item.food) {
+//                            var oldAmount = try {
+//                                filterOutDigitsUseCase(uiModel.menu.amount).toInt()
+//                            } catch (ex: NumberFormatException) {
+//                                0
+//                            }
+                            val newMenu = OrderMenuUiModel
+                                .reset(uiModel.menu)
+                                .setupTookCount(event.mealType, event.shouldBeAdded)
+                                .setupAmount()
+                                .build()
+
+                            uiModel.copy(menu = newMenu)
+                        } else {
+                            uiModel
+                        }
+                    })
+                sectionToScreenData[screenState.currentSelectedTab] = newSectionData
+                updateSectionScreenData(sectionToScreenData.toMap())
+            }
+
+            is SearchFoodScreenEvent.OnClearOrder -> {
+                val sectionToScreenData = screenState.tabs.toMutableMap()
+                val newSectionData =
+                    sectionScreenState.copy(food = sectionScreenState.food.map { uiModel ->
+                        if (uiModel.food == event.item.food) {
+                            uiModel.copy(menu = OrderMenuUiModel())
+                        } else {
+                            uiModel
+                        }
+                    })
+                sectionToScreenData[screenState.currentSelectedTab] = newSectionData
+                updateSectionScreenData(sectionToScreenData.toMap())
+            }
         }
     }
 
@@ -157,9 +204,9 @@ class SearchFoodViewModel
         viewModelScope.launch {
             trackerUseCases.insertTrackableFoodUseCase(
                 food = event.food.food,
-                amount = event.food.amount.toIntOrNull() ?: return@launch,
+                amount = event.food.menu.amount.toIntOrNull() ?: return@launch,
                 dateTime = event.date,
-                mealType = event.mealType
+                mealTimeType = event.mealTimeType
             )
             _uiChannel.send(UiSideEffect.NavigateUp)
         }

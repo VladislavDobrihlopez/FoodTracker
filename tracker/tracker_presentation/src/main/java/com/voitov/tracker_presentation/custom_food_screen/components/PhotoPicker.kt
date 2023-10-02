@@ -5,8 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -36,7 +35,7 @@ fun PhotoPicker(
     imageShape: Shape = MaterialTheme.shapes.medium,
     backgroundColor: Color = MaterialTheme.colors.primary,
     imageSize: Dp = 144.dp,
-    iconMargin: Dp = (imageSize * 0.25f),
+    iconMargin: Dp = (imageSize * 0.2f),
     iconColor: Color = MaterialTheme.colors.onPrimary
 ) {
     Box(
@@ -48,6 +47,7 @@ fun PhotoPicker(
     ) {
         if (photoUri == null) {
             IconButton(
+                modifier = Modifier.size(imageSize),
                 onClick = onContentClick
             ) {
                 Image(
@@ -69,9 +69,7 @@ fun PhotoPicker(
                 contentDescription = stringResource(id = R.string.content_description_some_food),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f)
-                    .clip(imageShape)
+                    .fillMaxSize()
                     .clickable { onContentClick() }
             )
         }

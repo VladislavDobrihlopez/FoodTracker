@@ -1,6 +1,6 @@
 package com.voitov.tracker_domain.use_case
 
-import com.voitov.tracker_domain.model.MealType
+import com.voitov.tracker_domain.model.MealTimeType
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
@@ -14,7 +14,7 @@ class InsertTrackableFoodUseCase(
         food: TrackableFood,
         amount: Int,
         dateTime: LocalDateTime,
-        mealType: MealType
+        mealTimeType: MealTimeType
     ) {
         repository.insertTrackedFood(
             TrackedFood(
@@ -24,7 +24,7 @@ class InsertTrackableFoodUseCase(
                 carbs = ((food.carbsPer100g * amount) / 100f).roundToInt(),
                 protein = ((food.proteinPer100g * amount) / 100f).roundToInt(),
                 fat = ((food.fatProteinPer100g * amount) / 100f).roundToInt(),
-                mealType = mealType,
+                mealTimeType = mealTimeType,
                 amount = amount,
                 date = dateTime
             )

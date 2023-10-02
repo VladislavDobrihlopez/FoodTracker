@@ -1,7 +1,7 @@
 package com.voitov.tracker_domain.model
 
 // items are ordered logically
-enum class MealType {
+enum class MealTimeType {
     BREAKFAST,
     BRUNCH,
     LUNCH,
