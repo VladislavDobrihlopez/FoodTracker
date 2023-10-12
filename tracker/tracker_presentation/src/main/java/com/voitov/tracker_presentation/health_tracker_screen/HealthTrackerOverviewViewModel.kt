@@ -11,6 +11,7 @@ import com.voitov.common.utils.UiText
 import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
+import com.voitov.tracker_presentation.health_tracker_screen.components.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -100,7 +101,22 @@ class HealthTrackerOverviewViewModel @Inject constructor(
             }
 
             HealthTrackerScreenEvent.ToggleTopBar -> {
-                screenState = screenState.copy(areTopBarActionsExpanded = !screenState.areTopBarActionsExpanded)
+                screenState =
+                    screenState.copy(areTopBarActionsExpanded = !screenState.areTopBarActionsExpanded)
+            }
+
+            is HealthTrackerScreenEvent.MoveOnToMode -> {
+                screenState =
+                    screenState.copy(currentMode = if (screenState.currentMode == ScreenMode.HOME) ScreenMode.CHART else ScreenMode.HOME)
+            }
+
+            is HealthTrackerScreenEvent.ChangeChartConfig -> {
+                screenState = screenState.copy(
+                    chartState = screenState.chartState.copy(
+                        showExceeding = event.showExceeding,
+                        showAvgValue = event.showAvg
+                    )
+                )
             }
         }
     }
@@ -111,14 +127,16 @@ class HealthTrackerOverviewViewModel @Inject constructor(
             .onEach { trackedFoods ->
                 val nutrientCalculationsResult = useCase.doNutrientMathUseCase(trackedFoods)
                 screenState = screenState.copy(
-                    caloriesPerDayGoal = nutrientCalculationsResult.caloriesPerDayGoal,
-                    caloriesPerDayInFact = nutrientCalculationsResult.caloriesPerDayInFact,
-                    carbsPerDayGoal = nutrientCalculationsResult.carbsPerDayGoal,
-                    carbsPerDayInFact = nutrientCalculationsResult.carbsPerDayInFact,
-                    fatPerDayGoal = nutrientCalculationsResult.fatPerDayGoal,
-                    fatPerDayInFact = nutrientCalculationsResult.fatPerDayInFact,
-                    proteinsPerDayGoal = nutrientCalculationsResult.proteinsPerDayGoal,
-                    proteinsPerDayInFact = nutrientCalculationsResult.proteinsPerDayInFact,
+                    headerState = screenState.headerState.copy(
+                        caloriesPerDayGoal = nutrientCalculationsResult.caloriesPerDayGoal,
+                        caloriesPerDayInFact = nutrientCalculationsResult.caloriesPerDayInFact,
+                        carbsPerDayGoal = nutrientCalculationsResult.carbsPerDayGoal,
+                        carbsPerDayInFact = nutrientCalculationsResult.carbsPerDayInFact,
+                        fatPerDayGoal = nutrientCalculationsResult.fatPerDayGoal,
+                        fatPerDayInFact = nutrientCalculationsResult.fatPerDayInFact,
+                        proteinsPerDayGoal = nutrientCalculationsResult.proteinsPerDayGoal,
+                        proteinsPerDayInFact = nutrientCalculationsResult.proteinsPerDayInFact,
+                    ),
                     dateTime = screenState.dateTime,
                     trackedFoods = trackedFoods,
                     mealsDuringCurrentDay = screenState.mealsDuringCurrentDay.map { oldMeal ->

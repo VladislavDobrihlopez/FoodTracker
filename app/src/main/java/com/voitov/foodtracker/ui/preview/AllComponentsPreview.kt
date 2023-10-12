@@ -1,9 +1,15 @@
 package com.voitov.foodtracker.ui.preview
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.voitov.foodtracker.ui.theme.FoodTrackerTheme
 import com.voitov.onboarding_presentation.components.SelectionButton
@@ -14,6 +20,10 @@ import com.voitov.tracker_presentation.components.SearchBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 import com.voitov.tracker_presentation.custom_food_screen.components.PhotoPicker
 import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
+import com.voitov.tracker_presentation.health_tracker_screen.components.CustomBarChart
+import com.voitov.tracker_presentation.health_tracker_screen.components.CustomBarChartState
+import com.voitov.tracker_presentation.health_tracker_screen.model.TimePointResult
+import java.time.LocalDate
 
 @Preview(showBackground = true)
 @Composable
@@ -115,5 +125,39 @@ internal fun PreviewDeveloperAndAppInfo() {
 internal fun PreviewPhotoPicker() {
     FoodTrackerTheme {
         PhotoPicker(onContentClick = { })
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+internal fun PreviewCustomBarChart() {
+    FoodTrackerTheme {
+        val items = buildList {
+            add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
+            add(TimePointResult(LocalDate.now(), 10, 3, 3, 4))
+            add(TimePointResult(LocalDate.now(), 9, 7, 2, 1))
+            add(TimePointResult(LocalDate.now(), 18, 10, 4, 4))
+            add(TimePointResult(LocalDate.now(), 7, 3, 2, 2))
+            add(TimePointResult(LocalDate.now(), 11, 5, 4, 2))
+            add(TimePointResult(LocalDate.now(), 15, 2, 3, 10))
+            add(TimePointResult(LocalDate.now(), 5, 3, 1, 1))
+            add(TimePointResult(LocalDate.now(), 6, 3, 1, 2))
+            add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
+
+        }
+        CustomBarChart(
+            nutrientGoalInKkal = 17,
+            items = items,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            shouldDisplayInZoneArea = {
+                true
+            },
+            shouldDisplayExceededArea = {
+                true
+            },
+        )
     }
 }

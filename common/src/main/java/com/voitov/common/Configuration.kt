@@ -7,5 +7,5 @@ object Configuration {
     const val CALORIES_PER_CARBOHYDRATES_GRAM = 4
     const val CALORIES_PER_FAT_GRAM = 9
 
-    const val APP_VERSION = "stable-2.0"
+    const val APP_VERSION = "stable-2.2"
 }
