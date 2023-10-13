@@ -1,10 +1,14 @@
 package com.voitov.tracker_presentation.health_tracker_screen
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.voitov.common.Configuration.CALORIES_PER_CARBOHYDRATES_GRAM
+import com.voitov.common.Configuration.CALORIES_PER_FAT_GRAM
+import com.voitov.common.Configuration.CALORIES_PER_PROTEIN_GRAM
 import com.voitov.common.R
 import com.voitov.common.utils.UiSideEffect
 import com.voitov.common.utils.UiText
@@ -12,6 +16,7 @@ import com.voitov.common.domain.interfaces.UserInfoKeyValueStorage
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_presentation.health_tracker_screen.components.ScreenMode
+import com.voitov.tracker_presentation.health_tracker_screen.model.TimePointResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -40,6 +45,25 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     init {
         keyValueStorage.saveWhetherOnboardingIsRequired(false)
         refreshScreenDataForCurrentDay()
+
+        useCase.getAccumulatedFoodEachDayUseCase()
+            .onEach { trackableItems ->
+                val chartState = screenState.chartState
+                screenState =
+                    screenState.copy(chartState = chartState.copy(dataPoints = trackableItems.map {
+                        TimePointResult(
+                            it.date,
+                            it.inTotalKkal,
+                            it.fats * CALORIES_PER_FAT_GRAM,
+                            it.carbs * CALORIES_PER_CARBOHYDRATES_GRAM,
+                            it.proteins * CALORIES_PER_PROTEIN_GRAM
+                        )
+                    }))
+            }
+            .catch {
+                _uiChannel.send(UiSideEffect.ShowUpSnackBar(UiText.DynamicResource(it.message.toString())))
+            }
+            .launchIn(viewModelScope)
     }
 
     private val lastDeletedItems = Stack<TrackedFood>()
@@ -89,14 +113,12 @@ class HealthTrackerOverviewViewModel @Inject constructor(
                 viewModelScope.launch {
                     useCase.deleteTrackedFoodUseCase(event.foodItem)
                     lastDeletedItems.push(event.foodItem)
-                    refreshScreenDataForCurrentDay()
                 }
             }
 
             HealthTrackerScreenEvent.RestoreFoodItem -> {
                 viewModelScope.launch {
                     useCase.restoreFoodUseCase(lastDeletedItems.pop())
-                    refreshScreenDataForCurrentDay()
                 }
             }
 
@@ -125,6 +147,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
         ongoingRefreshingJob?.cancel()
         ongoingRefreshingJob = useCase.retrieveAllTrackedFoodOnDateUseCase(screenState.dateTime)
             .onEach { trackedFoods ->
+                Log.d(TAG, "$trackedFoods ${screenState.dateTime.dayOfMonth}")
                 val nutrientCalculationsResult = useCase.doNutrientMathUseCase(trackedFoods)
                 screenState = screenState.copy(
                     headerState = screenState.headerState.copy(
@@ -179,6 +202,7 @@ class HealthTrackerOverviewViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TAG = "HealthTrackerOverviewViewModel"
         private const val NEXT_DAY = 1L
         private const val PREVIOUS_DAY = -1L
         private const val NEXT_WEEK_DAY = 7L

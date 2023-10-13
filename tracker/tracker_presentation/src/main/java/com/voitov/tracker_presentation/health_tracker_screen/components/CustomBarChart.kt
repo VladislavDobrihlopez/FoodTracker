@@ -67,6 +67,7 @@ fun CustomBarChart(
     var state by rememberCustomBarChartState(chartState)
 
     state = state.copy(
+        timePointResults = items,
         lineConfig = state.lineConfig.copy(
             shouldDisplayGoalLine = shouldDisplayExceededArea(),
             shouldDisplayAvgValue = shouldDisplayInZoneArea()
@@ -118,7 +119,7 @@ fun CustomBarChart(
 
     val body = MaterialTheme.typography.h4
 
-    if (items.isEmpty()) {
+    if (items.isEmpty() || items.size < MINIMUM_VISIBLE_BARS) {
         Text(text = "Nothing to show", style = MaterialTheme.typography.h2)
     } else {
         val textMeasure = rememberTextMeasurer()
@@ -146,8 +147,7 @@ fun CustomBarChart(
                 state = state.copy(componentWidth = it.width.toFloat())
             }
             .drawBehind {
-                val maximal =
-                    state.visibleItems.maxOf { it.total }
+                val maximal = state.visibleItems.maxOf { it.inTotalKkal }
                 val pxPerPoint = size.height * 0.95f / maximal
                 val alphaForAvg = if (state.lineConfig.shouldDisplayAvgValue) 0.15f else 0f
                 val alphaForExceeding = if (state.lineConfig.shouldDisplayGoalLine) 0.15f else 0f
@@ -172,7 +172,7 @@ fun CustomBarChart(
                     topLeft = Offset(
                         0f,
                         size.height - pxPerPoint * items.fold(0f) { sum, current ->
-                            sum + current.total
+                            sum + current.inTotalKkal
                         } / items.size),
                     size = Size(
                         state.barWidth * items.size,
@@ -181,8 +181,8 @@ fun CustomBarChart(
                 )
             }) {
             Log.d("TEST_RECOMPOSITION", "canvas changes")
-            val minimal = state.visibleItems.minOf { it.total }
-            val maximal = state.visibleItems.maxOf { it.total }
+            val minimal = state.visibleItems.minOf { it.inTotalKkal }
+            val maximal = state.visibleItems.maxOf { it.inTotalKkal }
             val barWidth = state.barWidth
 
             translate(left = state.scrolledBy) {
@@ -196,12 +196,12 @@ fun CustomBarChart(
                     Log.d("TEST_ONE_ELEMENT", "$maximal $index")
                     val pxPerPoint = (size.height * 0.95f - res.size.height) / maximal
 
-                    val fatsProportion = dayResult.fat / dayResult.total.toFloat()
-                    val proteinsProportion = dayResult.proteins / dayResult.total.toFloat()
-                    val carbsProportion = dayResult.carbs / dayResult.total.toFloat()
-                    val carbsHeight = dayResult.carbs * pxPerPoint
-                    val fatsHeight = dayResult.fat * pxPerPoint
-                    val proteinsHeight = dayResult.proteins * pxPerPoint
+                    val fatsProportion = dayResult.kkalInFats / dayResult.inTotalKkal.toFloat()
+                    val proteinsProportion = dayResult.kkalInProteins / dayResult.inTotalKkal.toFloat()
+                    val carbsProportion = dayResult.kkalInCarbs / dayResult.inTotalKkal.toFloat()
+                    val carbsHeight = dayResult.kkalInCarbs * pxPerPoint
+                    val fatsHeight = dayResult.kkalInFats * pxPerPoint
+                    val proteinsHeight = dayResult.kkalInProteins * pxPerPoint
 
                     val rightToLeft = size.width - (index + 1) * barWidth
                     val cornerRadius = CornerRadius(24f, 24f)
@@ -213,7 +213,7 @@ fun CustomBarChart(
                             style = body,
                             topLeft = Offset(
                                 rightToLeft + barWidth / 4,
-                                size.height - dayResult.total * pxPerPoint - res.size.height * 1.25f
+                                size.height - dayResult.inTotalKkal * pxPerPoint - res.size.height * 1.25f
                             )
                         )
                     }
@@ -225,9 +225,9 @@ fun CustomBarChart(
                                 brush = brush,
                                 topLeft = Offset(
                                     rightToLeft,
-                                    size.height - dayResult.total * pxPerPoint * anim.value * animReverse.value
+                                    size.height - dayResult.inTotalKkal * pxPerPoint * anim.value * animReverse.value
                                 ),
-                                size = Size(barWidth * 7 / 8, dayResult.total * pxPerPoint)
+                                size = Size(barWidth * 7 / 8, dayResult.inTotalKkal * pxPerPoint)
                             )
                         }
 
@@ -238,7 +238,7 @@ fun CustomBarChart(
                                         rect = Rect(
                                             offset = Offset(
                                                 rightToLeft,
-                                                size.height - dayResult.total * pxPerPoint * anim.value * animReverse.value
+                                                size.height - dayResult.inTotalKkal * pxPerPoint * anim.value * animReverse.value
                                             ),
                                             size = Size(barWidth * 7 / 8, carbsHeight)
                                         ),
@@ -251,7 +251,7 @@ fun CustomBarChart(
                                 color = FatColor,
                                 topLeft = Offset(
                                     rightToLeft,
-                                    size.height + carbsHeight - (dayResult.total * pxPerPoint * anim.value) * animReverse.value
+                                    size.height + carbsHeight - (dayResult.inTotalKkal * pxPerPoint * anim.value) * animReverse.value
                                 ),
                                 size = Size(barWidth * 7 / 8, fatsHeight)
                             )
@@ -261,7 +261,7 @@ fun CustomBarChart(
                                         rect = Rect(
                                             offset = Offset(
                                                 rightToLeft,
-                                                size.height + carbsHeight + fatsHeight - (dayResult.total * pxPerPoint * anim.value) * animReverse.value
+                                                size.height + carbsHeight + fatsHeight - (dayResult.inTotalKkal * pxPerPoint * anim.value) * animReverse.value
                                             ),
                                             size = Size(barWidth * 7 / 8, proteinsHeight)
                                         ),
@@ -302,7 +302,7 @@ data class CustomBarChartState(
         }
 
     companion object {
-        const val MINIMUM_VISIBLE_BARS = 3
+        const val MINIMUM_VISIBLE_BARS = 2
         const val MAXIMUM_VISIBLE_BARS_TO_HIDE_TEXT = 5
 
         val saver: Saver<MutableState<CustomBarChartState>, Any> = listSaver(save = {

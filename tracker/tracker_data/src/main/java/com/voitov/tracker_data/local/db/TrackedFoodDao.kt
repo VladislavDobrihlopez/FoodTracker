@@ -33,4 +33,7 @@ interface TrackedFoodDao {
 
     @Query("SELECT * FROM trackable_food")
     fun getAllCustomTrackableFood(): Flow<List<TrackableFoodEntity>>
+
+    @Query("SELECT * FROM food_item")
+    fun getAllTrackedFood(): Flow<List<TrackedFoodEntity>>
 }

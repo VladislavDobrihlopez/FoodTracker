@@ -135,15 +135,15 @@ internal fun PreviewCustomBarChart() {
     FoodTrackerTheme {
         val items = buildList {
             add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
-            add(TimePointResult(LocalDate.now(), 10, 3, 3, 4))
-            add(TimePointResult(LocalDate.now(), 9, 7, 2, 1))
-            add(TimePointResult(LocalDate.now(), 18, 10, 4, 4))
-            add(TimePointResult(LocalDate.now(), 7, 3, 2, 2))
-            add(TimePointResult(LocalDate.now(), 11, 5, 4, 2))
-            add(TimePointResult(LocalDate.now(), 15, 2, 3, 10))
-            add(TimePointResult(LocalDate.now(), 5, 3, 1, 1))
-            add(TimePointResult(LocalDate.now(), 6, 3, 1, 2))
-            add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
+//            add(TimePointResult(LocalDate.now(), 10, 3, 3, 4))
+//            add(TimePointResult(LocalDate.now(), 9, 7, 2, 1))
+//            add(TimePointResult(LocalDate.now(), 18, 10, 4, 4))
+//            add(TimePointResult(LocalDate.now(), 7, 3, 2, 2))
+//            add(TimePointResult(LocalDate.now(), 11, 5, 4, 2))
+//            add(TimePointResult(LocalDate.now(), 15, 2, 3, 10))
+//            add(TimePointResult(LocalDate.now(), 5, 3, 1, 1))
+//            add(TimePointResult(LocalDate.now(), 6, 3, 1, 2))
+//            add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
 
         }
         CustomBarChart(
