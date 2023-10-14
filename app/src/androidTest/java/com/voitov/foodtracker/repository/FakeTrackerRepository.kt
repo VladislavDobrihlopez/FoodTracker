@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-class FakeTrackerRepository: FoodTrackerRepository {
+class FakeTrackerRepository : FoodTrackerRepository {
     var shouldSucceed: Boolean = true
     private val inMemoryDatabase = mutableListOf<TrackedFood>()
     private val inMemoryDatabaseForCustomFood = mutableListOf<CustomTrackableFood>()
@@ -68,6 +68,10 @@ class FakeTrackerRepository: FoodTrackerRepository {
         page: Int,
         pageSize: Int
     ): Flow<List<CustomTrackableFood>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllTrackedFood(): Flow<List<TrackedFood>> {
         TODO("Not yet implemented")
     }
 }

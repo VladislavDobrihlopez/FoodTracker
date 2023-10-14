@@ -22,8 +22,8 @@ class InsertTrackableFoodUseCase(
                 imageUrl = food.imageSourcePath,
                 calories = ((food.caloriesPer100g * amount) / 100f).roundToInt(),
                 carbs = ((food.carbsPer100g * amount) / 100f).roundToInt(),
-                protein = ((food.proteinPer100g * amount) / 100f).roundToInt(),
-                fat = ((food.fatProteinPer100g * amount) / 100f).roundToInt(),
+                proteins = ((food.proteinPer100g * amount) / 100f).roundToInt(),
+                fats = ((food.fatProteinPer100g * amount) / 100f).roundToInt(),
                 mealTimeType = mealTimeType,
                 amount = amount,
                 date = dateTime

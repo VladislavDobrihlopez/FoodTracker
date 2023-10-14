@@ -1,27 +1,21 @@
 package com.voitov.tracker_presentation.health_tracker_screen.components
 
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,16 +27,13 @@ import com.voitov.common_ui.ProteinColor
 import com.voitov.tracker_presentation.components.EatenFoodCircularBar
 import com.voitov.tracker_presentation.components.EatenFoodOverviewHorizontalBar
 import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
-import com.voitov.tracker_presentation.health_tracker_screen.HealthTrackerScreenState
+import com.voitov.tracker_presentation.health_tracker_screen.NutrientOverviewHeaderState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NutrientOverviewHeader(
-    isTopBarExpanded: State<Boolean>,
-    onToggleTopBar: () -> Unit,
-    onAppInfoClick: () -> Unit,
-    onDoReonboardingClick: () -> Unit,
-    state: HealthTrackerScreenState,
+    state: NutrientOverviewHeaderState,
+    modifier: Modifier = Modifier
 ) {
     val spacing = LocalSpacing.current
     val animatedCaloriesHorizontalBar = animateIntAsState(
@@ -50,20 +41,8 @@ fun NutrientOverviewHeader(
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomStart = 45.dp, bottomEnd = 45.dp))
-            .background(MaterialTheme.colors.primary)
+        modifier = modifier
     ) {
-        ScreenTopBar(
-            isExpanded = isTopBarExpanded,
-            doReonboarding = onDoReonboardingClick,
-            viewExplanations = onAppInfoClick,
-            shouldExpand = {
-                onToggleTopBar()
-            }
-        )
-
         Column(
             modifier = Modifier.padding(
                 horizontal = spacing.spaceLarge,

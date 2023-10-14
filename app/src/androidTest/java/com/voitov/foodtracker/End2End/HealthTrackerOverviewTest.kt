@@ -39,6 +39,7 @@ import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
 import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
+import com.voitov.tracker_domain.use_case.GetAccumulatedFoodEachDayUseCase
 import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
 import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
@@ -116,7 +117,8 @@ class HealthTrackerOverviewTest {
             ),
             searchTrackableFoodUseCase = SearchTrackableFoodUseCase(repository = repository),
             deleteTrackableCustomFoodUseCase = DeleteTrackableCustomFoodUseCase(repository = repository),
-            searchCustomTrackableFoodUseCase = SearchCustomTrackableFoodUseCase(repository = repository)
+            searchCustomTrackableFoodUseCase = SearchCustomTrackableFoodUseCase(repository = repository),
+            getAccumulatedFoodEachDayUseCase = GetAccumulatedFoodEachDayUseCase(repository = repository)
         )
         filterOutUseCase = FilterOutDigitsUseCase()
         searchViewModel = SearchFoodViewModel(

@@ -20,15 +20,15 @@ class DoNutrientMathUseCase(
                 mealTimeType = entry.key,
                 carbs = entry.value.sumOf { it.carbs },
                 calories = entry.value.sumOf { it.calories },
-                fat = entry.value.sumOf { it.fat },
-                proteins = entry.value.sumOf { it.protein },
+                fat = entry.value.sumOf { it.fats },
+                proteins = entry.value.sumOf { it.proteins },
             )
         }
 
         val eatenCalories = trackedFood.sumOf { it.calories }
         val eatenCarbs = trackedFood.sumOf { it.carbs }
-        val eatenFat = trackedFood.sumOf { it.fat }
-        val eatenProtein = trackedFood.sumOf { it.protein }
+        val eatenFat = trackedFood.sumOf { it.fats }
+        val eatenProtein = trackedFood.sumOf { it.proteins }
 
         val userProfile = keyValueStorage.readAllUserInfo()
 

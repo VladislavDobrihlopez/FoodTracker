@@ -56,8 +56,8 @@ class DoNutrientMathUseCaseTest {
                         imageUrl = null,
                         calories = calories,
                         carbs = carbs,
-                        protein = protein,
-                        fat = fat,
+                        proteins = protein,
+                        fats = fat,
                         mealTimeType = listOf(
                             MealTimeType.SNACK,
                             MealTimeType.SUPPER,
@@ -134,7 +134,7 @@ class DoNutrientMathUseCaseTest {
 
         val fatBefore = dummyDate
             .filter { it.mealTimeType == mealTimeType }
-            .sumOf { it.fat }
+            .sumOf { it.fats }
 
         val fatAfter = result.mealTimeToNutrients.values
             .filter { it.mealTimeType == mealTimeType }
@@ -157,7 +157,7 @@ class DoNutrientMathUseCaseTest {
 
         val proteinBefore = dummyDate
             .filter { it.mealTimeType == mealTimeType }
-            .sumOf { it.protein }
+            .sumOf { it.proteins }
 
         val proteinAfter = result.mealTimeToNutrients.values
             .filter { it.mealTimeType == mealTimeType }
