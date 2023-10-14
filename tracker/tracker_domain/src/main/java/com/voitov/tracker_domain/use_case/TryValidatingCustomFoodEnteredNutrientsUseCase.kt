@@ -12,11 +12,11 @@ import javax.inject.Singleton
 @Singleton
 class TryValidatingCustomFoodEnteredNutrientsUseCase @Inject constructor() {
     operator fun invoke(name: String, protein: String, fat: String, carbohydrates: String): Result {
-        var mappedName = name
-        var mappedProtein = 0
-        var mappedFat = 0
-        var mappedCarbohydrates = 0
-        var mappedCalories = 0
+        val mappedName: String
+        val mappedProtein: Int
+        val mappedFat: Int
+        val mappedCarbohydrates: Int
+        val mappedCalories: Int
 
         val passedTestValues = buildList<Boolean> {
             repeat(5) {

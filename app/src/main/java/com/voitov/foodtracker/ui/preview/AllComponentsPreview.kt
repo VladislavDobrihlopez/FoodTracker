@@ -21,7 +21,6 @@ import com.voitov.tracker_presentation.components.UiNumberFollowedByUnit
 import com.voitov.tracker_presentation.custom_food_screen.components.PhotoPicker
 import com.voitov.tracker_presentation.health_tracker_screen.components.AppInfo
 import com.voitov.tracker_presentation.health_tracker_screen.components.CustomBarChart
-import com.voitov.tracker_presentation.health_tracker_screen.components.CustomBarChartState
 import com.voitov.tracker_presentation.health_tracker_screen.model.TimePointResult
 import java.time.LocalDate
 
@@ -158,6 +157,9 @@ internal fun PreviewCustomBarChart() {
             shouldDisplayExceededArea = {
                 true
             },
+            onSelectBar = { _, _ ->
+
+            }
         )
     }
 }

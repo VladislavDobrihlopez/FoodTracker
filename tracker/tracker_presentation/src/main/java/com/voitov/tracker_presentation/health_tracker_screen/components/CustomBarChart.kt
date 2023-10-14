@@ -32,14 +32,20 @@ import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.voitov.common_ui.CarbColor
 import com.voitov.common_ui.FatColor
 import com.voitov.common_ui.ProteinColor
@@ -61,7 +67,9 @@ fun CustomBarChart(
     items: List<TimePointResult>,
     shouldDisplayInZoneArea: () -> Boolean,
     shouldDisplayExceededArea: () -> Boolean,
+    onSelectBar: (TimePointResult, Int) -> Unit,
     modifier: Modifier = Modifier,
+    outlineColorOfSelectedItem: Color = MaterialTheme.colors.onBackground,
     chartState: CustomBarChartState = CustomBarChartState(items)
 ) {
     var state by rememberCustomBarChartState(chartState)
@@ -119,11 +127,18 @@ fun CustomBarChart(
 
     val body = MaterialTheme.typography.h4
 
+    var currentTouch by remember {
+        mutableStateOf(Offset(-1f, -1f))
+    }
+
+    val local = LocalConfiguration.current
+
     if (items.isEmpty() || items.size < MINIMUM_VISIBLE_BARS) {
         Text(text = "Nothing to show", style = MaterialTheme.typography.h2)
     } else {
         val textMeasure = rememberTextMeasurer()
         Canvas(modifier = modifier
+            .transformable(transformable)
             .pointerInput(Unit) {
                 detectTapGestures(onLongPress = {
                     Log.d("TEST_RECOMPOSITION", "long press")
@@ -140,9 +155,34 @@ fun CustomBarChart(
                             }
                         )
                     }
+                }, onTap = { touchedArea ->
+                    Log.d("TEST_TOUCHH", touchedArea.x.toString())
+                    currentTouch = touchedArea
+
+                    val barWidth = state.barWidth
+                    state.timePointResults.forEachIndexed { index, item ->
+                        val startBarRightToLeft = (index) * barWidth
+                        val endBarTightToLeft = (index + 1) * barWidth
+                        Log.d("TEST_TOUCHH", "ui size: ${size.width}")
+                        Log.d("TEST_TOUCHH", "ui scroll: ${state.scrolledBy}")
+                        Log.d("TEST_TOUCHH", "bar width: ${barWidth}")
+                        Log.d(
+                            "TEST_TOUCH_2",
+                            "${size.width - currentTouch.x + state.scrolledBy}\n +" +
+                                    "$startBarRightToLeft +" +
+                                    "$endBarTightToLeft"
+                        )
+
+                        if (size.width - currentTouch.x + state.scrolledBy in (abs(
+                                startBarRightToLeft
+                            )..(abs(endBarTightToLeft)))
+                        ) {
+                            state = state.copy(selectedBarIndex = index)
+                            onSelectBar(item, index)
+                        }
+                    }
                 })
             }
-            .transformable(transformable)
             .onSizeChanged {
                 state = state.copy(componentWidth = it.width.toFloat())
             }
@@ -193,17 +233,13 @@ fun CustomBarChart(
                         style = body,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Log.d("TEST_ONE_ELEMENT", "$maximal $index")
                     val pxPerPoint = (size.height * 0.95f - res.size.height) / maximal
-
-                    val fatsProportion = dayResult.kkalInFats / dayResult.inTotalKkal.toFloat()
-                    val proteinsProportion = dayResult.kkalInProteins / dayResult.inTotalKkal.toFloat()
-                    val carbsProportion = dayResult.kkalInCarbs / dayResult.inTotalKkal.toFloat()
                     val carbsHeight = dayResult.kkalInCarbs * pxPerPoint
                     val fatsHeight = dayResult.kkalInFats * pxPerPoint
                     val proteinsHeight = dayResult.kkalInProteins * pxPerPoint
 
                     val rightToLeft = size.width - (index + 1) * barWidth
+
                     val cornerRadius = CornerRadius(24f, 24f)
 
                     if (state.visibleBarsCount <= MAXIMUM_VISIBLE_BARS_TO_HIDE_TEXT) {
@@ -227,7 +263,10 @@ fun CustomBarChart(
                                     rightToLeft,
                                     size.height - dayResult.inTotalKkal * pxPerPoint * anim.value * animReverse.value
                                 ),
-                                size = Size(barWidth * 7 / 8, dayResult.inTotalKkal * pxPerPoint)
+                                size = Size(
+                                    barWidth * 7 / 8,
+                                    dayResult.inTotalKkal * pxPerPoint
+                                )
                             )
                         }
 
@@ -272,6 +311,28 @@ fun CustomBarChart(
                             })
                         }
                     }
+
+                    if (index == state.selectedBarIndex) {
+                        drawOutline(
+                            Outline.Rounded(
+                                RoundRect(
+                                    cornerRadius = cornerRadius,
+                                    rect = Rect(
+                                        offset = Offset(
+                                            rightToLeft,
+                                            size.height - dayResult.inTotalKkal * pxPerPoint * anim.value * animReverse.value
+                                        ),
+                                        size = Size(
+                                            barWidth * 7 / 8,
+                                            dayResult.inTotalKkal * pxPerPoint
+                                        )
+                                    )
+                                )
+                            ),
+                            color = outlineColorOfSelectedItem,
+                            style = Stroke(width = 2.dp.toPx())
+                        )
+                    }
                 }
             }
         }
@@ -284,6 +345,7 @@ data class CustomBarChartState(
     val visibleBarsCount: Int = MINIMUM_VISIBLE_BARS,
     val scrolledBy: Float = 0f,
     val mode: Mode = Mode.NORMAL,
+    val selectedBarIndex: Int = -1,
     val lineConfig: LineConfig = LineConfig(),
 ) {
     val barWidth: Float
@@ -312,7 +374,8 @@ data class CustomBarChartState(
                 stateValue.componentWidth,
                 stateValue.visibleBarsCount,
                 stateValue.scrolledBy,
-                stateValue.mode
+                stateValue.mode,
+                stateValue.selectedBarIndex
             )
         }, restore = {
             val timePointResult = it[0] as List<TimePointResult>
@@ -320,6 +383,7 @@ data class CustomBarChartState(
             val visibleBarsCount = it[2] as Int
             val scrolledBy = it[3] as Float
             val mode = it[4] as Mode
+            val selectedBarIndex = it[5] as Int
             Log.d(
                 "TEST_RESTORING",
                 "$scrolledBy ${componentWidth - componentWidth / visibleBarsCount}"
@@ -330,7 +394,8 @@ data class CustomBarChartState(
                     componentWidth,
                     visibleBarsCount,
                     min(abs(scrolledBy), componentWidth - componentWidth / visibleBarsCount),
-                    mode
+                    mode,
+                    selectedBarIndex
                 )
             )
         })

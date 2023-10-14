@@ -23,7 +23,7 @@ class GetAccumulatedFoodEachDayUseCase(
                 trackedFood.distinctBy { it.date.toLocalDate() }.map { it.date.toLocalDate() }
 
             buildList<FoodStatistics> {
-                uniqueDates.forEachIndexed { index, date ->
+                uniqueDates.forEach { date ->
                     add(
                         FoodStatistics(
                             date = date,

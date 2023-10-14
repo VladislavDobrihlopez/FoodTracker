@@ -265,7 +265,7 @@ fun SearchScreen(
                         verticalArrangement = Arrangement.spacedBy(spacing.spaceExtraSmall)
                     ) {
                         items(
-                            screenState.tabSectionScreenState.food,
+                            items = screenState.tabSectionScreenState.food,
                             key = { it.food.id }) { foodUi ->
                             TrackableFoodUi(foodUiModel = foodUi, onCardClick = {
                                 viewModel.onEvent(

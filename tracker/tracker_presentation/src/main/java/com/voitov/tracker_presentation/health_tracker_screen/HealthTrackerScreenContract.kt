@@ -6,6 +6,7 @@ import com.voitov.tracker_presentation.health_tracker_screen.components.ScreenMo
 import com.voitov.tracker_presentation.health_tracker_screen.model.TimePointResult
 import com.voitov.tracker_presentation.health_tracker_screen.model.Meal
 import com.voitov.tracker_presentation.health_tracker_screen.model.allDayMealsByDefault
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class HealthTrackerScreenState(
@@ -40,6 +41,7 @@ sealed class HealthTrackerScreenEvent {
     object NavigateToNextDay : HealthTrackerScreenEvent()
     object NavigateToWeekBehind : HealthTrackerScreenEvent()
     object NavigateToWeekAhead : HealthTrackerScreenEvent()
+    data class NavigateToDate(val date: LocalDate): HealthTrackerScreenEvent()
     object DoReonbording : HealthTrackerScreenEvent()
     object RestoreFoodItem : HealthTrackerScreenEvent()
 

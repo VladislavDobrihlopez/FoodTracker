@@ -64,9 +64,9 @@ fun ScreenTopBar(
         }) {
             Icon(
                 if (currentMode == ScreenMode.HOME) {
-                    Icons.Default.Home
-                } else {
                     Icons.Default.DateRange
+                } else {
+                    Icons.Default.Home
                 },
                 tint = color,
                 contentDescription = stringResource(id = R.string.content_description_close),

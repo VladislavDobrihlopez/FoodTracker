@@ -105,4 +105,6 @@
     <string name="for_linking_privacy_policy">privacy policy</string>
     <string name="privacy_text">By clicking the button you agree to the %s</string>
     <string name="refresh">refresh card</string>
+    <string name="avg_data_during_observing_period">calculated avg</string>
+    <string name="exceeding">no-go zone</string>
 </resources>

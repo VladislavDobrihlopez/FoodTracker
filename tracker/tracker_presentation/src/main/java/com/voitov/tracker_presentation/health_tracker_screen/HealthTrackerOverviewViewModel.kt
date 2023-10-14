@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Stack
 import javax.inject.Inject
 import kotlin.math.abs
@@ -87,6 +89,11 @@ class HealthTrackerOverviewViewModel @Inject constructor(
 
             HealthTrackerScreenEvent.NavigateToPreviousDay -> {
                 updateWithDateDifferenceOfDays(PREVIOUS_DAY)
+                refreshScreenDataForCurrentDay()
+            }
+
+            is HealthTrackerScreenEvent.NavigateToDate -> {
+                updateWithDateDifferenceOfDays(ChronoUnit.DAYS.between(screenState.dateTime.toLocalDate(), event.date))
                 refreshScreenDataForCurrentDay()
             }
 

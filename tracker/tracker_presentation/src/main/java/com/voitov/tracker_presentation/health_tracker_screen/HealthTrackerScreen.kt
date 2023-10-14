@@ -9,8 +9,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +23,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarDuration
@@ -37,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -54,12 +62,10 @@ import com.voitov.tracker_presentation.health_tracker_screen.components.DaySelec
 import com.voitov.tracker_presentation.health_tracker_screen.components.NutrientOverviewHeader
 import com.voitov.tracker_presentation.health_tracker_screen.components.ScreenMode
 import com.voitov.tracker_presentation.health_tracker_screen.components.ScreenTopBar
-import com.voitov.tracker_presentation.health_tracker_screen.model.TimePointResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun HealthTrackerScreen(
     snackbarHostState: SnackbarHostState,
@@ -88,6 +94,7 @@ fun HealthTrackerScreen(
     }
 
     AppInfo(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
         isShownState = appInfoDialogIsShownState,
         onDismissClick = {
             appInfoDialogIsShownState.value = false
@@ -103,7 +110,8 @@ fun HealthTrackerScreen(
         mutableStateOf(screenState.dateTime)
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    val scrollState = rememberLazyListState()
+    LazyColumn(modifier = Modifier.fillMaxSize(), state = scrollState) {
         item {
             ScreenTopBar(
                 modifier = Modifier
@@ -125,7 +133,11 @@ fun HealthTrackerScreen(
                     viewModel.onEvent(HealthTrackerScreenEvent.MoveOnToMode(it))
                 },
             )
-            AnimatedContent(targetState = screenState.currentMode, label = "") {
+        }
+        item {
+            AnimatedContent(
+                targetState = screenState.currentMode, label = "header_mode"
+            ) {
                 when (it) {
                     ScreenMode.CHART -> {
                         Column(
@@ -137,6 +149,22 @@ fun HealthTrackerScreen(
                                         bottomEnd = 45.dp
                                     )
                                 )
+                                .pointerInput(Unit) {
+                                    detectTransformGestures { _, pan, _, _ ->
+                                        scope.launch {
+                                            awaitPointerEventScope {
+                                                while (true) {
+                                                    val event =
+                                                        awaitPointerEvent(pass = PointerEventPass.Initial)
+                                                    launch {
+                                                        scrollState.animateScrollBy(-5 * pan.y)
+                                                        event.changes.forEach { it.consume() }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
                         ) {
                             Row(
                                 modifier = Modifier
@@ -144,7 +172,7 @@ fun HealthTrackerScreen(
                                     .background(MaterialTheme.colors.primary),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     Checkbox(
                                         checked = screenState.chartState.showExceeding,
                                         onCheckedChange = {
@@ -156,9 +184,14 @@ fun HealthTrackerScreen(
                                             )
                                         }
                                     )
-                                    Text(text = "Превышение")
+                                    Text(
+                                        text = stringResource(id = R.string.exceeding),
+                                        style = MaterialTheme.typography.body1,
+                                        color = MaterialTheme.colors.onPrimary,
+                                        maxLines = 1
+                                    )
                                 }
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     Checkbox(
                                         checked = screenState.chartState.showAvgValue,
                                         onCheckedChange = {
@@ -170,13 +203,19 @@ fun HealthTrackerScreen(
                                             )
                                         }
                                     )
-                                    Text(text = "Мой средний результат")
+                                    Text(
+                                        text = stringResource(id = R.string.avg_data_during_observing_period),
+                                        style = MaterialTheme.typography.body1,
+                                        color = MaterialTheme.colors.onPrimary,
+                                        maxLines = 1
+                                    )
                                 }
                             }
+
                             CustomBarChart(
                                 modifier = Modifier
-                                    .height(400.dp)
                                     .fillMaxWidth()
+                                    .height(400.dp)
                                     .clipToBounds(),
                                 nutrientGoalInKkal = screenState.headerState.caloriesPerDayGoal, //screenState.headerState.caloriesPerDayGoal,
                                 shouldDisplayInZoneArea = {
@@ -185,27 +224,29 @@ fun HealthTrackerScreen(
                                 shouldDisplayExceededArea = {
                                     screenState.chartState.showExceeding
                                 },
-                                items = screenState.chartState.dataPoints
-//                                buildList {
-//                                    add(TimePointResult(LocalDate.now(), 10, 3, 3, 4))
-//                                    add(TimePointResult(LocalDate.now(), 9, 6, 2, 1))
-//                                    add(TimePointResult(LocalDate.now(), 18, 9, 3, 6))
-//                                    add(TimePointResult(LocalDate.now(), 7, 3, 2, 2))
-//                                    add(TimePointResult(LocalDate.now(), 11, 5, 4, 2))
-//                                    add(TimePointResult(LocalDate.now(), 15, 2, 3, 10))
-//                                    add(TimePointResult(LocalDate.now(), 5, 3, 1, 1))
-//                                    add(TimePointResult(LocalDate.now(), 6, 3, 1, 2))
-//                                    add(TimePointResult(LocalDate.now(), 40, 30, 5, 5))
-//                                }
+                                items = screenState.chartState.dataPoints,
+                                onSelectBar = { item, index ->
+                                    viewModel.onEvent(
+                                        HealthTrackerScreenEvent.NavigateToDate(
+                                            item.date
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
 
                     ScreenMode.HOME -> {
                         NutrientOverviewHeader(
-                            state = screenState.headerState, modifier = Modifier
+                            state = screenState.headerState,
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(bottomStart = 45.dp, bottomEnd = 45.dp))
+                                .clip(
+                                    RoundedCornerShape(
+                                        bottomStart = 45.dp,
+                                        bottomEnd = 45.dp
+                                    )
+                                )
                                 .background(MaterialTheme.colors.primary)
                         )
                     }
