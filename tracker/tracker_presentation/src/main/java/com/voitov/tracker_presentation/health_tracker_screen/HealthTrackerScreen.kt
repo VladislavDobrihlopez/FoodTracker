@@ -136,7 +136,7 @@ fun HealthTrackerScreen(
         }
         item {
             AnimatedContent(
-                targetState = screenState.currentMode, label = "header_mode"
+                targetState = screenState.currentMode
             ) {
                 when (it) {
                     ScreenMode.CHART -> {
