@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -160,7 +159,7 @@ fun TrackedFoodItem(
                         Spacer(Modifier.width(spacing.spaceExtraSmall))
                         NutrientValueInfo(
                             nutrientName = stringResource(id = R.string.fat),
-                            amount = item.fat.toString(),
+                            amount = item.fats.toString(),
                             unit = stringResource(id = R.string.grams),
                             amountTextSize = 16.sp,
                             unitTextSize = 12.sp,
@@ -169,7 +168,7 @@ fun TrackedFoodItem(
                         Spacer(Modifier.width(spacing.spaceExtraSmall))
                         NutrientValueInfo(
                             nutrientName = stringResource(id = R.string.protein),
-                            amount = item.protein.toString(),
+                            amount = item.proteins.toString(),
                             unit = stringResource(id = R.string.grams),
                             amountTextSize = 16.sp,
                             unitTextSize = 12.sp,

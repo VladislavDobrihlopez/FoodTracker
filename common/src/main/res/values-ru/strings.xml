@@ -105,4 +105,6 @@
     <string name="for_linking_privacy_policy">политика конфиденциальности</string>
     <string name="privacy_text">Нажимая на кнопку вы соглашаетесь с %s</string>
     <string name="refresh">Начать с чистого листа</string>
+    <string name="avg_data_during_observing_period">среднее значение</string>
+    <string name="exceeding">нежелательная зона</string>
 </resources>

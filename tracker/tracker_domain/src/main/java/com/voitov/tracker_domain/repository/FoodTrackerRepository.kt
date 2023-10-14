@@ -2,6 +2,7 @@ package com.voitov.tracker_domain.repository
 
 import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.CustomTrackableFood
+import com.voitov.tracker_domain.model.FoodStatistics
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import kotlinx.coroutines.flow.Flow
@@ -29,4 +30,6 @@ interface FoodTrackerRepository {
         page: Int,
         pageSize: Int,
     ): Flow<List<CustomTrackableFood>>
+
+    fun getAllTrackedFood(): Flow<List<TrackedFood>>
 }

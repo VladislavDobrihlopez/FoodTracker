@@ -3,6 +3,7 @@ package com.voitov.tracker_data.repository
 import com.voitov.common.utils.areNutrientComponentsCorrect
 import com.voitov.tracker_data.local.db.TrackedFoodDao
 import com.voitov.tracker_data.mapper.toCustomTrackableFood
+import com.voitov.tracker_data.mapper.toFoodStatistics
 import com.voitov.tracker_data.mapper.toTrackableFood
 import com.voitov.tracker_data.mapper.toTrackableFoodEntity
 import com.voitov.tracker_data.mapper.toTrackedFood
@@ -12,6 +13,7 @@ import com.voitov.tracker_data.remote.OpenFoodApiService
 import com.voitov.tracker_data.remote.query
 import com.voitov.tracker_domain.model.Country
 import com.voitov.tracker_domain.model.CustomTrackableFood
+import com.voitov.tracker_domain.model.FoodStatistics
 import com.voitov.tracker_domain.model.TrackableFood
 import com.voitov.tracker_domain.model.TrackedFood
 import com.voitov.tracker_domain.repository.FoodTrackerRepository
@@ -110,6 +112,13 @@ class FoodTrackerRepositoryImpl(
         return dao.getAllCustomTrackableFood()
             .map { dbEntities ->
                 dbEntities.map { it.toCustomTrackableFood() }
+            }
+    }
+
+    override fun getAllTrackedFood(): Flow<List<TrackedFood>> {
+        return dao.getAllTrackedFood()
+            .map { dbEntities ->
+                dbEntities.map { it.toTrackedFood() }
             }
     }
 }

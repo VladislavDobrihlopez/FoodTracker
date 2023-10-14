@@ -45,11 +45,8 @@ fun DaySelector(
         formatDate(date.value, context)
     }
 
-    Spacer(Modifier.height(spacing.spaceMedium))
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = spacing.spaceSmall),
+        modifier = modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

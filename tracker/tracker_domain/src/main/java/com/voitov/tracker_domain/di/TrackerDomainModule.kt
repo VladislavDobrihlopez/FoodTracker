@@ -5,12 +5,13 @@ import com.voitov.tracker_domain.repository.FoodTrackerRepository
 import com.voitov.tracker_domain.use_case.DeleteTrackableCustomFoodUseCase
 import com.voitov.tracker_domain.use_case.DeleteTrackedFoodUseCase
 import com.voitov.tracker_domain.use_case.DoNutrientMathUseCase
+import com.voitov.tracker_domain.use_case.GetAccumulatedFoodEachDayUseCase
 import com.voitov.tracker_domain.use_case.InsertTrackableFoodUseCase
-import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import com.voitov.tracker_domain.use_case.RestoreFoodUseCase
 import com.voitov.tracker_domain.use_case.RetrieveAllTrackedFoodOnDateUseCase
 import com.voitov.tracker_domain.use_case.SearchCustomTrackableFoodUseCase
 import com.voitov.tracker_domain.use_case.SearchTrackableFoodUseCase
+import com.voitov.tracker_domain.use_case.wrapper.NutrientStuffUseCasesWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +35,7 @@ object TrackerDomainModule {
             RetrieveAllTrackedFoodOnDateUseCase(repository),
             SearchTrackableFoodUseCase(repository),
             SearchCustomTrackableFoodUseCase(repository),
-            DeleteTrackableCustomFoodUseCase(repository)
+            DeleteTrackableCustomFoodUseCase(repository),
+            GetAccumulatedFoodEachDayUseCase(repository),
         )
 }

@@ -96,9 +96,7 @@ fun TrackableFoodUi(
                 contentDescription = food.name
             )
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = spacing.spaceSmall, bottom = spacing.spaceSmall),
+                modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
