@@ -72,6 +72,6 @@ class FakeTrackerRepository : FoodTrackerRepository {
     }
 
     override fun getAllTrackedFood(): Flow<List<TrackedFood>> {
-        TODO("Not yet implemented")
+        return dbFlow
     }
 }
